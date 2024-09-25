@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cc",
+            "args": [
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-g",                              // Per il debug
+                "-I./include",
+                "-I./include/libft",
+                "-I./include/minilibx-linux",
+                "-L./include/libft",
+                "-L./include/minilibx-linux",
+                "./src/main.c",
+                "-lmlx", "-lX11", "-lXext", "-lm", "-lft",
+                "-o", "cub3D"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

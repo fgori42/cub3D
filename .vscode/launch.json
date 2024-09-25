@@ -1,0 +1,32 @@
+
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	{
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "(gdb) Launch cub3D",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder}/cub3D",  // Path dell'eseguibile cub3D
+				"args": [],                             // Argomenti se necessari
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}",            // Directory di lavoro corrente
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"setupCommands": [
+					{
+						"description": "Abilita la stampa automatica dei valori",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"miDebuggerPath": "/usr/bin/gdb",       // Percorso del debugger GDB
+				"internalConsoleOptions": "openOnSessionStart",
+				"preLaunchTask": "build"                // Compila prima del debug
+			}
+		]
+	}
+
