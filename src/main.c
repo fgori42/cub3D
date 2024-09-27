@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/25 16:59:57 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/27 12:22:39 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,20 @@ int	size_mtx(char size, char **map)
 	return (0);
 }
 
+float CentInSis(const float bn)
+{
+	int ful;
+	int six;
+	int cent;
+	float newNb;
+
+	ful = (int)bn;
+	cent = (int)((bn - ful) * 100);
+	six = (cent *64) / 100;
+	newNb = (ful + ((float)six / 100));
+	return (newNb);
+}
+
 int put_game (t_cube *cube)
 {
 	int x = 0;
@@ -66,6 +80,8 @@ int put_game (t_cube *cube)
 		j = 0;
 		while(cube->map.map[y])
 		{
+			//if (pos.x / 64 == (CentInSis(cube->player.pos->x)) && ((float)y + (pos.y / 100)) == CentInSis(cube->player.pos->y))
+			//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
 			if (cube->map.map[y][x] == '1')
 			{
 				while(pos.y++ < 64)
@@ -77,6 +93,11 @@ int put_game (t_cube *cube)
 			}
 			else if (x == cube->player.pos->x && y == cube->player.pos->y)
 			{
+				//while(pos.y++ < 4)
+				//{
+				//	j++;
+				//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
+				//}
 				while(pos.y++ < 64)
 				{
 					j++;
@@ -100,6 +121,7 @@ int put_game (t_cube *cube)
 	}
 	return(0);
 }
+//pos.x / 64 == cube->player.pos->x && ((float)y + (pos.y / 100)) == cube->player.pos->y
 
 int     on_destroy(t_win *win)
 {
@@ -143,16 +165,30 @@ char	*ft_strjoins(char *s1, char const *s2)
 	join[i] = '\0';
 	return (join);
 }
+
+bool	wallLoak(int x, int y, char **map)
+{
+	if (map[y][x] == '1')
+		return (false);
+	else
+		return (true);
+}
+
+
 int	on_keypress(int keysym, t_cube *cube)
 {
 	if (keysym == XK_W || keysym == XK_w || keysym == XK_Up)
-		cube->player.pos->y -= 1;
+		if (wallLoak(cube->player.pos->x,cube->player.pos->y - 1, cube->map.map))
+			cube->player.pos->y -= 0.15f;
 	if (keysym == XK_S || keysym == XK_s || keysym == XK_Down)
-		cube->player.pos->y += 1;
+		if (wallLoak(cube->player.pos->x,cube->player.pos->y + 1, cube->map.map))
+			cube->player.pos->y += 0.15f;
 	if (keysym == XK_D || keysym == XK_d || keysym == XK_Right)
-		cube->player.pos->x += 1;;
+		if (wallLoak(cube->player.pos->x + 1,cube->player.pos->y, cube->map.map))
+			cube->player.pos->x += 0.15f;
 	if (keysym == XK_A || keysym == XK_a || keysym == XK_Left)
-		cube->player.pos->x -= 1;;
+		if (wallLoak(cube->player.pos->x - 1,cube->player.pos->y, cube->map.map))
+			cube->player.pos->x -= 0.15f;
 	if (keysym == XK_Escape)
 	{
 		on_destroy(&cube->win);
@@ -183,6 +219,7 @@ int main()
 	cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, 500, 500, "PROVA");
 	cube.player.pos->x = 2;
 	cube.player.pos->y = 2;
+	cube.player.angle = 90;
 	str = gnl();
 	cube.map.map = ft_split( str, '\n');
 	mlx_key_hook(cube.win.win_ptr, &on_keypress, &cube);

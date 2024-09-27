@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/24 13:37:39 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/26 12:48:37 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_text
 typedef struct s_player
 {
 	char	type;
+	int		angle;
 	t_pos	*pos;
 	bool	existence;
 } t_player;
