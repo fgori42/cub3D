@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/27 12:22:39 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/27 14:09:40 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,18 @@ float CentInSis(const float bn)
 	return (newNb);
 }
 
+void	print_ray(t_cube *cube)
+{
+	int x;
+	int y;
+
+	x = cube->player.pos->x + (size_mtx('x', cube->map.map)) * (M_PI / 4);
+	y = cube->player.pos->y + (size_mtx('y', cube->map.map)) * (M_PI / 4);
+	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, x, y,  0x000000);
+	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, 66, 66,  0x000000);
+	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, 65, 65,  0x000000);
+}
+
 int put_game (t_cube *cube)
 {
 	int x = 0;
@@ -80,8 +92,8 @@ int put_game (t_cube *cube)
 		j = 0;
 		while(cube->map.map[y])
 		{
-			//if (pos.x / 64 == (CentInSis(cube->player.pos->x)) && ((float)y + (pos.y / 100)) == CentInSis(cube->player.pos->y))
-			//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
+			if (pos.x / 64 == (CentInSis(cube->player.pos->x)) && ((float)y + (pos.y / 100)) == CentInSis(cube->player.pos->y))
+				mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
 			if (cube->map.map[y][x] == '1')
 			{
 				while(pos.y++ < 64)
@@ -91,20 +103,20 @@ int put_game (t_cube *cube)
 				}
 				pos.y = 0;
 			}
-			else if (x == cube->player.pos->x && y == cube->player.pos->y)
-			{
-				//while(pos.y++ < 4)
-				//{
-				//	j++;
-				//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
-				//}
-				while(pos.y++ < 64)
-				{
-					j++;
-					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
-				}
-				pos.y = 0;
-			}
+			//else if (x == cube->player.pos->x && y == cube->player.pos->y)
+			//{
+			//	//while(pos.y++ < 4)
+			//	//{
+			//	//	j++;
+			//	//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
+			//	//}
+			//	while(pos.y++ < 64)
+			//	{
+			//		j++;
+			//		mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
+			//	}
+			//	pos.y = 0;
+			//}
 			else 
 			{
 				while(pos.y++ < 64)
@@ -118,6 +130,7 @@ int put_game (t_cube *cube)
 		}
 		if ((int)pos.x % 64 == 0)
 			x++;
+		print_ray(cube);
 	}
 	return(0);
 }
@@ -179,16 +192,16 @@ int	on_keypress(int keysym, t_cube *cube)
 {
 	if (keysym == XK_W || keysym == XK_w || keysym == XK_Up)
 		if (wallLoak(cube->player.pos->x,cube->player.pos->y - 1, cube->map.map))
-			cube->player.pos->y -= 0.15f;
+			cube->player.pos->y -= 1;
 	if (keysym == XK_S || keysym == XK_s || keysym == XK_Down)
 		if (wallLoak(cube->player.pos->x,cube->player.pos->y + 1, cube->map.map))
-			cube->player.pos->y += 0.15f;
+			cube->player.pos->y += 1;
 	if (keysym == XK_D || keysym == XK_d || keysym == XK_Right)
 		if (wallLoak(cube->player.pos->x + 1,cube->player.pos->y, cube->map.map))
-			cube->player.pos->x += 0.15f;
+			cube->player.pos->x += 1;
 	if (keysym == XK_A || keysym == XK_a || keysym == XK_Left)
 		if (wallLoak(cube->player.pos->x - 1,cube->player.pos->y, cube->map.map))
-			cube->player.pos->x -= 0.15f;
+			cube->player.pos->x -= 1;
 	if (keysym == XK_Escape)
 	{
 		on_destroy(&cube->win);
