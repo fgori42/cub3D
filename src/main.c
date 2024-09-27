@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/27 14:09:40 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/27 14:25:50 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,10 @@ void	print_ray(t_cube *cube)
 	int x;
 	int y;
 
-	x = cube->player.pos->x + (size_mtx('x', cube->map.map)) * (M_PI / 4);
-	y = cube->player.pos->y + (size_mtx('y', cube->map.map)) * (M_PI / 4);
+	x = cube->player.pos->x + 1 * cos(M_PI / 4);
+	y = cube->player.pos->y + 1 * sin(M_PI / 4);
 	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, x, y,  0x000000);
-	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, 66, 66,  0x000000);
-	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, 65, 65,  0x000000);
+	
 }
 
 int put_game (t_cube *cube)
@@ -93,7 +92,10 @@ int put_game (t_cube *cube)
 		while(cube->map.map[y])
 		{
 			if (pos.x / 64 == (CentInSis(cube->player.pos->x)) && ((float)y + (pos.y / 100)) == CentInSis(cube->player.pos->y))
+			{
 				mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
+				print_ray(cube);
+			}	
 			if (cube->map.map[y][x] == '1')
 			{
 				while(pos.y++ < 64)
@@ -130,7 +132,6 @@ int put_game (t_cube *cube)
 		}
 		if ((int)pos.x % 64 == 0)
 			x++;
-		print_ray(cube);
 	}
 	return(0);
 }
