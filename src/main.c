@@ -228,6 +228,7 @@ int main()
 	t_cube	cube;
 	char *str;
 	
+	//safkasfa
 	cube.win.mlx_ptr = mlx_init();
 	cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, 500, 500, "PROVA");
 	cube.player.pos->x = 2;
