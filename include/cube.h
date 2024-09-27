@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/26 12:48:37 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/27 17:56:12 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@
 # include <fcntl.h>
 # include <time.h>
 # include <math.h>
-# include <stdbool.h> 
+# include <stdbool.h>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 typedef struct s_pos 
 {
