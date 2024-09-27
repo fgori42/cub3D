@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/27 14:09:40 by fgori            ###   ########.fr       */
+/*   Updated: 2024/09/27 14:32:31 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,9 @@ int main()
 	t_cube	cube;
 	char *str;
 	
-	//safkasfa
+
+
+	//cioa ciao
 	cube.win.mlx_ptr = mlx_init();
 	cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, 500, 500, "PROVA");
 	cube.player.pos->x = 2;
