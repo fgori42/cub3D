@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/27 21:21:52 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/09/28 14:50:57 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,9 @@ typedef struct	s_cube
 	t_player	player;
 	t_texture	texture;
 }t_cube;
+
+int	draw(t_cube *cube);
+int	on_destroy(t_win *win);
+void draw_square(int x, int y, int color, t_cube *cube);
 
 #endif
