@@ -6,7 +6,7 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/09/30 10:04:27 by fgori            ###   ########.fr        #
+#    Updated: 2024/09/30 10:05:39 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,8 +36,8 @@ clean:
 		make clean -C $(INCLUDE)/libft
 
 fclean: clean
-		make fclean -C $(LFT)
-		make clean -C $(DIR_MLX)
+		make fclean -C $(INCLUDE)/libft
+		make clean -C $(LIBM)
 		@rm -f $(NAME)
 
 re: fclean all
