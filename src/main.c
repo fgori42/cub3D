@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/28 18:33:04 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/09/30 14:55:06 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,7 @@
 
 #define MAX_DISTANCE sqrt((512 * 512) + (512 * 512))
 
-//void print_map(char **map)
-//{
-//    int x = 0;
-//    int y = 0;
 
-//    while (map[y] != NULL) // Scorre le righe finché non trova una riga vuota (NULL)
-//    {
-//        x = 0;
-//        while (map[y][x] != '\0') // Scorre i caratteri della riga finché non trova il terminatore di stringa
-//        {
-//            printf("%c", map[y][x]); // Stampa il carattere corrente
-//            x++;
-//        }
-//        printf("\n"); // Va a capo alla fine della riga
-//        y++;
-//    }
-//}
 bool	wallLoak(int x, int y, char **map)
 {
 	x /= 64;
@@ -321,8 +305,6 @@ int put_game (t_cube *cube)
 		j = 0;
 		while(cube->map.map[y])
 		{
-			// if (pos.x / 64 == (CentInSis(cube->player.pos.x)) && ((float)y + (pos.y / 100)) == CentInSis(cube->player.pos.y))
-			// 	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
 			if (cube->map.map[y][x] == '1')
 			{
 				while(pos.y++ <= 64)
@@ -332,20 +314,6 @@ int put_game (t_cube *cube)
 				}
 				pos.y = 1;
 			}
-			//else if (x == cube->player.pos.x && y == cube->player.pos.y)
-			//{
-			//	//while(pos.y++ < 4)
-			//	//{
-			//	//	j++;
-			//	//	mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
-			//	//}
-			//	while(pos.y++ < 64)
-			//	{
-			//		j++;
-			//		mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,   0xFF0000);
-			//	}
-			//	pos.y = 0;
-			//}
 			else 
 			{
 				while(pos.y++ <= 64)
@@ -491,20 +459,6 @@ int handle_movement(t_cube *cube)
     return (0);
 }
 
-char *gnl(void)
-{
-	int fd;
-	char *str;
-	
-	fd = open("map",  O_RDWR );
-	if (fd < 0)
-		return (NULL);
-	str = ft_calloc(5000, 1);
-	read(fd, str, 5000);
-	//printf("%s\n",str);
-	return(str);
-}
-
 int game_loop(void *param)
 {
     t_cube *cube = (t_cube *)param;
@@ -516,48 +470,60 @@ int game_loop(void *param)
     return 0;
 }
 
-int main()
+
+
+int main(int ac, char *ag[])
 {
     t_cube cube[2];  // Create an array of two t_cube structs
-    char *str;
+    //char *str;
 
     // Initialize first window (cube[0])
-    cube[0].input.w = false;
-    cube[0].input.a = false;
-    cube[0].input.s = false;
-    cube[0].input.d = false;
-    cube[0].input.left = false;
-    cube[0].input.right = false;
+	if (ac != 2)
+	{
+		perror("bad number of arguments\n");
+		exit(1);
+	}
+	if (parsing(cube, ag[1]) == 1)
+	{
+		perror("bad parsing\n");
+		exit (1);
+	}
+    //cube[0].input.w = false;
+    //cube[0].input.a = false;
+    //cube[0].input.s = false;
+    //cube[0].input.d = false;
+    //cube[0].input.left = false;
+    //cube[0].input.right = false;
     
-    cube[0].win.mlx_ptr = mlx_init();
-    cube[0].win.win_ptr = mlx_new_window(cube[0].win.mlx_ptr, 512, 512, "PROVA");
-	cube[0].texture.height = 64;
-    cube[0].texture.width = 64;
-    cube[0].player.pos.x = 160;
-    cube[0].player.pos.y = 160;
-    cube[0].texture.img = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
-    cube[0].player.angle = 90 * (M_PI / 180);
-    str = gnl();
-    cube[0].map.map = ft_split(str, '\n');
+    //cube[0].win.mlx_ptr = mlx_init();
+    //cube[0].win.win_ptr = mlx_new_window(cube[0].win.mlx_ptr, 512, 512, "PROVA");
+	//cube[0].texture.height = 64;
+    //cube[0].texture.width = 64;
+    //cube[0].player.pos.x = 160;
+    //cube[0].player.pos.y = 160;
+    //cube[0].texture.img = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
+    //cube[0].player.angle = 90 * (M_PI / 180);
+    //str = gnl();
+    //cube[0].map.map = ft_split(str, '\n');
 
-    // Initialize second window (cube[1])
-    cube[1].win.mlx_ptr = cube[0].win.mlx_ptr; // Use the same mlx_ptr
-    cube[1].win.win_ptr = mlx_new_window(cube[1].win.mlx_ptr, 512, 512, "GAMEE");
-    cube[1].texture.height = 64;
-    cube[1].texture.width = 64;
-    cube[1].texture.img = mlx_xpm_file_to_image(cube[1].win.mlx_ptr, "textures/wall.xpm", &cube[1].texture.height, &cube[1].texture.width);
+    //// Initialize second window (cube[1])
+    //cube[1].win.mlx_ptr = cube[0].win.mlx_ptr; // Use the same mlx_ptr
+    //cube[1].win.win_ptr = mlx_new_window(cube[1].win.mlx_ptr, 512, 512, "GAMEE");
+    //cube[1].texture.height = 64;
+    //cube[1].texture.width = 64;
+    //cube[1].texture.img = mlx_xpm_file_to_image(cube[1].win.mlx_ptr, "textures/wall.xpm", &cube[1].texture.height, &cube[1].texture.width);
 
-    // Set up hooks for input and rendering for both windows
-    mlx_hook(cube[0].win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube[0]);
-    mlx_hook(cube[0].win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube[0]);
+    //// Set up hooks for input and rendering for both windows
+    //mlx_hook(cube[0].win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube[0]);
+    //mlx_hook(cube[0].win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube[0]);
 
-    mlx_hook(cube[1].win.win_ptr, 33, 1L << 5, &on_destroy, &cube[1]);
+    //mlx_hook(cube[1].win.win_ptr, 33, 1L << 5, &on_destroy, &cube[1]);
     
-    // Use a shared game loop to update both windows
-    mlx_loop_hook(cube[0].win.mlx_ptr, &game_loop, cube);  // Pass both cubes to the game loop as an array
+    //// Use a shared game loop to update both windows
+    //mlx_loop_hook(cube[0].win.mlx_ptr, &game_loop, cube);  // Pass both cubes to the game loop as an array
     
-    // Enter the MiniLibX main loop
-    mlx_loop(cube[0].win.mlx_ptr);
+    //// Enter the MiniLibX main loop
+    //mlx_loop(cube[0].win.mlx_ptr);
 
     return 0;
 }	

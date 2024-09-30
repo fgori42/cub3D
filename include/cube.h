@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/28 14:50:57 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/09/30 14:48:27 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@
 # include <math.h>
 # include <stdbool.h>
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+//#ifndef M_PI
+//    #define M_PI 3.14159265358979323846
+//#endif
 
 typedef struct s_input {
     bool w;
@@ -55,10 +55,12 @@ typedef struct s_win
 
 typedef struct s_text
 {
-	void	*es;
-	void	*ov;
-	void	*nr;
-	void	*sd;
+	void	*EA;
+	void	*WE;
+	void	*NO;
+	void	*SO;
+	void	*F;
+	void	*C;
 } t_text;
 
 typedef struct s_player
@@ -98,5 +100,7 @@ typedef struct	s_cube
 int	draw(t_cube *cube);
 int	on_destroy(t_win *win);
 void draw_square(int x, int y, int color, t_cube *cube);
+int	parsing(t_cube *cube, char *str);
+char *gnl(void);
 
 #endif
