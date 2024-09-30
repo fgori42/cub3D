@@ -6,7 +6,7 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/09/24 14:48:54 by fgori            ###   ########.fr        #
+#    Updated: 2024/09/30 10:04:27 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,10 +33,12 @@ $(NAME): $(file)
 
 
 clean:
-		@echo "nothing to clean"
+		make clean -C $(INCLUDE)/libft
 
 fclean: clean
-		rm -f $(NAME)
+		make fclean -C $(LFT)
+		make clean -C $(DIR_MLX)
+		@rm -f $(NAME)
 
 re: fclean all
 
