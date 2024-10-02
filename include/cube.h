@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/01 17:55:57 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/02 11:58:34 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ typedef struct s_text
 	void	*WE;
 	void	*NO;
 	void	*SO;
-	void	*F;
-	void	*C;
+	int		*F;
+	int		*C;
 } t_text;
 
 typedef struct s_player

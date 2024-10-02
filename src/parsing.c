@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/01 18:45:26 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/02 12:42:15 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,35 +55,62 @@ char *gnl(char *str)
 	return(txt);
 }
 
-int	crToInt(char *str)
+int create_rgb(char *str)
 {
-	int	i;
-	int	val;
+	int		r;
+	int		g;
+	int		b;
+	char	**sup;
 
-	val = 0;
-	i = 0;
-	while(str[i])
-	{
-		val +=str[i];
-		i++;
-	}
-	return (val);
+	sup = ft_split(str, ',');
+	
+	r = ft_atoi(sup[0]);
+	g = ft_atoi(sup[1]);
+	b = ft_atoi(sup[2]);
+    return (r << 16 | g << 8 | b);
 }
 
-void	take_textur(t_cube *cube, char **text)
+void	put_textur(char *str, t_text *home)
+{
+	char *sup;
+
+	sup = ft_strchr(str, '.');
+	if (sup)
+	{
+		if (ft_strncmp(str, "NO", 2) == 0 )
+			home->NO = ft_strdup(sup);
+		else if (ft_strncmp(str, "SO", 2) == 0 )
+			home->SO = ft_strdup(sup);
+		else if (ft_strncmp(str, "EA", 2) == 0 )
+			home->EA = ft_strdup(sup);
+		else if (ft_strncmp(str, "WE", 2) == 0 )
+			home->WE = ft_strdup(sup);
+	}
+	else
+	{
+		if (ft_strncmp(str, "C", 1))
+			create_rgb(ft_strtrim(str, 'C '))
+		else if (ft_strncmp(str, "F", 1))
+	}	
+}
+
+bool	take_textur(t_cube *cube, char **text)
 {
 	int 	i;
 	//char	*sup;
 
 	i = 0;
-	(void)cube;
-	(void)text;
-	printf("valore NO = %d\nvalore SO = %d\nvalore EA = %d\nvalore WE = %d\n", crToInt("NO"), crToInt("SO"), crToInt("EA"), crToInt("WE"));
 	while (i < 6)
 	{
-		if 
-			
+		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO", 2) == 0
+			|| ft_strncmp(text[i], "WE", 2) == 0 || ft_strncmp(text[i], "EA", 2) == 0
+			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 2) == 0) 
+			put_textur(text[i], &cube->text);
+		else
+			return (false);
+		i++;
 	}
+	return (true);
 }
 
 int parsing(t_cube *cube, char *str)
@@ -94,7 +121,7 @@ int parsing(t_cube *cube, char *str)
 
 	if (!is_cub(str))
 		return (1);
-	write(2, "qui\n", 4);
+
 	mapFile = gnl(str);
 	if (!mapFile)
 		return (1);
