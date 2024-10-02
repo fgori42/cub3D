@@ -10,7 +10,7 @@
 				"type": "cppdbg",
 				"request": "launch",
 				"program": "${workspaceFolder}/cub3D",  // Path dell'eseguibile cub3D
-				"args": [],                             // Argomenti se necessari
+				"args": ["map.cub"],                             // Argomenti se necessari
 				"stopAtEntry": false,
 				"cwd": "${workspaceFolder}",            // Directory di lavoro corrente
 				"environment": [],

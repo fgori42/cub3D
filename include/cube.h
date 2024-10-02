@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/09/30 14:48:27 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/01 17:55:57 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_win
 	void	*win_ptr;
 } t_win;
 
+
 typedef struct s_text
 {
 	void	*EA;
@@ -78,7 +79,8 @@ typedef struct s_map
 	char	**map_check;
 } t_map;
 
-typedef struct s_texture {
+typedef struct s_texture
+{
     void *img;
     char *addr;
     int width;
@@ -94,6 +96,7 @@ typedef struct	s_cube
 	t_map		map;
 	t_input		input;
 	t_player	player;
+	t_text		text;
 	t_texture	texture;
 }t_cube;
 
@@ -101,6 +104,6 @@ int	draw(t_cube *cube);
 int	on_destroy(t_win *win);
 void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
-char *gnl(void);
+//char *gnl(void);
 
 #endif
