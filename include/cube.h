@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/02 11:58:34 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/02 15:31:11 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ typedef struct s_text
 	void	*WE;
 	void	*NO;
 	void	*SO;
-	int		*F;
-	int		*C;
+	int		F;
+	int		C;
 } t_text;
 
 typedef struct s_player
@@ -104,6 +104,7 @@ int	draw(t_cube *cube);
 int	on_destroy(t_win *win);
 void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
+int	size_mtx(char size, char **map);
 //char *gnl(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/02 12:42:15 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/02 15:52:12 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,11 @@ int create_rgb(char *str)
 	char	**sup;
 
 	sup = ft_split(str, ',');
-	
 	r = ft_atoi(sup[0]);
 	g = ft_atoi(sup[1]);
 	b = ft_atoi(sup[2]);
+	free(str);
+	free(sup);
     return (r << 16 | g << 8 | b);
 }
 
@@ -89,27 +90,61 @@ void	put_textur(char *str, t_text *home)
 	else
 	{
 		if (ft_strncmp(str, "C", 1))
-			create_rgb(ft_strtrim(str, 'C '))
+			home->C = create_rgb(ft_strtrim(str, "C "));
 		else if (ft_strncmp(str, "F", 1))
+			home->F = create_rgb(ft_strtrim(str, "F "));
 	}	
+}
+
+int	mtx_trim(t_map	*map, char **mtx, int start)
+{
+	int		len;
+	int		i;
+	char	**newMtx;
+
+	i = 0;
+	len = size_mtx('y', mtx);
+	newMtx = ft_calloc(len - start, sizeof(char *));
+	if (!newMtx)
+		return (1);
+	while (newMtx[i] && i < start)
+	{
+		newMtx[i] = ft_strdup(mtx[start]);
+		start++;
+		i++;
+	}
+	map->map = newMtx;
+	i = 0;
+	map->map_check = ft_calloc(size_mtx('y', newMtx), sizeof(char *));
+	while(map->map[i])
+	{
+		map->map_check[i] = ft_strdup(map->map[i]);
+		i++;
+	}
+	free(mtx);
+	return (0);
 }
 
 bool	take_textur(t_cube *cube, char **text)
 {
 	int 	i;
-	//char	*sup;
+	char	*jj;
 
 	i = 0;
 	while (i < 6)
 	{
+		jj = text[i];
+		printf("%s\n",text[i]);
 		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO", 2) == 0
 			|| ft_strncmp(text[i], "WE", 2) == 0 || ft_strncmp(text[i], "EA", 2) == 0
-			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 2) == 0) 
+			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 1) == 0) 
 			put_textur(text[i], &cube->text);
 		else
 			return (false);
 		i++;
 	}
+	if (mtx_trim(&cube->map, text,i) == 1)
+		return (false);
 	return (true);
 }
 
@@ -117,7 +152,6 @@ int parsing(t_cube *cube, char *str)
 {
 	char	*mapFile;
 	char	**openMap;
-	(void)cube;
 
 	if (!is_cub(str))
 		return (1);
@@ -127,6 +161,7 @@ int parsing(t_cube *cube, char *str)
 		return (1);
 	openMap = ft_split(mapFile, '\n');	
 	free(mapFile);
-	take_textur(cube, openMap);
+	if (take_textur(cube, openMap) == false)
+		return (1);
 	return (0);
 }
