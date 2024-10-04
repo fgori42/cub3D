@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/02 15:52:12 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/04 17:25:46 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,29 +71,30 @@ int create_rgb(char *str)
     return (r << 16 | g << 8 | b);
 }
 
-void	put_textur(char *str, t_text *home)
+int	put_textur(char *str, t_text *home)
 {
 	char *sup;
 
 	sup = ft_strchr(str, '.');
 	if (sup)
 	{
-		if (ft_strncmp(str, "NO", 2) == 0 )
+		if (!home->NO && ft_strncmp(str, "NO", 2) == 0 )
 			home->NO = ft_strdup(sup);
-		else if (ft_strncmp(str, "SO", 2) == 0 )
+		else if (!home->SO && ft_strncmp(str, "SO", 2) == 0 )
 			home->SO = ft_strdup(sup);
-		else if (ft_strncmp(str, "EA", 2) == 0 )
+		else if (!home->EA && ft_strncmp(str, "EA", 2) == 0 )
 			home->EA = ft_strdup(sup);
-		else if (ft_strncmp(str, "WE", 2) == 0 )
+		else if (!home->WE && ft_strncmp(str, "WE", 2) == 0 )
 			home->WE = ft_strdup(sup);
 	}
 	else
 	{
-		if (ft_strncmp(str, "C", 1))
+		if (!home->C && ft_strncmp(str, "C", 1))
 			home->C = create_rgb(ft_strtrim(str, "C "));
-		else if (ft_strncmp(str, "F", 1))
+		else if (!home->F && ft_strncmp(str, "F", 1))
 			home->F = create_rgb(ft_strtrim(str, "F "));
-	}	
+	}
+	return (1);
 }
 
 int	mtx_trim(t_map	*map, char **mtx, int start)
@@ -134,11 +135,13 @@ bool	take_textur(t_cube *cube, char **text)
 	while (i < 6)
 	{
 		jj = text[i];
-		printf("%s\n",text[i]);
 		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO", 2) == 0
 			|| ft_strncmp(text[i], "WE", 2) == 0 || ft_strncmp(text[i], "EA", 2) == 0
 			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 1) == 0) 
-			put_textur(text[i], &cube->text);
+			{
+			if (put_textur(text[i], &cube->text) == 1)
+				return (false);
+			}
 		else
 			return (false);
 		i++;
