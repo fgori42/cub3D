@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/04 17:25:46 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/04 18:40:09 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,50 @@ bool	take_textur(t_cube *cube, char **text)
 	return (true);
 }
 
+int	map_fil(t_cube *cube, char **map)
+{
+	int	x;
+	int	y;
+	int ret;
+
+	x = cube->player.pos->x;
+	y = cube->player.pos->y;
+	ret = 0;
+	while (map[y][x] == '0' || map[y][x] == 'D')
+	{
+		map[]
+	}
+}
+
+bool map_check(t_cube *cube, char **map)
+{
+	int	x;
+	int y;
+	t_pos pl;
+
+	x = 0;
+	y = 0;
+	while(map[y])
+	{
+		while(map[y][x])
+		{
+			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
+			{
+				pl.x = x;
+				pl.y = y;
+				cube->player.pos = &pl;
+				map[y][x] = '0';
+				cube->player.existence = true;
+			}
+			x++;
+		}
+		y++;
+	}
+	if (cube->player.existence == false)
+		return (false);
+	return (true);
+}
+
 int parsing(t_cube *cube, char *str)
 {
 	char	*mapFile;
@@ -164,7 +208,9 @@ int parsing(t_cube *cube, char *str)
 		return (1);
 	openMap = ft_split(mapFile, '\n');	
 	free(mapFile);
-	if (take_textur(cube, openMap) == false)
+	if (!take_textur(cube, openMap))
 		return (1);
-	return (0);
+	if (!map_check(cube, cube->map.map_check))
+		return(1);
+	return (map_fil(cube, cube->map.map_check));
 }
