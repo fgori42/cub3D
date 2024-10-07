@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/04 18:40:09 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/07 10:26:01 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,20 +150,57 @@ bool	take_textur(t_cube *cube, char **text)
 		return (false);
 	return (true);
 }
+ 
+int	full_fil(int x, int y, char **map)
+{
+	int i;
 
+	if (map[y][x] == '1')
+		return (0)
+	if (map[y][x] == ' ' || x = 0 || y == 0)
+		return (1)
+	else
+	{
+		i += full_fil(x + 1, y, map);
+		i += full_fil(x - 1, y, map);
+		i += full_fil(x, y + 1, map);
+		i += full_fil(x, y - 1, map);
+	}
+}
+ 
 int	map_fil(t_cube *cube, char **map)
 {
 	int	x;
 	int	y;
 	int ret;
 
-	x = cube->player.pos->x;
-	y = cube->player.pos->y;
+	y = 0;
 	ret = 0;
-	while (map[y][x] == '0' || map[y][x] == 'D')
+	while (map[y])
 	{
-		map[]
+		x = 0;
+		while(map[y][x])
+		{
+			if (map[y][x] != '1')
+				ret +=full_fil(x, y, map);
+			x++;
+		}
+		y++;
 	}
+	return (ret)
+}
+
+void	make_angle(char *ch, t_cube *cube)
+{
+	if (ch == 'N')
+		cube->player.angle = 0;
+	if (ch == 'S')
+		cube->player.angle = 180;
+	if (ch == 'E')
+		cube->player.angle = 90;
+	if (ch == ' w')
+		cube->player.angle = 270;
+	ch = '0';
 }
 
 bool map_check(t_cube *cube, char **map)
@@ -183,7 +220,7 @@ bool map_check(t_cube *cube, char **map)
 				pl.x = x;
 				pl.y = y;
 				cube->player.pos = &pl;
-				map[y][x] = '0';
+				make_angle(&map[y][x], cube);
 				cube->player.existence = true;
 			}
 			x++;
