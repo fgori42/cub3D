@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/01 18:12:51 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/08 14:10:51 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int draw_wall_3d(void *param)
         while (x < map_width) // Iterate over columns
         {
             if (cube->map.map[y][x] == '1')
-				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->texture.img, x * 64, y * 64);
+				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
             else 
                 draw_square(x * 64, y * 64, 0xd8d8d8, cube);
             x++; // Move to the next column
@@ -143,8 +143,8 @@ void print_ray(t_cube *cube, t_cube *cube2)
         ray_angle -= 2 * M_PI;
 
     // Start from the player's position
-    x = cube->player.pos.x;
-    y = cube->player.pos.y;
+    x = cube->player.pos->x;
+    y = cube->player.pos->y;
 
 	int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map); // Get height of the map
     while (ray < num_rays)
@@ -208,7 +208,7 @@ void print_ray(t_cube *cube, t_cube *cube2)
                 int texture_y = (wall_y - wall_top) * cube2->texture.height / wall_height;
 
                 // Get the color from the texture
-                int color = get_texture_color(cube2->texture.img, cube2->texture.width, cube2->texture.height, texture_x, texture_y);
+                int color = get_texture_color(cube2->text.NO, cube2->texture.width, cube2->texture.height, texture_x, texture_y);
                 // Draw the pixel on the screen
                 mlx_pixel_put(cube2->win.mlx_ptr, cube2->win.win_ptr, ray * ray_width, wall_y, color);
 
@@ -268,7 +268,7 @@ int draw(t_cube *cube)
 	t_cube *cube2 = &cube[1]; // Access the second cube structure
 	cube->texture.height = 64;
     cube->texture.width = 64;
-    cube->texture.img = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
+    cube->text.NO = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
 	x = 0;
 	y = 0;
 	int map_width = size_mtx('x', cube->map.map); // Get width of the map
@@ -279,12 +279,12 @@ int draw(t_cube *cube)
         while (x < map_width) // Iterate over columns
         {
             if (cube->map.map[y][x] == '1')
-				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->texture.img, x * 64, y * 64);
+				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
             else 
                 draw_square(x * 64, y * 64, 0xd8d8d8, cube);
             x++; // Move to the next column
         }
-		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
+		draw_player(cube->player.pos->x, cube->player.pos->y, cube);
 		print_ray(cube, cube2);
         y++; // Move to the next row
     }
@@ -327,11 +327,11 @@ int put_game (t_cube *cube)
 		}
 		if ((int)pos.x % 64 == 0)
 			x++;
-		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
+		draw_player(cube->player.pos->x, cube->player.pos->y, cube);
 	}
 	return(0);
 }
-//pos.x / 64 == cube->player.pos.x && ((float)y + (pos.y / 100)) == cube->player.pos.y
+//pos->x / 64 == cube->player.pos->x && ((float)y + (pos.y / 100)) == cube->player.pos->y
 
 int     on_destroy(t_win *win)
 {
@@ -418,31 +418,31 @@ int handle_movement(t_cube *cube)
 
     // Handle forward movement
     if (cube->input.w) {
-        double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
-        double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
+        double new_x = cube->player.pos->x + cos(cube->player.angle) * move_step;
+        double new_y = cube->player.pos->y + sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
         {
-            cube->player.pos.x = new_x;
-            cube->player.pos.y = new_y;
+            cube->player.pos->x = new_x;
+            cube->player.pos->y = new_y;
         }
     }
 
     // Handle backward movement
     if (cube->input.s) {
-        double new_x = cube->player.pos.x - cos(cube->player.angle) * move_step;
-        double new_y = cube->player.pos.y - sin(cube->player.angle) * move_step;
+        double new_x = cube->player.pos->x - cos(cube->player.angle) * move_step;
+        double new_y = cube->player.pos->y - sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
         {
-            cube->player.pos.x = new_x;
-            cube->player.pos.y = new_y;
+            cube->player.pos->x = new_x;
+            cube->player.pos->y = new_y;
         }
     }
 
    // Handle left/right movement (strafing)
-    if (cube->input.a && wallLoak(cube->player.pos.x + move_step, cube->player.pos.y, cube->map.map))
-        cube->player.pos.x += move_step;
-    if (cube->input.d && wallLoak(cube->player.pos.x - move_step, cube->player.pos.y, cube->map.map))
-        cube->player.pos.x -= move_step;
+    if (cube->input.a && wallLoak(cube->player.pos->x + move_step, cube->player.pos->y, cube->map.map))
+        cube->player.pos->x += move_step;
+    if (cube->input.d && wallLoak(cube->player.pos->x - move_step, cube->player.pos->y, cube->map.map))
+        cube->player.pos->x -= move_step;
 		
     // Handle rotation
     if (cube->input.left)
@@ -470,37 +470,56 @@ int game_loop(void *param)
     return 0;
 }
 
+void	cube_init(t_cube *cube)
+{
+	cube->input.w = false;
+    cube->input.a = false;
+    cube->input.s = false;
+    cube->input.d = false;
+    cube->input.left = false;
+    cube->input.right = false;
+	cube->win.mlx_ptr = NULL;
+	cube->win.win_ptr = NULL;
+	cube->player.pos = NULL;
+	cube->texture.addr = NULL;
+	cube->map.map = NULL;
+	cube->map.map_check = NULL;
+	cube->map.size = NULL;
+	cube->text.NO = NULL;
+	cube->text.SO = NULL;
+	cube->text.EA = NULL;
+	cube->text.WE = NULL;
+	cube->text.C = -1;
+	cube->text.F = -1;
+	cube->texture.width = 64;
+	cube->texture.height = 64;
+}
 
 
 int main(int ac, char *ag[])
 {
-    t_cube cube[2];  // Create an array of two t_cube structs
+    t_cube cube;  // Create an array of two t_cube structs
     //char *str;
 
     // Initialize first window (cube[0])
+	cube_init(&cube);
 	if (ac != 2)
 	{
 		perror("bad number of arguments\n");
 		exit(1);
 	}
-	if (parsing(cube, ag[1]) == 1)
+	if (parsing(&cube, ag[1]) == 1)
 	{
 		perror("bad parsing\n");
 		exit (1);
 	}
-    //cube[0].input.w = false;
-    //cube[0].input.a = false;
-    //cube[0].input.s = false;
-    //cube[0].input.d = false;
-    //cube[0].input.left = false;
-    //cube[0].input.right = false;
     
     //cube[0].win.mlx_ptr = mlx_init();
     //cube[0].win.win_ptr = mlx_new_window(cube[0].win.mlx_ptr, 512, 512, "PROVA");
 	//cube[0].texture.height = 64;
     //cube[0].texture.width = 64;
-    //cube[0].player.pos.x = 160;
-    //cube[0].player.pos.y = 160;
+    //cube[0].player.pos->x = 160;
+    //cube[0].player.pos->y = 160;
     //cube[0].texture.img = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
     //cube[0].player.angle = 90 * (M_PI / 180);
     //str = gnl();

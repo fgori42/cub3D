@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/04 18:09:46 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/08 11:39:29 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ typedef struct s_map
 
 typedef struct s_texture
 {
-    void *img;
     char *addr;
     int width;
     int height;
