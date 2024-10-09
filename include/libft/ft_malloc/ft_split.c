@@ -6,18 +6,18 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 11:53:41 by fgori             #+#    #+#             */
-/*   Updated: 2024/01/09 13:43:16 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 11:19:12 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static void	freeall(char **mat, int h)
+void	freeall(char **mat)
 {
 	int	n;
 
 	n = 0;
-	while (n < h)
+	while (mat[n])
 	{
 		if (mat[n] != NULL)
 		{
@@ -48,7 +48,7 @@ static void	fillstr(char **mat, char *fil, char c, int find)
 			j++;
 		mat[i] = ft_substr(fil, x, (j - x));
 		if (!mat[i])
-			return (freeall(mat, i));
+			return (freeall(mat));
 		while (fil[j] == c)
 			j++;
 		x = j;

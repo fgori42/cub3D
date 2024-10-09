@@ -4,6 +4,12 @@
 		"mlx.h": "c",
 		"unistd.h": "c",
 		"stdio.h": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"random": "c",
+		"istream": "c",
+		"ostream": "c",
+		"streambuf": "c",
+		"*.tcc": "c",
+		"sstream": "c"
 	}
 }

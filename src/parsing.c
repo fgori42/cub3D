@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/08 15:10:56 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 12:52:00 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,12 +168,10 @@ int	mtx_trim(t_map	*map, char **mtx, int start)
 bool	take_textur(t_cube *cube, char **text)
 {
 	int 	i;
-	char	*jj;
 
 	i = 0;
 	while (i < 6)
 	{
-		jj = text[i];
 		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO", 2) == 0
 			|| ft_strncmp(text[i], "WE", 2) == 0 || ft_strncmp(text[i], "EA", 2) == 0
 			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 1) == 0) 
@@ -197,8 +195,9 @@ int	full_fil(int x, int y, char **map)
 	i = 0;
 	if (map[y][x] == '1')
 		return (0);
-	if (map[y][x] == ' ' || x == 0 || y == 0 || x == size_mtx('x', map) || y == size_mtx('y', map))
-		return (put_error("map not protected by wall\n", NULL, 1));
+	if (map[y][x] == ' ' || x == 0 || y == 0 || x == size_mtx('x', map)
+		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1]) || x > (int)ft_strlen(map[y - 1]))
+		return (1);
 	else
 	{
 		map[y][x] = '1';
@@ -225,14 +224,14 @@ int	map_fil(char **map)
 		{
 			if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D' && map[y][x] != '1')
 				return (put_error("strange char", "\n", 1));
-			if (map[y][x] != '1')
+			if (map[y][x] != '1' && map[y][x] != ' ')
 				ret +=full_fil(x, y, map);
 			x++;
 		}
 		y++;
 	}
 	if (ret > 0)
-		return (1);
+		return (put_error("map not protected by wall\n", NULL,1));
 	return (0);
 }
 
@@ -240,29 +239,19 @@ void	make_angle(char **map, t_cube *cube, int x, int y)
 {
 	if (map[y][x] == 'N')
 		cube->player.angle = 0;
-	if (map[y][x] == 'S')
-		cube->player.angle = 180;
 	if (map[y][x] == 'E')
-		cube->player.angle = 90;
+		cube->player.angle = 90 * (M_PI / 180);
+	if (map[y][x] == 'S')
+		cube->player.angle = 180 * (M_PI / 180);
 	if (map[y][x] == 'W')
-		cube->player.angle = 270;
+		cube->player.angle = 270 * (M_PI / 180);
 	map[y][x] = '0';
 }
 
-
-/*void print_map(char **map) {
-    int i = 0;
-    while (map[i]) {  // Supponendo che la mappa termini con NULL
-        printf("%s\n", map[i]);
-        i++;
-    }
-}
-*/
 bool map_check(t_cube *cube, char **map)
 {
 	int	x;
 	int y;
-	t_pos pl;
 
 	y = 0;
 	while(map[y])
@@ -270,11 +259,10 @@ bool map_check(t_cube *cube, char **map)
 		x = 0;
 		while(map[y][x])
 		{
-			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E')
+			if (!cube->player.existence && (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E'))
 			{
-				pl.x = x;
-				pl.y = y;
-				cube->player.pos = &pl;
+				cube->player.pos.x = x;
+				cube->player.pos.y = y;
 				make_angle(map, cube, x, y);
 				cube->player.existence = true;
 			}

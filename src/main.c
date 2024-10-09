@@ -6,14 +6,14 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/08 14:10:51 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 12:53:38 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube.h"
 #include "libft.h"
 
-#define MAX_DISTANCE sqrt((512 * 512) + (512 * 512))
+#define MAX_DISTANCE sqrt((1600 * 900) + (1600* 900))
 
 
 bool	wallLoak(int x, int y, char **map)
@@ -120,7 +120,7 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
     return color;
 }
 
-void print_ray(t_cube *cube, t_cube *cube2)
+void print_ray(t_cube *cube)
 {
     int x, y;
     int ray = 0;
@@ -129,11 +129,8 @@ void print_ray(t_cube *cube, t_cube *cube2)
     double ray_step = 0.05; // Adjust for how far to step along the ray
     int wall_height;
     int wall_top, wall_bottom;
-    int screen_height = 512;
-	int screen_width = 512;
 	int ray_width = 2;
-	int num_rays =  screen_width / ray_width;
-	
+	int num_rays =  cube->win.win_width / ray_width;
     double FOV = 30 * (M_PI / 180); // 60-degree FOV
     double angle_step = FOV / num_rays; // Angle step for each ray
     double ray_angle = cube->player.angle - (FOV / 2); // Start at the left edge of the FOV
@@ -143,8 +140,8 @@ void print_ray(t_cube *cube, t_cube *cube2)
         ray_angle -= 2 * M_PI;
 
     // Start from the player's position
-    x = cube->player.pos->x;
-    y = cube->player.pos->y;
+    x = cube->player.pos.x;
+    y = cube->player.pos.y;
 
 	int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map); // Get height of the map
     while (ray < num_rays)
@@ -158,7 +155,7 @@ void print_ray(t_cube *cube, t_cube *cube2)
             // Check for wall collision
             if (!wallLoak(ray_x, ray_y, cube->map.map))
                 break;
-			mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, (int)ray_x, (int)ray_y, 0xff0202);
+			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, (int)ray_x, (int)ray_y, 0xff0202);
             // Increment the ray length
             ray_length += ray_step;
         }
@@ -172,45 +169,45 @@ void print_ray(t_cube *cube, t_cube *cube2)
             	new_angle -= 2 * M_PI;
 			ray_length = ray_length * cos(new_angle);
             // Adjust wall height based on distance (simple perspective correction)
-            wall_height = (int)((screen_height * map_size) / ray_length - 10);
-			if (wall_height > 512)
-				wall_height = 512;
+            wall_height = (int)((cube->win.win_height * map_size) / ray_length - 10);
+			if (wall_height > cube->win.win_height)
+				wall_height = cube->win.win_height;
 
             // Calculate the top and bottom positions of the wall slice on the screen
-            wall_top = (screen_height / 2) - (wall_height / 2);
-            wall_bottom = (screen_height / 2) + (wall_height / 2);
+            wall_top = (cube->win.win_height / 2) - (wall_height / 2);
+            wall_bottom = (cube->win.win_height / 2) + (wall_height / 2);
 
             // Clamp the values to avoid drawing outside the screen
             if (wall_top < 0) 
 				wall_top = 0;
-            if (wall_bottom >= screen_height) 
-				wall_bottom = screen_height - 1;
+            if (wall_bottom >= cube->win.win_height) 
+				wall_bottom = cube->win.win_height - 1;
 
             // Calculate texture_x based on where the ray hit the wall
-            int texture_x = (int)((ray_x - (int)ray_x) * cube2->texture.width);
+            int texture_x = (int)((ray_x - (int)ray_x) * cube->texture.width);
 			
             int y1 = 0;
-			while (y1 < wall_bottom)
+			while (y1 < wall_top)
 			{
-				mlx_pixel_put(cube2->win.mlx_ptr, cube2->win.win_ptr, ray * ray_width, y1, 0x38285c);
+				mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, y1, cube->text.C);
                 y1++;
 			}
 			y1 = wall_bottom;
-			while (y1 <= 512)
+			while (y1 <= cube->win.win_height)
 			{
-				mlx_pixel_put(cube2->win.mlx_ptr, cube2->win.win_ptr, ray * ray_width, y1, 0x17ff00);
+				mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, y1, cube->text.F);
                 y1++;
 			}
 			int wall_y = wall_top;
             while (wall_y < wall_bottom)
             {
                 // Map screen y to texture y
-                int texture_y = (wall_y - wall_top) * cube2->texture.height / wall_height;
+                int texture_y = (wall_y - wall_top) * cube->texture.height / wall_height;
 
                 // Get the color from the texture
-                int color = get_texture_color(cube2->text.NO, cube2->texture.width, cube2->texture.height, texture_x, texture_y);
+                int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
                 // Draw the pixel on the screen
-                mlx_pixel_put(cube2->win.mlx_ptr, cube2->win.win_ptr, ray * ray_width, wall_y, color);
+                mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, wall_y, color);
 
                 // Move to the next pixel
                 wall_y++;
@@ -262,32 +259,28 @@ void draw_square(int x, int y, int color, t_cube *cube) {
 
 int draw(t_cube *cube)
 {
-	int x;
-	int y;
+	//int x;
+	//int y;
 
-	t_cube *cube2 = &cube[1]; // Access the second cube structure
-	cube->texture.height = 64;
-    cube->texture.width = 64;
-    cube->text.NO = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
-	x = 0;
-	y = 0;
-	int map_width = size_mtx('x', cube->map.map); // Get width of the map
-    int map_height = size_mtx('y', cube->map.map); // Get height of the map
-	while (y < map_height) // Iterate over rows
-    {
-        x = 0; // Reset x for each row
-        while (x < map_width) // Iterate over columns
-        {
-            if (cube->map.map[y][x] == '1')
-				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
-            else 
-                draw_square(x * 64, y * 64, 0xd8d8d8, cube);
-            x++; // Move to the next column
-        }
-		draw_player(cube->player.pos->x, cube->player.pos->y, cube);
-		print_ray(cube, cube2);
-        y++; // Move to the next row
-    }
+	//x = 0;
+	//y = 0;
+	//int map_width = size_mtx('x', cube->map.map); // Get width of the map
+    //int map_height = size_mtx('y', cube->map.map); // Get height of the map
+	//while (y < map_height) // Iterate over rows
+    //{
+    //    x = 0; // Reset x for each row
+    //    while (x < map_width) // Iterate over columns
+    //    {
+    //        if (cube->map.map[y][x] == '1')
+	//			mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
+    //        else 
+    //            draw_square(x * 64, y * 64, 0xd8d8d8, cube);
+    //        x++; // Move to the next column
+    //    }
+		//draw_player(cube->player.pos->x, cube->player.pos->y, cube);
+		print_ray(cube);
+    //    y++; // Move to the next row
+    //}
     return (1);
 }
 
@@ -327,7 +320,7 @@ int put_game (t_cube *cube)
 		}
 		if ((int)pos.x % 64 == 0)
 			x++;
-		draw_player(cube->player.pos->x, cube->player.pos->y, cube);
+		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
 	}
 	return(0);
 }
@@ -418,31 +411,31 @@ int handle_movement(t_cube *cube)
 
     // Handle forward movement
     if (cube->input.w) {
-        double new_x = cube->player.pos->x + cos(cube->player.angle) * move_step;
-        double new_y = cube->player.pos->y + sin(cube->player.angle) * move_step;
+        double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
+        double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
         {
-            cube->player.pos->x = new_x;
-            cube->player.pos->y = new_y;
+            cube->player.pos.x = new_x;
+            cube->player.pos.y = new_y;
         }
     }
 
     // Handle backward movement
     if (cube->input.s) {
-        double new_x = cube->player.pos->x - cos(cube->player.angle) * move_step;
-        double new_y = cube->player.pos->y - sin(cube->player.angle) * move_step;
+        double new_x = cube->player.pos.x - cos(cube->player.angle) * move_step;
+        double new_y = cube->player.pos.y - sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
         {
-            cube->player.pos->x = new_x;
-            cube->player.pos->y = new_y;
+            cube->player.pos.x = new_x;
+            cube->player.pos.y = new_y;
         }
     }
 
    // Handle left/right movement (strafing)
-    if (cube->input.a && wallLoak(cube->player.pos->x + move_step, cube->player.pos->y, cube->map.map))
-        cube->player.pos->x += move_step;
-    if (cube->input.d && wallLoak(cube->player.pos->x - move_step, cube->player.pos->y, cube->map.map))
-        cube->player.pos->x -= move_step;
+    if (cube->input.a && wallLoak(cube->player.pos.x + move_step, cube->player.pos.y, cube->map.map))
+        cube->player.pos.x += move_step;
+    if (cube->input.d && wallLoak(cube->player.pos.x - move_step, cube->player.pos.y, cube->map.map))
+        cube->player.pos.x -= move_step;
 		
     // Handle rotation
     if (cube->input.left)
@@ -459,14 +452,12 @@ int handle_movement(t_cube *cube)
     return (0);
 }
 
-int game_loop(void *param)
+int game_loop(t_cube *cube)
 {
-    t_cube *cube = (t_cube *)param;
-
     // Handle player movement and drawing for the first window (cube)
     handle_movement(cube);
     draw(cube);
-    // Handle drawing logic for the second window (cube2)
+    // Handle drawing logic for the second window (cube)
     return 0;
 }
 
@@ -480,7 +471,6 @@ void	cube_init(t_cube *cube)
     cube->input.right = false;
 	cube->win.mlx_ptr = NULL;
 	cube->win.win_ptr = NULL;
-	cube->player.pos = NULL;
 	cube->texture.addr = NULL;
 	cube->map.map = NULL;
 	cube->map.map_check = NULL;
@@ -491,6 +481,8 @@ void	cube_init(t_cube *cube)
 	cube->text.WE = NULL;
 	cube->text.C = -1;
 	cube->text.F = -1;
+	cube->win.win_width = 1600;
+	cube->win.win_height = 900;
 	cube->texture.width = 64;
 	cube->texture.height = 64;
 }
@@ -508,41 +500,26 @@ int main(int ac, char *ag[])
 		perror("bad number of arguments\n");
 		exit(1);
 	}
+    cube.win.mlx_ptr = mlx_init();
 	if (parsing(&cube, ag[1]) == 1)
 	{
 		perror("bad parsing\n");
 		exit (1);
 	}
     
-    //cube[0].win.mlx_ptr = mlx_init();
-    //cube[0].win.win_ptr = mlx_new_window(cube[0].win.mlx_ptr, 512, 512, "PROVA");
-	//cube[0].texture.height = 64;
-    //cube[0].texture.width = 64;
-    //cube[0].player.pos->x = 160;
-    //cube[0].player.pos->y = 160;
-    //cube[0].texture.img = mlx_xpm_file_to_image(cube[0].win.mlx_ptr, "textures/wall.xpm", &cube[0].texture.height, &cube[0].texture.width);
-    //cube[0].player.angle = 90 * (M_PI / 180);
-    //str = gnl();
-    //cube[0].map.map = ft_split(str, '\n');
-
+    cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, cube.win.win_width, cube.win.win_height, "PROVA");
     //// Initialize second window (cube[1])
-    //cube[1].win.mlx_ptr = cube[0].win.mlx_ptr; // Use the same mlx_ptr
-    //cube[1].win.win_ptr = mlx_new_window(cube[1].win.mlx_ptr, 512, 512, "GAMEE");
-    //cube[1].texture.height = 64;
-    //cube[1].texture.width = 64;
-    //cube[1].texture.img = mlx_xpm_file_to_image(cube[1].win.mlx_ptr, "textures/wall.xpm", &cube[1].texture.height, &cube[1].texture.width);
-
     //// Set up hooks for input and rendering for both windows
-    //mlx_hook(cube[0].win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube[0]);
-    //mlx_hook(cube[0].win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube[0]);
+    mlx_hook(cube.win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube);
+    mlx_hook(cube.win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube);
 
-    //mlx_hook(cube[1].win.win_ptr, 33, 1L << 5, &on_destroy, &cube[1]);
+    mlx_hook(cube.win.win_ptr, 33, 1L << 5, &on_destroy, &cube);
     
     //// Use a shared game loop to update both windows
-    //mlx_loop_hook(cube[0].win.mlx_ptr, &game_loop, cube);  // Pass both cubes to the game loop as an array
+    mlx_loop_hook(cube.win.mlx_ptr, &game_loop, &cube);  // Pass both cubes to the game loop as an array
     
     //// Enter the MiniLibX main loop
-    //mlx_loop(cube[0].win.mlx_ptr);
+    mlx_loop(cube.win.mlx_ptr);
 
     return 0;
 }	

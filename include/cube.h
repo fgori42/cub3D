@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/08 11:39:29 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 12:51:16 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ typedef struct s_win
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
+	int		win_height;
+	int		win_width;
 } t_win;
 
 
@@ -68,7 +70,7 @@ typedef struct s_player
 {
 	char	type;
 	float	angle;
-	t_pos	*pos;
+	t_pos	pos;
 	bool	existence;
 } t_player;
 
