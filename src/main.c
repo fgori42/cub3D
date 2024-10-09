@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 12:53:38 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 16:26:19 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,13 @@ float CentInSis(const float bn)
 	newNb = (ful + ((float)six / 100));
 	return (newNb);
 }
+
+//void	make_img(t_cube *cube)
+//{
+//	t_img *img;
+	
+//	img = mlx_new_image(cube->win.mlx_ptr, )	
+//}
 
 int draw_wall_3d(void *param)
 {
@@ -120,6 +127,8 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
     return color;
 }
 
+
+
 void print_ray(t_cube *cube)
 {
     int x, y;
@@ -131,7 +140,7 @@ void print_ray(t_cube *cube)
     int wall_top, wall_bottom;
 	int ray_width = 2;
 	int num_rays =  cube->win.win_width / ray_width;
-    double FOV = 30 * (M_PI / 180); // 60-degree FOV
+    double FOV = 60 * (M_PI / 180); // 60-degree FOV
     double angle_step = FOV / num_rays; // Angle step for each ray
     double ray_angle = cube->player.angle - (FOV / 2); // Start at the left edge of the FOV
     if (ray_angle < 0)
@@ -159,7 +168,10 @@ void print_ray(t_cube *cube)
             // Increment the ray length
             ray_length += ray_step;
         }
+		//t_img	*img;
 
+		//img = ft_calloc(1, sizeof(t_img));
+		//img->image = mlx_new_image(cube->win.mlx_ptr, cube->win.win_width, cube->win.win_height);
         if (ray_length > 0)
         {
 			double new_angle = ray_angle - cube->player.angle;
@@ -170,6 +182,7 @@ void print_ray(t_cube *cube)
 			ray_length = ray_length * cos(new_angle);
             // Adjust wall height based on distance (simple perspective correction)
             wall_height = (int)((cube->win.win_height * map_size) / ray_length - 10);
+			//int wall_width = (ray * cube->win.win_height) / ray_length;
 			if (wall_height > cube->win.win_height)
 				wall_height = cube->win.win_height;
 
@@ -184,7 +197,7 @@ void print_ray(t_cube *cube)
 				wall_bottom = cube->win.win_height - 1;
 
             // Calculate texture_x based on where the ray hit the wall
-            int texture_x = (int)((ray_x - (int)ray_x) * cube->texture.width);
+            int texture_x = (int)(((ray_x - (int)ray_x) * cube->texture.width));
 			
             int y1 = 0;
 			while (y1 < wall_top)
@@ -203,7 +216,6 @@ void print_ray(t_cube *cube)
             {
                 // Map screen y to texture y
                 int texture_y = (wall_y - wall_top) * cube->texture.height / wall_height;
-
                 // Get the color from the texture
                 int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
                 // Draw the pixel on the screen

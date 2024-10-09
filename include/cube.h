@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 12:51:16 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 16:29:37 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ typedef struct s_map
 	char	**map;
 	char	**map_check;
 } t_map;
+
+typedef	struct
 
 typedef struct s_texture
 {

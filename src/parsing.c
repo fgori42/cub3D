@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 12:52:00 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/09 13:52:48 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,8 +261,8 @@ bool map_check(t_cube *cube, char **map)
 		{
 			if (!cube->player.existence && (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E'))
 			{
-				cube->player.pos.x = x;
-				cube->player.pos.y = y;
+				cube->player.pos.x = x * 64;
+				cube->player.pos.y = y * 64;
 				make_angle(map, cube, x, y);
 				cube->player.existence = true;
 			}

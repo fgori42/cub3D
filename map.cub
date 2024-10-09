@@ -1,7 +1,7 @@
-NO./textures/wall.xpm
-SO./textures/wall.xpm
-WE./textures/wall.xpm
-EA./textures/wall.xpm
+NO./textures/floor.xpm
+SO./textures/wall_colon.xpm
+WE./textures/wall_up.xpm
+EA./textures/collectible.xpm
 C 212,123,123
 F 33,55,78
 
