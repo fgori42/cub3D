@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 16:26:19 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/10 13:03:21 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,25 +206,25 @@ void print_ray(t_cube *cube)
                 y1++;
 			}
 			y1 = wall_bottom;
-			while (y1 <= cube->win.win_height)
+			while ((y1 <= cube->win.win_height && cube->map.level == 0) || (cube->map.level > 0 && y1 < (cube->win.win_height / 3) * 2))
 			{
 				mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, y1, cube->text.F);
-                y1++;
+				y1++;
 			}
 			int wall_y = wall_top;
-            while (wall_y < wall_bottom)
-            {
-                // Map screen y to texture y
-                int texture_y = (wall_y - wall_top) * cube->texture.height / wall_height;
-                // Get the color from the texture
-                int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
-                // Draw the pixel on the screen
-                mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, wall_y, color);
+			while ((cube->map.level == 0 && wall_y < wall_bottom) ||  (cube->map.level > 0 && wall_y < (cube->win.win_height / 3) * 2))
+			{
+				// Map screen y to texture y
+				int texture_y = (wall_y - wall_top) * cube->texture.height / wall_height;
+				// Get the color from the texture
+				int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
+				// Draw the pixel on the screen
+					mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, wall_y, color);
 
-                // Move to the next pixel
-                wall_y++;
-            }
-        }
+				// Move to the next pixel
+				wall_y++;
+			}
+		}
         ray_length = 0;
         ray_angle += angle_step;
         if (ray_angle < 0)
@@ -234,6 +234,7 @@ void print_ray(t_cube *cube)
 
         ray++;
     }
+	display_map(cube);
 }
 
 void draw_player(int x, int y, t_cube *cube)
@@ -390,6 +391,12 @@ int	on_keypress(int keysym, t_cube *cube)
 		cube->input.s = true;
 	if (keysym == XK_D || keysym == XK_d)
 		cube->input.d = true;
+	if (keysym == XK_m)
+	{
+		cube->map.level++;
+		if (cube->map.level > 2)
+			cube->map.level = 0;
+	}
 	if (keysym == XK_Left)
 		cube->input.left = true;
 	if (keysym == XK_Right)
@@ -497,6 +504,7 @@ void	cube_init(t_cube *cube)
 	cube->win.win_height = 900;
 	cube->texture.width = 64;
 	cube->texture.height = 64;
+	cube->map.level = 0;
 }
 
 

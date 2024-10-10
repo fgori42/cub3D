@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 16:29:37 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/10 12:24:55 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,8 @@ typedef struct s_map
 	t_pos	*size;
 	char	**map;
 	char	**map_check;
+	int		level;
 } t_map;
-
-typedef	struct
 
 typedef struct s_texture
 {
@@ -108,6 +107,6 @@ int	on_destroy(t_win *win);
 void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
-//char *gnl(void);
+void	display_map(t_cube *cube);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/09/30 14:22:09 by fgori            ###   ########.fr        #
+#    Updated: 2024/10/10 12:18:57 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ INCLUDE = ./include
 LIB = ./include/libft/lib
 LIBM = ./include/minilibx-linux
 
-file = $(addprefix $(SRC), main.c parsing.c)
+file = $(addprefix $(SRC), main.c parsing.c minimap.c)
 
 NAME = cub3D
 
