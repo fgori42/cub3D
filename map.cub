@@ -1,9 +1,9 @@
-NO./textures/floor.xpm
+NO./textures/collectible.xpm
 SO./textures/wall_colon.xpm
 WE./textures/wall_up.xpm
 EA./textures/collectible.xpm
 C 212,123,123
-F 33,55,78
+F 133,55,78
 
 11111111
 10000001
