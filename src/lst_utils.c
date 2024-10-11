@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/11 15:08:44 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/11 15:28:12 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ t_wall	*ft_lstnew_cube(float lenght, t_pos *pos, float angle, t_cube *cube )
 		new_angle -= 2 * M_PI;
 	new->ray_lenght = lenght * new_angle;
     new->wall_height = new->ray_lenght / cube->win.win_height ;
-	new->wall_top = (cube->win.win_height / 2) - (new->wall_height / 2);
+	new->wall_top = (int)((cube->win.win_height * (size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map))) / new->ray_lenght - 10);
+		//	//int wall_width = (ray * cube->win.win_height) / ray_length;
+	if (new->wall_height > cube->win.win_height)
+		new->wall_height = cube->win.win_height;
 	new->wall_bottom = (cube->win.win_height / 2) + (new->wall_height / 2);
 	new->wall_width = 0;
 	new->next = NULL;
