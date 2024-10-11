@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/11 15:13:30 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/11 15:16:50 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,6 +247,7 @@ void print_ray(t_cube *cube)
 	tmp = cube->inst;
 	while (tmp->next)
 	{
+		y1 = 0;
 		int texture_x = (int)(((ray_x - (int)ray_x) * cube->texture.width) / tmp->wall_width);
 		while (y1 < tmp->wall_top)
 		{
