@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/10 12:43:57 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/11 11:34:58 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	display_map(t_cube *cube)
 		return;
 	else
 	{
-		printf("%d\n", cube->map.level);
 		while (x < cube->win.win_width)
 		{
 			y = (cube->win.win_height / 3) * 2;

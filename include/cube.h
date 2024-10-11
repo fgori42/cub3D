@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/10 12:24:55 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/11 15:10:24 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,21 @@ typedef struct s_texture
     int endian;
 } t_texture;
 
+typedef struct	s_wall
+{
+	int				idx;
+	float			angle;
+	float			ray_lenght;
+	float			x;
+	float			y;
+	int				wall_top;
+	int				wall_bottom;
+	int 			wall_height;
+	float			wall_width;
+	struct s_wall	*next;
+	struct s_wall	*prev;
+} t_wall;
+
 typedef struct	s_cube
 {
 	t_win		win;
@@ -100,6 +115,7 @@ typedef struct	s_cube
 	t_player	player;
 	t_text		text;
 	t_texture	texture;
+	t_wall		*inst;
 }t_cube;
 
 int	draw(t_cube *cube);
@@ -109,4 +125,8 @@ int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
 void	display_map(t_cube *cube);
 
+t_wall	*ft_lstnew_cube(float lenght, t_pos *pos, float angle, t_cube *cube );
+t_wall	*ft_lstlast_cube(t_wall *lst);
+void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
+void	correct_lst(t_wall *node);
 #endif
