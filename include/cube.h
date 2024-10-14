@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/11 15:10:24 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/14 11:22:52 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ typedef struct s_texture
 typedef struct	s_wall
 {
 	int				idx;
-	float			angle;
-	float			ray_lenght;
-	float			x;
-	float			y;
+	double			angle;
+	double			ray_lenght;
+	double			x;
+	double			y;
 	int				wall_top;
 	int				wall_bottom;
 	int 			wall_height;
-	float			wall_width;
+	double			wall_width;
 	struct s_wall	*next;
 	struct s_wall	*prev;
 } t_wall;
@@ -125,7 +125,7 @@ int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
 void	display_map(t_cube *cube);
 
-t_wall	*ft_lstnew_cube(float lenght, t_pos *pos, float angle, t_cube *cube );
+t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);

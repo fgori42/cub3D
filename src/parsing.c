@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/09 13:52:48 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/14 14:26:13 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ int	full_fil(int x, int y, char **map)
 	i = 0;
 	if (map[y][x] == '1')
 		return (0);
-	if (map[y][x] == ' ' || x == 0 || y == 0 || x == size_mtx('x', map)
+	if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
 		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1]) || x > (int)ft_strlen(map[y - 1]))
 		return (1);
 	else

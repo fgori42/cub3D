@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/11 15:16:50 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/14 15:24:00 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,29 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
     return color;
 }
 
+bool	hit_vertical(t_wall *node)
+{
+	if ((int)node->x % 64 == 0)
+	{
+		return true; // Raggio ha colpito una parete verticale
+	}
+	else
+	{
+		return false; // Raggio ha colpito una parete orizzontale
+	}
+}
+
+bool	hit_orizontal(t_wall *node)
+{
+	if ((int)node->y % 64 == 0)
+	{
+		return true; // Raggio ha colpito una parete verticale
+	}
+	else
+	{
+		return false; // Raggio ha colpito una parete orizzontale
+	}
+}
 
 
 void print_ray(t_cube *cube)
@@ -176,63 +199,6 @@ void print_ray(t_cube *cube)
 			tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
 			ft_lstadd_back_cube(&cube->inst, tmp);
 		}
-		//t_img	*img;
-
-		//img = ft_calloc(1, sizeof(t_img));
-		//img->image = mlx_new_image(cube->win.mlx_ptr, cube->win.win_width, cube->win.win_height);
-        //if (ray_length > 0)
-        //{
-		//	double new_angle = ray_angle - cube->player.angle;
-		//	 if (new_angle < 0)
-        //    	new_angle += 2 * M_PI;
-        //	if (new_angle > 2 * M_PI)
-        //    	new_angle -= 2 * M_PI;
-		//	ray_length = ray_length * cos(new_angle);
-        //    // Adjust wall height based on distance (simple perspective correction)
-        //    wall_height = (int)((cube->win.win_height * map_size) / ray_length - 10);
-		//	//int wall_width = (ray * cube->win.win_height) / ray_length;
-		//	if (wall_height > cube->win.win_height)
-		//		wall_height = cube->win.win_height;
-
-        //    // Calculate the top and bottom positions of the wall slice on the screen
-        //    wall_top = (cube->win.win_height / 2) - (wall_height / 2);
-        //    wall_bottom = (cube->win.win_height / 2) + (wall_height / 2);
-
-        //    // Clamp the values to avoid drawing outside the screen
-        //    if (wall_top < 0) 
-		//		wall_top = 0;
-        //    if (wall_bottom >= cube->win.win_height) 
-		//		wall_bottom = cube->win.win_height - 1;
-
-        //    // Calculate texture_x based on where the ray hit the wall
-        //    int texture_x = (int)(((ray_x - (int)ray_x) * cube->texture.width));
-			
-        //    int y1 = 0;
-		//	while (y1 < wall_top)
-		//	{
-		//		mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, y1, cube->text.C);
-        //        y1++;
-		//	}
-		//	y1 = wall_bottom;
-		//	while ((y1 <= cube->win.win_height && cube->map.level == 0) || (cube->map.level > 0 && y1 < (cube->win.win_height / 3) * 2))
-		//	{
-		//		mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, y1, cube->text.F);
-		//		y1++;
-		//	}
-		//	int wall_y = wall_top;
-		//	while ((cube->map.level == 0 && wall_y < wall_bottom) ||  (cube->map.level > 0 && wall_y < (cube->win.win_height / 3) * 2))
-		//	{
-		//		// Map screen y to texture y
-		//		int texture_y = (wall_y - wall_top) * cube->texture.height / wall_height;
-		//		// Get the color from the texture
-		//		int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
-		//		// Draw the pixel on the screen
-		//			mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, ray * ray_width, wall_y, color);
-
-		//		// Move to the next pixel
-		//		wall_y++;
-		//	}
-		//}
         ray_length = 0;
         ray_angle += angle_step;
         if (ray_angle < 0)
@@ -244,11 +210,17 @@ void print_ray(t_cube *cube)
     }
 	correct_lst(cube->inst);
 	int	y1;
+	t_wall	*tmp_two;
 	tmp = cube->inst;
 	while (tmp->next)
 	{
+		tmp_two = cube->inst;
 		y1 = 0;
-		int texture_x = (int)(((ray_x - (int)ray_x) * cube->texture.width) / tmp->wall_width);
+		int texture_x;
+		if (hit_vertical(tmp))
+    		texture_x = (int)((int)tmp->y % 64);
+		else
+			texture_x = (int)((int)tmp->x % 64);
 		while (y1 < tmp->wall_top)
 		{
 			mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
@@ -264,7 +236,13 @@ void print_ray(t_cube *cube)
 		while ((cube->map.level == 0 && wall_y < tmp->wall_bottom) ||  (cube->map.level > 0 && wall_y < (cube->win.win_height / 3) * 2))
 		{
 			// Map screen y to texture y
+			//if (tmp->idx == 900)
+			//{
+			//	printf("\ncordinate x= %f, y = %f\nlunghezza raggio = %f\n angolo = %f\n", tmp->x, tmp->y, tmp->ray_lenght, tmp->angle);
+			//}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
+			if (texture_y >= cube->texture.height)
+				texture_y = cube->texture.height - 1;
 			// Get the color from the texture
 			int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
 			// Draw the pixel on the screen
@@ -274,6 +252,8 @@ void print_ray(t_cube *cube)
 			wall_y++;
 		}
 		tmp = tmp->next;
+		cube->inst = tmp;
+		free(tmp_two);
 	}
 	display_map(cube);
 }
@@ -559,7 +539,6 @@ int main(int ac, char *ag[])
 	cube_init(&cube);
 	if (ac != 2)
 	{
-		perror("bad number of arguments\n");
 		exit(1);
 	}
     cube.win.mlx_ptr = mlx_init();
