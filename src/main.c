@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 11:41:59 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 14:13:07 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,6 @@ void print_ray(t_cube *cube)
 {
     int x, y;
     int ray = 0;
-    double ray_length = 0;
-    double ray_x, ray_y;
-    double ray_step = 0.05; // Adjust for how far to step along the ray
     //int wall_height;
     /*int wall_top, wall_bottom*/;
 	int ray_width = 1;
@@ -181,37 +178,104 @@ void print_ray(t_cube *cube)
 	//int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map); // Get height of the map
     while (ray < num_rays)
     {
-        while (ray_length < MAX_DISTANCE)
-        {
-            // Calculate the ray's x and y coordinates
-            ray_x = x + cos(ray_angle) * ray_length;
-            ray_y = y + sin(ray_angle) * ray_length;
+		// Player's position
+        double posX = cube->player.pos.x;
+        double posY = cube->player.pos.y;
 
-            // Check for wall collision
-            if (!wallLoak(ray_x, ray_y, cube->map.map))
-                break;
-			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, (int)ray_x, (int)ray_y, 0xff0202);
-            // Increment the ray length
-            ray_length += ray_step;
+        // Ray direction based on current ray angle
+        double rayDirX = cos(ray_angle);
+        double rayDirY = sin(ray_angle);
+
+        // Which box of the map we're in
+        int mapX = (int)posX;
+        int mapY = (int)posY;
+
+        // Length of the ray from current position to the next x or y-side
+        double side_dist_x;
+        double side_dist_y;
+
+        // Length of the ray from one x or y-side to the next x or y-side
+        double delta_dist_x = fabs(1 / rayDirX);
+        double delta_dist_y = fabs(1 / rayDirY);
+
+		int stepX;
+        int stepY;
+        int hit = 0; // Has the ray hit a wall?
+        int side;    // Was a NS or EW wall hit?
+
+		if (rayDirX < 0)
+        {
+            stepX = -1;
+            side_dist_x = (posX - mapX) * delta_dist_x;
         }
-		if (ray_length > 0)
+        else
+        {
+            stepX = 1;
+            side_dist_x = (mapX + 1.0 - posX) * delta_dist_x;
+        }
+        if (rayDirY < 0)
+        {
+            stepY = -1;
+            side_dist_y = (posY - mapY) * delta_dist_y;
+        }
+        else
+        {
+            stepY = 1;
+            side_dist_y = (mapY + 1.0 - posY) * delta_dist_y;
+        }
+        while (!hit)
+        {
+            // Jump to next map square, either in x-direction or y-direction
+            if (side_dist_x < side_dist_y)
+            {
+                side_dist_x += delta_dist_x;
+                mapX += stepX;
+                side = 0;
+            }
+            else
+            {
+                side_dist_y += delta_dist_y;
+                mapY += stepY;
+                side = 1;
+            }
+
+            // Check if the ray has hit a wall
+            if (!wallLoak(mapX, mapY, cube->map.map))
+                hit = 1;
+        }
+		double hitX, hitY;
+        if (side == 0)
+        {
+            // Vertical wall hit
+            hitX = posX + side_dist_x * rayDirX;
+            hitY = posY + side_dist_x * rayDirY;
+        }
+        else
+        {
+            // Horizontal wall hit
+            hitX = posX + side_dist_y * rayDirX;
+            hitY = posY + side_dist_y * rayDirY;
+        }
+		double ray_length;
+		if (side == 0)
 		{
-			pos.x = ray_x;
-			pos.y = ray_y;
-			tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
-			ft_lstadd_back_cube(&cube->inst, tmp);
+			// Hit a vertical wall (NS)
+			ray_length = (mapX - posX + (1 - stepX) / 2) / rayDirX;
 		}
-        ray_length = 0;
+		else
+		{
+			// Hit a horizontal wall (EW)
+			ray_length = (mapY - posY + (1 - stepY) / 2) / rayDirY;
+		}
+		pos.x = hitX;
+		pos.y = hitY;
+		tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
+		ft_lstadd_back_cube(&cube->inst, tmp);
         ray_angle += angle_step;
         if (ray_angle < 0)
             ray_angle += 2 * M_PI;
         if (ray_angle > 2 * M_PI)
             ray_angle -= 2 * M_PI;
-
-		if (ray == 900)
-		{
-			printf("\nray-x == %f, ray-y = %f\n", ray_x, ray_y);
-		}
         ray++;
     }
 	correct_lst(cube->inst);
