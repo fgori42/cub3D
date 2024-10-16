@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/14 11:22:52 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 10:48:03 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ typedef struct	s_wall
 	int				wall_bottom;
 	int 			wall_height;
 	double			wall_width;
+	int				direction;
+	void			*text;
 	struct s_wall	*next;
 	struct s_wall	*prev;
 } t_wall;

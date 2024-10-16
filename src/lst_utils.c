@@ -6,11 +6,35 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/14 15:00:42 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 11:41:35 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube.h"
+
+static void	take_wall(t_wall *new, t_cube *cube)
+{
+	if (new->x - (int)new->x < 0.1)
+	{
+		new->text = cube->text.WE;
+		new->direction = 3;
+	}
+	else if (new->y - (int)new->y < 0.1)
+	{
+		new->text = cube->text.NO;
+		new->direction = 0;
+	}
+	else if (new->x - (int)new->x > 0.9)
+	{
+		new->text = cube->text.EA;
+		new->direction = 1;
+	}
+	else if (new->y - (int)new->y > 0.9)
+	{
+		new->text = cube->text.SO;
+		new->direction = 2;
+	}
+}
 
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 {
@@ -31,8 +55,7 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 		new_angle -= 2 * M_PI;
 	new->ray_lenght = lenght * cos(new_angle);
     new->wall_height = (int)((cube->win.win_height * 64) / new->ray_lenght); // Altezza del muro corretta
-	//if (new->wall_height > cube->win.win_height)
-	//	new->wall_height = cube->win.win_height;
+	take_wall(new, cube);
 	new->wall_top = (cube->win.win_height / 2) - (new->wall_height / 2);
 	new->wall_bottom = (cube->win.win_height / 2) + (new->wall_height / 2);
 	new->wall_width = 0;

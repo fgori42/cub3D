@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/14 15:24:00 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 11:41:59 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,9 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
 
 bool	hit_vertical(t_wall *node)
 {
-	if ((int)node->x % 64 == 0)
+	double mod_x = fmod(node->x, 64.0);
+	
+	if (mod_x < 0.1 || mod_x > (64.0 - 0.1))
 	{
 		return true; // Raggio ha colpito una parete verticale
 	}
@@ -206,6 +208,10 @@ void print_ray(t_cube *cube)
         if (ray_angle > 2 * M_PI)
             ray_angle -= 2 * M_PI;
 
+		if (ray == 900)
+		{
+			printf("\nray-x == %f, ray-y = %f\n", ray_x, ray_y);
+		}
         ray++;
     }
 	correct_lst(cube->inst);
@@ -244,7 +250,7 @@ void print_ray(t_cube *cube)
 			if (texture_y >= cube->texture.height)
 				texture_y = cube->texture.height - 1;
 			// Get the color from the texture
-			int color = get_texture_color(cube->text.NO, cube->texture.width, cube->texture.height, texture_x, texture_y);
+			int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, texture_x, texture_y);
 			// Draw the pixel on the screen
 				mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, wall_y, color);
 
