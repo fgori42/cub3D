@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 14:13:07 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:41:17 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,8 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
 }
 
 bool	hit_vertical(t_wall *node)
-{
-	double mod_x = fmod(node->x, 64.0);
-	
-	if (mod_x < 0.1 || mod_x > (64.0 - 0.1))
+{	
+	if (node->direction == 1 || node->direction == 3)
 	{
 		return true; // Raggio ha colpito una parete verticale
 	}
@@ -141,25 +139,22 @@ bool	hit_vertical(t_wall *node)
 	}
 }
 
-bool	hit_orizontal(t_wall *node)
+void	img_pixel_put(int color, int x, int y, t_img **img)
 {
-	if ((int)node->y % 64 == 0)
-	{
-		return true; // Raggio ha colpito una parete verticale
-	}
-	else
-	{
-		return false; // Raggio ha colpito una parete orizzontale
-	}
-}
+	char *pixel;
 
+	if (y < 0 || y > 900)
+		return ;
+	if (x < 0 || x > 1600)
+		return ;
+	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
+	*(int *)pixel = color; 
+}
 
 void print_ray(t_cube *cube)
 {
     int x, y;
     int ray = 0;
-    //int wall_height;
-    /*int wall_top, wall_bottom*/;
 	int ray_width = 1;
 	int num_rays =  cube->win.win_width / ray_width;
     double FOV = 60 * (M_PI / 180); // 60-degree FOV
@@ -280,6 +275,11 @@ void print_ray(t_cube *cube)
     }
 	correct_lst(cube->inst);
 	int	y1;
+	t_img *new_img;
+	
+	new_img = ft_calloc(1, sizeof(t_img));
+	new_img->image = mlx_new_image(cube->win.mlx_ptr, cube->win.win_width, cube->win.win_height);
+	new_img->data = mlx_get_data_addr(new_img->image, &new_img->bpp, &new_img->size_line, &new_img->format);
 	t_wall	*tmp_two;
 	tmp = cube->inst;
 	while (tmp->next)
@@ -293,17 +293,23 @@ void print_ray(t_cube *cube)
 			texture_x = (int)((int)tmp->x % 64);
 		while (y1 < tmp->wall_top)
 		{
-			mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
+			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
+			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
 			y1++;
 		}
 		y1 = tmp->wall_bottom;
-		while ((y1 <= cube->win.win_height && cube->map.level == 0) || (cube->map.level > 0 && y1 < (cube->win.win_height / 3) * 2))
+		while (y1 <= cube->win.win_height)
 		{
-			mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.F);
+			img_pixel_put(cube->text.F, tmp->idx, y1, &new_img);
+			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.F);
 			y1++;
 		}
 		int wall_y = tmp->wall_top;
-		while ((cube->map.level == 0 && wall_y < tmp->wall_bottom) ||  (cube->map.level > 0 && wall_y < (cube->win.win_height / 3) * 2))
+		if (wall_y < 0)
+			wall_y = 0;
+		if (tmp->wall_bottom >= cube->win.win_height)
+			tmp->wall_bottom = cube->win.win_height;
+		while ( wall_y < tmp->wall_bottom)
 		{
 			// Map screen y to texture y
 			//if (tmp->idx == 900)
@@ -316,8 +322,10 @@ void print_ray(t_cube *cube)
 			// Get the color from the texture
 			int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, texture_x, texture_y);
 			// Draw the pixel on the screen
-				mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, wall_y, color);
-
+				//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, wall_y, color);
+				if (wall_y < 0)
+					printf("parete\n");
+				img_pixel_put(color, tmp->idx, wall_y, &new_img);
 			// Move to the next pixel
 			wall_y++;
 		}
@@ -325,7 +333,10 @@ void print_ray(t_cube *cube)
 		cube->inst = tmp;
 		free(tmp_two);
 	}
-	display_map(cube);
+	display_map(cube, new_img);
+	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
+	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
+	free(new_img);
 }
 
 void draw_player(int x, int y, t_cube *cube)
@@ -609,6 +620,7 @@ int main(int ac, char *ag[])
 	cube_init(&cube);
 	if (ac != 2)
 	{
+		perror("ERROR\ninvalid argument");
 		exit(1);
 	}
     cube.win.mlx_ptr = mlx_init();

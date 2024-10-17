@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 10:48:03 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 15:37:50 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include "mlx.h"
+# include "mlx_int.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <X11/X.h>
@@ -125,10 +126,13 @@ int	on_destroy(t_win *win);
 void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
-void	display_map(t_cube *cube);
+void	img_pixel_put(int color, int x, int y, t_img **img);
+void	display_map(t_cube *cube, t_img *mini);
 
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
+
+
 #endif

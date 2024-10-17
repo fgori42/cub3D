@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/14 14:26:13 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/16 15:30:59 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,13 +237,13 @@ int	map_fil(char **map)
 
 void	make_angle(char **map, t_cube *cube, int x, int y)
 {
-	if (map[y][x] == 'N')
-		cube->player.angle = 0;
 	if (map[y][x] == 'E')
-		cube->player.angle = 90 * (M_PI / 180);
+		cube->player.angle = 0;
 	if (map[y][x] == 'S')
-		cube->player.angle = 180 * (M_PI / 180);
+		cube->player.angle = 90 * (M_PI / 180);
 	if (map[y][x] == 'W')
+		cube->player.angle = 180 * (M_PI / 180);
+	if (map[y][x] == 'N')
 		cube->player.angle = 270 * (M_PI / 180);
 	map[y][x] = '0';
 }
@@ -271,7 +271,7 @@ bool map_check(t_cube *cube, char **map)
 		y++;
 	}
 	if (cube->player.existence == false)
-		return (put_error("character not found", NULL, 1));
+		return (put_error("character not found", NULL, false));
 	return (true);
 }
 
