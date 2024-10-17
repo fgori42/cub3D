@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 15:37:50 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/17 17:22:13 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,13 @@
 //#endif
 
 typedef struct s_input {
-    bool w;
-    bool a;
-    bool s;
-    bool d;
-    bool left;
-    bool right;
+    bool 	w;
+    bool 	a;
+    bool 	s;
+    bool 	d;
+    bool 	left;
+    bool 	right;
+	double	dis;
 } t_input;
 
 typedef struct s_pos 
@@ -85,12 +86,8 @@ typedef struct s_map
 
 typedef struct s_texture
 {
-    char *addr;
     int width;
     int height;
-    int bpp; // bits per pixel
-    int line_length;
-    int endian;
 } t_texture;
 
 typedef struct	s_wall
@@ -112,6 +109,8 @@ typedef struct	s_wall
 
 typedef struct	s_cube
 {
+	t_img		*img;
+	int			prev_mouse_x;
 	t_win		win;
 	t_map		map;
 	t_input		input;
@@ -122,7 +121,7 @@ typedef struct	s_cube
 }t_cube;
 
 int	draw(t_cube *cube);
-int	on_destroy(t_win *win);
+int	on_destroy(t_cube *cube);
 void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);

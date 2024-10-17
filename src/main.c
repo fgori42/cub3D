@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 15:41:17 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/17 17:43:28 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,7 @@ void print_ray(t_cube *cube)
 	new_img = ft_calloc(1, sizeof(t_img));
 	new_img->image = mlx_new_image(cube->win.mlx_ptr, cube->win.win_width, cube->win.win_height);
 	new_img->data = mlx_get_data_addr(new_img->image, &new_img->bpp, &new_img->size_line, &new_img->format);
+	cube->img = new_img;
 	t_wall	*tmp_two;
 	tmp = cube->inst;
 	while (tmp->next)
@@ -311,11 +312,8 @@ void print_ray(t_cube *cube)
 			tmp->wall_bottom = cube->win.win_height;
 		while ( wall_y < tmp->wall_bottom)
 		{
-			// Map screen y to texture y
-			//if (tmp->idx == 900)
-			//{
-			//	printf("\ncordinate x= %f, y = %f\nlunghezza raggio = %f\n angolo = %f\n", tmp->x, tmp->y, tmp->ray_lenght, tmp->angle);
-			//}
+			if (tmp->idx == 900)
+				cube->input.dis = tmp->ray_lenght;
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
 				texture_y = cube->texture.height - 1;
@@ -326,7 +324,7 @@ void print_ray(t_cube *cube)
 				if (wall_y < 0)
 					printf("parete\n");
 				img_pixel_put(color, tmp->idx, wall_y, &new_img);
-			// Move to the next pixel
+			
 			wall_y++;
 		}
 		tmp = tmp->next;
@@ -441,16 +439,22 @@ int put_game (t_cube *cube)
 }
 //pos->x / 64 == cube->player.pos->x && ((float)y + (pos.y / 100)) == cube->player.pos->y
 
-int     on_destroy(t_win *win)
+int     on_destroy(t_cube *cube)
 {
-        if (win->win_ptr)
-                mlx_destroy_window(win-> mlx_ptr, win->win_ptr);
-        if (win->mlx_ptr)
-        {
-            mlx_destroy_display(win->mlx_ptr);
-            free(win->mlx_ptr);
-        }
-        exit(0);
+	if (cube->img)
+	{
+		if (cube->img->image)
+			mlx_destroy_image(cube->win.mlx_ptr, cube->img->image);
+		//free(cube->img);
+	}
+	if (cube->win.win_ptr)
+			mlx_destroy_window(cube->win. mlx_ptr, cube->win.win_ptr);
+	if (cube->win.mlx_ptr)
+	{
+		mlx_destroy_display(cube->win.mlx_ptr);
+		free(cube->win.mlx_ptr);
+	}
+	exit(0);
 	return (0);
 }
 
@@ -504,7 +508,7 @@ int	on_keypress(int keysym, t_cube *cube)
 	if (keysym == XK_Right)
 		cube->input.right = true;
 	if (keysym == XK_Escape)
-		on_destroy(&cube->win);
+		on_destroy(cube);
 	return (0);
 }
 
@@ -531,7 +535,8 @@ int handle_movement(t_cube *cube)
     double rot_step = 0.2; // Rotation speed (radians)
 
     // Handle forward movement
-    if (cube->input.w) {
+    if (cube->input.w && cube->input.dis > 24)
+	{
         double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
@@ -582,17 +587,43 @@ int game_loop(t_cube *cube)
     return 0;
 }
 
+int	handle_mouse_move(int x, int y, t_cube *cube)
+{
+	(void)y;
+	double rot_step;
+	//int		center_x;
+	//int		center_y;
+	
+	rot_step = 0.05;
+	//center_x = cube->win.win_width / 2;
+	//center_y = cube->win.win_height / 2;
+	
+    if (x > cube->prev_mouse_x)
+        cube->player.angle += rot_step;
+    else if (x < cube->prev_mouse_x)
+		cube->player.angle -= rot_step;
+
+	if (cube->player.angle < 0)
+        cube->player.angle += 2 * M_PI;
+    if (cube->player.angle > 2 * M_PI)
+        cube->player.angle -= 2 * M_PI;
+    
+    cube->prev_mouse_x = x;
+
+    return (0);
+}
+
 void	cube_init(t_cube *cube)
 {
 	cube->input.w = false;
     cube->input.a = false;
     cube->input.s = false;
     cube->input.d = false;
+	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;
 	cube->win.mlx_ptr = NULL;
 	cube->win.win_ptr = NULL;
-	cube->texture.addr = NULL;
 	cube->map.map = NULL;
 	cube->map.map_check = NULL;
 	cube->map.size = NULL;
@@ -635,7 +666,8 @@ int main(int ac, char *ag[])
     //// Set up hooks for input and rendering for both windows
     mlx_hook(cube.win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube);
     mlx_hook(cube.win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube);
-
+	mlx_hook(cube.win.win_ptr, 6, 1L << 6, handle_mouse_move, &cube);
+	//mlx_mouse_hook(cube.win.win_ptr, MotionNotify, &cube);
     mlx_hook(cube.win.win_ptr, 33, 1L << 5, &on_destroy, &cube);
     
     //// Use a shared game loop to update both windows
