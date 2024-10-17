@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/17 17:43:28 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/17 17:48:57 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -497,6 +497,8 @@ int	on_keypress(int keysym, t_cube *cube)
 		cube->input.s = true;
 	if (keysym == XK_D || keysym == XK_d)
 		cube->input.d = true;
+	if (keysym == XK_c)
+		cube->input.c = true;
 	if (keysym == XK_m)
 	{
 		cube->map.level++;
@@ -522,6 +524,8 @@ int on_keyrelease(int keysym, t_cube *cube)
 		cube->input.s = false;
 	if (keysym == XK_D || keysym == XK_d)
 		cube->input.d = false;
+	if (keysym == XK_c)
+		cube->input.c = false;
 	if (keysym == XK_Left)
 		cube->input.left = false;
 	if (keysym == XK_Right)
@@ -533,7 +537,6 @@ int handle_movement(t_cube *cube)
 {
     double move_step = 10; // Movement speed
     double rot_step = 0.2; // Rotation speed (radians)
-
     // Handle forward movement
     if (cube->input.w && cube->input.dis > 24)
 	{
@@ -545,7 +548,6 @@ int handle_movement(t_cube *cube)
             cube->player.pos.y = new_y;
         }
     }
-
     // Handle backward movement
     if (cube->input.s) {
         double new_x = cube->player.pos.x - cos(cube->player.angle) * move_step;
@@ -556,7 +558,6 @@ int handle_movement(t_cube *cube)
             cube->player.pos.y = new_y;
         }
     }
-
    // Handle left/right movement (strafing)
     if (cube->input.a && wallLoak(cube->player.pos.x + move_step, cube->player.pos.y, cube->map.map))
         cube->player.pos.x += move_step;
@@ -574,7 +575,6 @@ int handle_movement(t_cube *cube)
         cube->player.angle += 2 * M_PI;
     if (cube->player.angle > 2 * M_PI)
         cube->player.angle -= 2 * M_PI;
-
     return (0);
 }
 
@@ -591,24 +591,28 @@ int	handle_mouse_move(int x, int y, t_cube *cube)
 {
 	(void)y;
 	double rot_step;
-	//int		center_x;
-	//int		center_y;
+	int		center_x;
+	int		center_y;
 	
 	rot_step = 0.05;
-	//center_x = cube->win.win_width / 2;
-	//center_y = cube->win.win_height / 2;
+	center_x = cube->win.win_width / 2;
+	center_y = cube->win.win_height / 2;
 	
-    if (x > cube->prev_mouse_x)
-        cube->player.angle += rot_step;
-    else if (x < cube->prev_mouse_x)
-		cube->player.angle -= rot_step;
+	if (x != center_x && ! cube->input.c)
+	{
+		if (x > cube->prev_mouse_x)
+			cube->player.angle += rot_step;
+		else if (x < cube->prev_mouse_x)
+			cube->player.angle -= rot_step;
 
-	if (cube->player.angle < 0)
-        cube->player.angle += 2 * M_PI;
-    if (cube->player.angle > 2 * M_PI)
-        cube->player.angle -= 2 * M_PI;
+		if (cube->player.angle < 0)
+			cube->player.angle += 2 * M_PI;
+		if (cube->player.angle > 2 * M_PI)
+			cube->player.angle -= 2 * M_PI;
+		mlx_mouse_move(cube->win.mlx_ptr, cube->win.win_ptr, center_x, center_y);
+		cube->prev_mouse_x = center_x;
+	}
     
-    cube->prev_mouse_x = x;
 
     return (0);
 }
@@ -619,6 +623,7 @@ void	cube_init(t_cube *cube)
     cube->input.a = false;
     cube->input.s = false;
     cube->input.d = false;
+	cube->input.c = false;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;

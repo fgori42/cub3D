@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/17 17:22:13 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/17 17:46:34 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_input {
     bool 	left;
     bool 	right;
 	double	dis;
+	bool	c;
 } t_input;
 
 typedef struct s_pos 
