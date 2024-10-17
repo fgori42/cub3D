@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/17 17:48:57 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/17 17:56:56 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -598,7 +598,7 @@ int	handle_mouse_move(int x, int y, t_cube *cube)
 	center_x = cube->win.win_width / 2;
 	center_y = cube->win.win_height / 2;
 	
-	if (x != center_x && ! cube->input.c)
+	if (x != center_x && !cube->input.c)
 	{
 		if (x > cube->prev_mouse_x)
 			cube->player.angle += rot_step;
@@ -610,10 +610,11 @@ int	handle_mouse_move(int x, int y, t_cube *cube)
 		if (cube->player.angle > 2 * M_PI)
 			cube->player.angle -= 2 * M_PI;
 		mlx_mouse_move(cube->win.mlx_ptr, cube->win.win_ptr, center_x, center_y);
+		mlx_mouse_hide(cube->win.mlx_ptr, cube->win.win_ptr);
 		cube->prev_mouse_x = center_x;
 	}
-    
-
+	if (cube->input.c)
+		mlx_mouse_show(cube->win.mlx_ptr, cube->win.win_ptr);
     return (0);
 }
 
