@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/18 16:54:14 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/18 17:32:12 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,9 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 {
 	char *pixel;
 
-	if (y <= 0 || y >= 900)
+	if (y < 0 || y > 900)
 		return ;
-	if (x <= 0 || x >= 1600)
+	if (x < 0 || x > 1600)
 		return ;
 	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
 	*(int *)pixel = color; 
@@ -295,7 +295,7 @@ void print_ray(t_cube *cube)
     		texture_x = ((int)tmp->y % 64);
 		else
 			texture_x = ((int)tmp->x % 64);
-		while (y1 < tmp->wall_top)
+		while (y1 < tmp->wall_top && tmp->wall_top <= cube->win.win_height)
 		{
 			if (y1 == cube->win.win_height)
 			{
@@ -306,9 +306,14 @@ void print_ray(t_cube *cube)
 			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
 			y1++;
 		}
-		y1 = tmp->wall_bottom;
-		while (y1 <= cube->win.win_height)
+		y1 = tmp->wall_bottom - 1;
+		while (y1 < cube->win.win_height)
 		{
+			if (y1 >= cube->win.win_height)
+			{
+				printf("y1 inside loop: %d\n", y1);
+				break;
+			}
 			img_pixel_put(cube->text.F, tmp->idx, y1, &new_img);
 			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.F);
 			y1++;
@@ -541,12 +546,34 @@ int on_keyrelease(int keysym, t_cube *cube)
 	return (0);
 }
 
+int check_distance(t_cube cube, char direction)
+{
+	float angle;
+	
+	if (direction == 'a')
+		angle = cube.player.angle - (90 * M_PI / 180);
+	else if (direction == 'd')
+		angle = cube.player.angle + (90 * M_PI / 180);
+	else if (direction == 's')
+		angle = cube.player.angle + (180 * M_PI / 180);
+	else
+		angle = cube.player.angle;
+	double ray_x = cube.player.pos.x + cos(angle) * 10;
+	double ray_y = cube.player.pos.y + sin(angle) * 10;
+
+            // Check for wall collision
+    if (!wallLoak(ray_x, ray_y, cube.map.map))
+    	return (1);
+	else
+		return (0);
+}
+
 int handle_movement(t_cube *cube)
 {
     double move_step = 8; // Movement speed
     double rot_step = 0.08; // Rotation speed (radians)
     // Handle forward movement
-    if (cube->input.w && cube->input.dis > 24)
+    if (cube->input.w && !check_distance(*cube, 'w'))
 	{
         double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
@@ -557,7 +584,7 @@ int handle_movement(t_cube *cube)
         }
     }
     // Handle backward movement
-    if (cube->input.s) {
+    if (cube->input.s && !check_distance(*cube, 's')) {
         double new_x = cube->player.pos.x - cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle) * move_step;
         if (wallLoak(new_x, new_y, cube->map.map))
@@ -567,7 +594,7 @@ int handle_movement(t_cube *cube)
         }
     }
    	// Handle left/right movement (strafing)
-    if (cube->input.a)
+    if (cube->input.a && !check_distance(*cube, 'a'))
 	{
 		double new_x = cube->player.pos.x - cos(cube->player.angle + (90 * M_PI / 180)) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle + (90 * M_PI / 180)) * move_step;
@@ -577,7 +604,7 @@ int handle_movement(t_cube *cube)
             cube->player.pos.y = new_y;
         }
 	}
-    if (cube->input.d)
+    if (cube->input.d && !check_distance(*cube, 'd'))
     {
 		double new_x = cube->player.pos.x - cos(cube->player.angle - (90 * M_PI / 180)) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle - (90 * M_PI / 180)) * move_step;
