@@ -6,9 +6,11 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/18 15:54:23 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/18 16:54:14 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+extern int side1;
 
 #include "cube.h"
 #include "libft.h"
@@ -142,9 +144,9 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 {
 	char *pixel;
 
-	if (y < 0 || y > 900)
+	if (y <= 0 || y >= 900)
 		return ;
-	if (x < 0 || x > 1600)
+	if (x <= 0 || x >= 1600)
 		return ;
 	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
 	*(int *)pixel = color; 
@@ -225,12 +227,14 @@ void print_ray(t_cube *cube)
                 side_dist_x += delta_dist_x;
                 mapX += stepX;
                 side = 0;
+				cube->side = 0;
             }
             else
             {
                 side_dist_y += delta_dist_y;
                 mapY += stepY;
                 side = 1;
+				cube->side = 1;
             }
 
             // Check if the ray has hit a wall
@@ -288,11 +292,16 @@ void print_ray(t_cube *cube)
 		y1 = 0;
 		int texture_x;
 		if (hit_vertical(tmp))
-    		texture_x = (int)((int)tmp->y % 64);
+    		texture_x = ((int)tmp->y % 64);
 		else
-			texture_x = (int)((int)tmp->x % 64);
+			texture_x = ((int)tmp->x % 64);
 		while (y1 < tmp->wall_top)
 		{
+			if (y1 == cube->win.win_height)
+			{
+				printf("y1 inside loop: %d\n", y1);
+				break;
+			}
 			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
 			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
 			y1++;
@@ -534,8 +543,8 @@ int on_keyrelease(int keysym, t_cube *cube)
 
 int handle_movement(t_cube *cube)
 {
-    double move_step = 10; // Movement speed
-    double rot_step = 0.2; // Rotation speed (radians)
+    double move_step = 8; // Movement speed
+    double rot_step = 0.08; // Rotation speed (radians)
     // Handle forward movement
     if (cube->input.w && cube->input.dis > 24)
 	{
@@ -557,12 +566,27 @@ int handle_movement(t_cube *cube)
             cube->player.pos.y = new_y;
         }
     }
-   // Handle left/right movement (strafing)
-    if (cube->input.a && wallLoak(cube->player.pos.x + move_step, cube->player.pos.y, cube->map.map))
-        cube->player.pos.x += move_step;
-    if (cube->input.d && wallLoak(cube->player.pos.x - move_step, cube->player.pos.y, cube->map.map))
-        cube->player.pos.x -= move_step;
-		
+   	// Handle left/right movement (strafing)
+    if (cube->input.a)
+	{
+		double new_x = cube->player.pos.x - cos(cube->player.angle + (90 * M_PI / 180)) * move_step;
+        double new_y = cube->player.pos.y - sin(cube->player.angle + (90 * M_PI / 180)) * move_step;
+        if (wallLoak(new_x, new_y, cube->map.map))
+        {
+            cube->player.pos.x = new_x;
+            cube->player.pos.y = new_y;
+        }
+	}
+    if (cube->input.d)
+    {
+		double new_x = cube->player.pos.x - cos(cube->player.angle - (90 * M_PI / 180)) * move_step;
+        double new_y = cube->player.pos.y - sin(cube->player.angle - (90 * M_PI / 180)) * move_step;
+        if (wallLoak(new_x, new_y, cube->map.map))
+        {
+            cube->player.pos.x = new_x;
+            cube->player.pos.y = new_y;
+        }
+	}
     // Handle rotation
     if (cube->input.left)
         cube->player.angle -= rot_step;

@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 14:13:42 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/18 16:21:42 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 static void	take_wall(t_wall *new, t_cube *cube)
 {
-	double epsilon = 0.0000001;
+	// double epsilon = 0.0000001;
 
-    if (fabs(new->x - (int)new->x) < epsilon)
+    // if (fabs(new->x - (int)new->x) < epsilon)
+	if (cube->side == 0)
     {
         // Hit close to a vertical wall
         if (cos(new->angle) < 0)
@@ -32,7 +33,8 @@ static void	take_wall(t_wall *new, t_cube *cube)
             new->direction = 1;
         }
     }
-    else if (fabs(new->y - (int)new->y) < epsilon)
+    // else if (fabs(new->y - (int)new->y) < epsilon)
+	else
     {
         // Hit close to a horizontal wall
         if (sin(new->angle) < 0)
