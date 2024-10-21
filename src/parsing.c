@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/16 15:30:59 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/21 11:16:47 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,16 @@ char *gnl(char *str)
 	control = 1;
 	buff = ft_calloc(2,1);
 	txt = ft_calloc(1,1);
+	if (!txt || !buff)
+		return (NULL);
 	fd = open(str,  O_RDWR );
 	if (fd < 0)
 		return (NULL);
 	while (control > 0)
 	{
 		control = read(fd, buff, 1);
+		if (control < 1)
+			break;
 		sup = txt;
 		txt = ft_strjoin(txt, buff);
 		free(sup);
@@ -136,10 +140,39 @@ int	put_textur(char *str, t_text *home, t_cube *cube)
 	return (0);
 }
 
+int	find_max_len(char **mtx)
+{
+	int	y;
+	int	len;
+	int	len_max;
+
+	y = 6;
+	len_max = -1;
+	len = 0;
+	while (mtx[y])
+	{
+		len = ft_strlen(mtx[y]);
+		if (len > len_max)
+			len_max = len;
+		y++;
+	}
+	return (len_max);
+}
+
+char	*ft_strdup_and_place(char *str, int len)
+{
+	char	*str2;
+
+	str2 = ft_calloc(len + 1, sizeof(char));
+	ft_strlcpy(str2, str, ft_strlen(str) + 1);
+	return(str2);
+}
+
 int	mtx_trim(t_map	*map, char **mtx, int start)
 {
 	int		len;
 	int		i;
+	int		lenstr;
 	char	**newMtx;
 
 	i = 0;
@@ -147,9 +180,10 @@ int	mtx_trim(t_map	*map, char **mtx, int start)
 	newMtx = ft_calloc(len + 1, sizeof(char *));
 	if (!newMtx)
 		return (1);
+	lenstr = find_max_len(mtx);
 	while (i < len)
 	{
-		newMtx[i] = ft_strdup(mtx[start]);
+		newMtx[i] = ft_strdup_and_place(mtx[start], lenstr);
 		start++;
 		i++;
 	}
@@ -193,7 +227,7 @@ int	full_fil(int x, int y, char **map)
 	int i;
 
 	i = 0;
-	if (map[y][x] == '1')
+	if (map[y][x] == '1' || map[y][x] == '\0')
 		return (0);
 	if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
 		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1]) || x > (int)ft_strlen(map[y - 1]))
@@ -275,6 +309,14 @@ bool map_check(t_cube *cube, char **map)
 	return (true);
 }
 
+
+void print_map(char **map) {
+    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
+    for (int i = 0; map[i] != NULL; i++) {
+        printf("%s\n", map[i]); // Stampa ogni riga della mappa
+    }
+}
+
 int parsing(t_cube *cube, char *str)
 {
 	char	*mapFile;
@@ -282,7 +324,6 @@ int parsing(t_cube *cube, char *str)
 
 	if (!is_cub(str))
 		return (1);
-
 	mapFile = gnl(str);
 	if (!mapFile)
 		return (1);

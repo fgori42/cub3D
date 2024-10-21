@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/18 16:20:57 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/21 12:23:13 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,15 @@ typedef struct s_texture
     int height;
 } t_texture;
 
+typedef struct s_minimap
+{
+	int	mini_height;
+	int	mini_wid;
+	int mini_start_x;
+	int	mini_start_y;
+}	t_minimap;
+
+
 typedef struct	s_wall
 {
 	int				idx;
@@ -120,6 +129,7 @@ typedef struct	s_cube
 	t_text		text;
 	t_texture	texture;
 	t_wall		*inst;
+	t_minimap	minimap;
 }t_cube;
 
 int	draw(t_cube *cube);
@@ -128,7 +138,8 @@ void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
 void	img_pixel_put(int color, int x, int y, t_img **img);
-void	display_map(t_cube *cube, t_img *mini);
+void	display_map(t_cube *cube);
+int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y);
 
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);

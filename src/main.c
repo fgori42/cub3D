@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/18 17:32:12 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/21 12:23:04 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,10 +332,7 @@ void print_ray(t_cube *cube)
 				texture_y = cube->texture.height - 1;
 			// Get the color from the texture
 			int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, texture_x, texture_y);
-			// Draw the pixel on the screen
-				//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, wall_y, color);
-				if (wall_y < 0)
-					printf("parete\n");
+			
 				img_pixel_put(color, tmp->idx, wall_y, &new_img);
 			
 			wall_y++;
@@ -344,7 +341,7 @@ void print_ray(t_cube *cube)
 		cube->inst = tmp;
 		free(tmp_two);
 	}
-	display_map(cube, new_img);
+	display_map(cube);
 	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
 	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
 	free(new_img);
@@ -454,12 +451,12 @@ int put_game (t_cube *cube)
 
 int     on_destroy(t_cube *cube)
 {
-	if (cube->img)
-	{
-		if (cube->img->image)
-			mlx_destroy_image(cube->win.mlx_ptr, cube->img->image);
-		//free(cube->img);
-	}
+	//if (cube->img)
+	//{
+	//	if (cube->img->image)
+	//		//mlx_destroy_image(cube->win.mlx_ptr, cube->img->image);
+	//	//free(cube->img);
+	//}
 	if (cube->win.win_ptr)
 			mlx_destroy_window(cube->win. mlx_ptr, cube->win.win_ptr);
 	if (cube->win.mlx_ptr)
@@ -691,8 +688,10 @@ void	cube_init(t_cube *cube)
 	cube->text.F = -1;
 	cube->win.win_width = 1600;
 	cube->win.win_height = 900;
-	cube->texture.width = 64;
-	cube->texture.height = 64;
+	cube->minimap.mini_height = 64 * 4;
+	cube->minimap.mini_wid = 64 * 8;
+	cube->minimap.mini_start_x = 1600 - (64 * 8);
+	cube->minimap.mini_start_y = 900 - (64 * 4); 
 	cube->map.level = 0;
 	cube->inst = NULL;
 }
