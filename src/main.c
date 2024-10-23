@@ -22,7 +22,7 @@ bool	wallLoak(int x, int y, char **map)
 	x /= 64;
 	y /= 64;
 	
-    if (map[y][x] != '1')
+    if (map[y][x] != '1' && map[y][x] != 'D')
 		return (true);
     return (false);
 }
@@ -327,7 +327,17 @@ void print_ray(t_cube *cube)
 		while ( wall_y < tmp->wall_bottom)
 		{
 			if (tmp->idx == 900)
+			{
 				cube->input.dis = tmp->ray_lenght;
+				//if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'D') 
+				//	cube->door.is_door = 1;
+				//else if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'd')
+				//	cube->door.is_door = 2;
+				//else
+				//	cube->door.is_door = 0;
+				//cube->door.pos.x = tmp->x;
+				//cube->door.pos.y = tmp->y;
+			}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
 				texture_y = cube->texture.height - 1;
@@ -498,6 +508,16 @@ char	*ft_strjoins(char *s1, char const *s2)
 	return (join);
 }
 
+void	door_open(t_cube *cube)
+{
+	if(cube->door.is_door == 0)
+		return ;
+	if (cube->door.is_door == 1)
+		cube->map.map[(int)cube->door.pos.y][(int)cube->door.pos.x] = 'd';
+	if (cube->door.is_door == 2)
+		cube->map.map[(int)cube->door.pos.y][(int)cube->door.pos.x] = 'D';
+}
+
 int	on_keypress(int keysym, t_cube *cube)
 {
 	if (keysym == XK_W || keysym == XK_w)
@@ -510,6 +530,8 @@ int	on_keypress(int keysym, t_cube *cube)
 		cube->input.d = true;
 	if (keysym == XK_c)
 		cube->input.c = true;
+	if (keysym == XK_e)
+		door_open(cube);
 	if (keysym == XK_m)
 	{
 		cube->map.level++;
@@ -673,6 +695,7 @@ void	cube_init(t_cube *cube)
     cube->input.s = false;
     cube->input.d = false;
 	cube->input.c = false;
+	cube->door.is_door = 0;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;
@@ -716,7 +739,7 @@ int main(int ac, char *ag[])
 		perror("bad parsing\n");
 		exit (1);
 	}
-    
+    cube.text.door = mlx_xpm_file_to_image(cube.win.mlx_ptr, "./texture/floor.xpm", &cube.texture.width, &cube.texture.height);
     cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, cube.win.win_width, cube.win.win_height, "PROVA");
     //// Initialize second window (cube[1])
     //// Set up hooks for input and rendering for both windows

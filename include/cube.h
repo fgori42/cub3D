@@ -61,6 +61,7 @@ typedef struct s_win
 
 typedef struct s_text
 {
+	void	*door;
 	void	*EA;
 	void	*WE;
 	void	*NO;
@@ -117,12 +118,19 @@ typedef struct	s_wall
 	struct s_wall	*prev;
 } t_wall;
 
+typedef struct	s_door
+{
+	short		is_door;
+	t_pos		pos;
+}	t_door;
+
 typedef struct	s_cube
 {
 	t_img		*img;
 	int			side;
 	int			prev_mouse_x;
 	t_win		win;
+	t_door		door;
 	t_map		map;
 	t_input		input;
 	t_player	player;
