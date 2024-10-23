@@ -280,6 +280,7 @@ void	make_angle(char **map, t_cube *cube, int x, int y)
 	if (map[y][x] == 'N')
 		cube->player.angle = 270 * (M_PI / 180);
 	map[y][x] = '0';
+	cube->map.map[y][x] = '0';
 }
 
 bool map_check(t_cube *cube, char **map)

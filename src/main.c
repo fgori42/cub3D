@@ -22,8 +22,9 @@ bool	wallLoak(int x, int y, char **map)
 	x /= 64;
 	y /= 64;
 	
-    // Return whether the position is a wall or not
-    return (map[y][x] != '1');
+    if (map[y][x] != '1')
+		return (true);
+    return (false);
 }
 
 int	size_mtx(char size, char **map)
@@ -154,7 +155,7 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 
 void print_ray(t_cube *cube)
 {
-    int x, y;
+    //int x, y;
     int ray = 0;
 	int ray_width = 1;
 	int num_rays =  cube->win.win_width / ray_width;
@@ -169,8 +170,8 @@ void print_ray(t_cube *cube)
         ray_angle -= 2 * M_PI;
 
     // Start from the player's position
-    x = cube->player.pos.x;
-    y = cube->player.pos.y;
+    //x = cube->player.pos.x;
+    //y = cube->player.pos.y;
 	//int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map); // Get height of the map
     while (ray < num_rays)
     {
@@ -349,13 +350,13 @@ void print_ray(t_cube *cube)
 
 void draw_player(int x, int y, t_cube *cube)
 {
-	int i;
+	//int i;
 	int tmpx;
 	double ray_x, ray_y;
 	double ray_length;
 
 	ray_length = 0;
-	i = 0;
+	//i = 0;
 	tmpx = x;
 	while (ray_length < 32)
 	{
@@ -688,10 +689,10 @@ void	cube_init(t_cube *cube)
 	cube->text.F = -1;
 	cube->win.win_width = 1600;
 	cube->win.win_height = 900;
-	cube->minimap.mini_height = 64 * 4;
-	cube->minimap.mini_wid = 64 * 8;
-	cube->minimap.mini_start_x = 1600 - (64 * 8);
-	cube->minimap.mini_start_y = 900 - (64 * 4); 
+	cube->minimap.mini_height = 64 * 5;
+	cube->minimap.mini_wid = 64 * 9;
+	cube->minimap.mini_start_x = 1600 - (64 * 9);
+	cube->minimap.mini_start_y = 900 - (64 * 5); 
 	cube->map.level = 0;
 	cube->inst = NULL;
 }

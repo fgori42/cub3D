@@ -28,7 +28,7 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 		y = 0;
 		while (y++ <  cube->minimap.mini_height)
 		{
-			color = get_texture_color(src->image, 500, 300, x, y);
+			color = get_texture_color(src->image, cube->minimap.mini_wid, cube->minimap.mini_height, x, y);
 			pixel_dest = (cube->img)->data + ((startY * (cube->img)->size_line) + (startX * (cube->img)->bpp / 8));
 			if (color != 0x00000000)
 			{
@@ -43,7 +43,7 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 
 int what_i_see(int x, int y, char **map)
 {
-	if (x < 0|| y < 0)
+	if (x < 0|| y < 0 || y >= size_mtx('y', map))
 		return (0);
 	if (map[y][x] == '1')
 		return (4210752);
@@ -85,10 +85,12 @@ void	put_mini(t_cube *cube, t_img *mini)
 		while (x < cube->minimap.mini_wid)
 		{
 			y = 0;
-			s_y = (cube->player.pos.y /64) - 4;
+			s_y = (cube->player.pos.y /64) - 2;
 			while (y <  cube->minimap.mini_height)
 			{
-				if ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2)
+				if (s_x == (int)(cube->player.pos.x /64) && s_y == (int)(cube->player.pos.y /64) && ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2))
+					img_pixel_put(16776960 , x, y, &mini);
+				else if ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2)
 					img_pixel_put(what_i_see(s_x, s_y, cube->map.map) , x, y, &mini);
 				y++;
 				i++;
