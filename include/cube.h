@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/21 12:23:13 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/24 12:32:56 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@
 //    #define M_PI 3.14159265358979323846
 //#endif
 
+typedef	struct s_dis
+{
+	double	main_dis;
+	double	left_dis;
+	double	right_dis;
+}	t_dis;
+
 typedef struct s_input {
     bool 	w;
     bool 	a;
@@ -40,7 +47,7 @@ typedef struct s_input {
     bool 	d;
     bool 	left;
     bool 	right;
-	double	dis;
+	t_dis	dis;
 	bool	c;
 } t_input;
 

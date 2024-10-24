@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/21 12:23:04 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/24 15:25:17 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,8 +308,9 @@ void print_ray(t_cube *cube)
 			y1++;
 		}
 		y1 = tmp->wall_bottom - 1;
-		while (y1 < cube->win.win_height)
+		while (y1 < cube->win.win_height && tmp->wall_bottom > 0)
 		{
+
 			if (y1 >= cube->win.win_height)
 			{
 				printf("y1 inside loop: %d\n", y1);
@@ -326,9 +327,13 @@ void print_ray(t_cube *cube)
 			tmp->wall_bottom = cube->win.win_height;
 		while ( wall_y < tmp->wall_bottom)
 		{
+			if (tmp->idx == 880)
+				cube->input.dis.left_dis = tmp->ray_lenght;
+			if (tmp->idx == 910)
+				cube->input.dis.right_dis = tmp->ray_lenght;
 			if (tmp->idx == 900)
 			{
-				cube->input.dis = tmp->ray_lenght;
+				cube->input.dis.main_dis = tmp->ray_lenght;
 				//if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'D') 
 				//	cube->door.is_door = 1;
 				//else if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'd')
@@ -418,46 +423,46 @@ int draw(t_cube *cube)
     return (1);
 }
 
-int put_game (t_cube *cube)
-{
-	int x = 0;
-	int y = 0;
-	int j = 0;
-	t_pos pos = {0};
+//int put_game (t_cube *cube)
+//{
+//	int x = 0;
+//	int y = 0;
+//	int j = 0;
+//	t_pos pos = {0};
 
-	while (pos.x < size_mtx('x', cube->map.map) * 64)
-	{
-		pos.x++;
-		y = 0;
-		j = 0;
-		while(cube->map.map[y])
-		{
-			if (cube->map.map[y][x] == '1')
-			{
-				while(pos.y++ <= 64)
-				{
-					j++;
-					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,  0x000000);	
-				}
-				pos.y = 1;
-			}
-			else 
-			{
-				while(pos.y++ <= 64)
-				{
-					j++;
-					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j, 0xd8d8d8);
-				}
-				pos.y = 1;
-			}
-			y++;
-		}
-		if ((int)pos.x % 64 == 0)
-			x++;
-		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
-	}
-	return(0);
-}
+//	while (pos.x < size_mtx('x', cube->map.map) * 64)
+//	{
+//		pos.x++;
+//		y = 0;
+//		j = 0;
+//		while(cube->map.map[y])
+//		{
+//			if (cube->map.map[y][x] == '1')
+//			{
+//				while(pos.y++ <= 64)
+//				{
+//					j++;
+//					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,  0x000000);	
+//				}
+//				pos.y = 1;
+//			}
+//			else 
+//			{
+//				while(pos.y++ <= 64)
+//				{
+//					j++;
+//					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j, 0xd8d8d8);
+//				}
+//				pos.y = 1;
+//			}
+//			y++;
+//		}
+//		if ((int)pos.x % 64 == 0)
+//			x++;
+//		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
+//	}
+//	return(0);
+//}
 //pos->x / 64 == cube->player.pos->x && ((float)y + (pos.y / 100)) == cube->player.pos->y
 
 int     on_destroy(t_cube *cube)
@@ -566,6 +571,22 @@ int on_keyrelease(int keysym, t_cube *cube)
 	return (0);
 }
 
+int check_collision(double x, double y, char **map)
+{
+	double player_size;
+	
+	player_size = 0.5;
+    // Controlla i quattro angoli del rettangolo che rappresenta il giocatore
+    if (wallLoak(x - player_size, y - player_size, map) ||
+        wallLoak(x + player_size, y - player_size, map) ||
+        wallLoak(x - player_size, y + player_size, map) ||
+        wallLoak(x + player_size, y + player_size, map))
+    {
+        return 1; // Collisione rilevata
+    }
+    return 0; // Nessuna collisione
+}
+
 int check_distance(t_cube cube, char direction)
 {
 	float angle;
@@ -580,10 +601,18 @@ int check_distance(t_cube cube, char direction)
 		angle = cube.player.angle;
 	double ray_x = cube.player.pos.x + cos(angle) * 10;
 	double ray_y = cube.player.pos.y + sin(angle) * 10;
-
-            // Check for wall collision
-    if (!wallLoak(ray_x, ray_y, cube.map.map))
-    	return (1);
+	        // Check for wall collision
+    if (!check_collision(ray_x, ray_y, cube.map.map)){
+    	return (1);}
+	
+	double diagonal_offset = 0.5;
+    if (!check_collision(ray_x + diagonal_offset, ray_y + diagonal_offset, cube.map.map) ||
+        !check_collision(ray_x - diagonal_offset, ray_y + diagonal_offset, cube.map.map) ||
+        !check_collision(ray_x + diagonal_offset, ray_y - diagonal_offset, cube.map.map) ||
+        !check_collision(ray_x - diagonal_offset, ray_y - diagonal_offset, cube.map.map))
+    {
+        return 1;
+    }
 	else
 		return (0);
 }
@@ -592,12 +621,15 @@ int handle_movement(t_cube *cube)
 {
     double move_step = 8; // Movement speed
     double rot_step = 0.08; // Rotation speed (radians)
+	double offset;
+
+	offset = 0.1;
     // Handle forward movement
-    if (cube->input.w && !check_distance(*cube, 'w'))
+    if (cube->input.w && !check_distance(*cube, 'w') && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30))
 	{
         double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
-        if (wallLoak(new_x, new_y, cube->map.map))
+        if (check_collision(new_x, new_y, cube->map.map))
         {
             cube->player.pos.x = new_x;
             cube->player.pos.y = new_y;
@@ -607,7 +639,7 @@ int handle_movement(t_cube *cube)
     if (cube->input.s && !check_distance(*cube, 's')) {
         double new_x = cube->player.pos.x - cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle) * move_step;
-        if (wallLoak(new_x, new_y, cube->map.map))
+        if (check_collision(new_x, new_y, cube->map.map))
         {
             cube->player.pos.x = new_x;
             cube->player.pos.y = new_y;
@@ -618,7 +650,7 @@ int handle_movement(t_cube *cube)
 	{
 		double new_x = cube->player.pos.x - cos(cube->player.angle + (90 * M_PI / 180)) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle + (90 * M_PI / 180)) * move_step;
-        if (wallLoak(new_x, new_y, cube->map.map))
+        if (check_collision(new_x, new_y, cube->map.map))
         {
             cube->player.pos.x = new_x;
             cube->player.pos.y = new_y;
@@ -628,7 +660,7 @@ int handle_movement(t_cube *cube)
     {
 		double new_x = cube->player.pos.x - cos(cube->player.angle - (90 * M_PI / 180)) * move_step;
         double new_y = cube->player.pos.y - sin(cube->player.angle - (90 * M_PI / 180)) * move_step;
-        if (wallLoak(new_x, new_y, cube->map.map))
+        if (check_collision(new_x, new_y, cube->map.map))
         {
             cube->player.pos.x = new_x;
             cube->player.pos.y = new_y;
