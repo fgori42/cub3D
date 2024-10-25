@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/25 13:40:48 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/25 14:19:39 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,6 +324,7 @@ int parsing(t_cube *cube, char *str)
 	free(mapFile);
 	if (!take_textur(cube, openMap))
 		return (1);
+	cube->text.door = mlx_xpm_file_to_image(cube->win.mlx_ptr, "./textures/floor.xpm", &cube->texture.width, &cube->texture.height);
 	if (!map_check(cube, cube->map.map_check))
 		return(1);
 	return (map_fil(cube->map.map_check));

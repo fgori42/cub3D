@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/25 13:48:17 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/25 14:14:37 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,12 +334,12 @@ void print_ray(t_cube *cube)
 			if (tmp->idx == 900)
 			{
 				cube->input.dis.main_dis = tmp->ray_lenght;
-				if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'D') 
-					cube->door.is_door = 1;
-				else if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'd')
-					cube->door.is_door = 2;
-				else
-					cube->door.is_door = 0;
+				//if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'D') 
+				//	cube->door.is_door = 1;
+				//else if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'd')
+				//	cube->door.is_door = 2;
+				//else
+				//	cube->door.is_door = 0;
 			}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
@@ -527,11 +527,10 @@ void	door_open(t_cube *cube)
 	double ray_y = cube->player.pos.y + sin(angle) * 60;
 	int x = (int)ray_x / 64;
 	int y = (int)ray_y / 64;
-	if (cube->door.is_door == 2)
+	if (cube->map.map[y][x] == 'd')
 		cube->map.map[y][x] = 'D';
-	if (cube->door.is_door == 1)
-		cube->map.map[y][x] = 'd';
-	print_map(cube->map.map);		
+	else if (cube->map.map[y][x] == 'D')
+		cube->map.map[y][x] = 'd';	
 }
 
 int	on_keypress(int keysym, t_cube *cube)
