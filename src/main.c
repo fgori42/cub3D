@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/24 15:25:17 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/25 13:48:17 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,14 +334,12 @@ void print_ray(t_cube *cube)
 			if (tmp->idx == 900)
 			{
 				cube->input.dis.main_dis = tmp->ray_lenght;
-				//if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'D') 
-				//	cube->door.is_door = 1;
-				//else if (cube->map.map[(int)tmp->y][(int)tmp->x] == 'd')
-				//	cube->door.is_door = 2;
-				//else
-				//	cube->door.is_door = 0;
-				//cube->door.pos.x = tmp->x;
-				//cube->door.pos.y = tmp->y;
+				if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'D') 
+					cube->door.is_door = 1;
+				else if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'd')
+					cube->door.is_door = 2;
+				else
+					cube->door.is_door = 0;
 			}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
@@ -513,14 +511,27 @@ char	*ft_strjoins(char *s1, char const *s2)
 	return (join);
 }
 
+void print_map(char **map) {
+    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
+    for (int i = 0; map[i] != NULL; i++) {
+        printf("%s\n", map[i]); // Stampa ogni riga della mappa
+    }
+}
+
 void	door_open(t_cube *cube)
 {
-	if(cube->door.is_door == 0)
-		return ;
-	if (cube->door.is_door == 1)
-		cube->map.map[(int)cube->door.pos.y][(int)cube->door.pos.x] = 'd';
+	float angle;
+	
+	angle = cube->player.angle;
+	double ray_x = cube->player.pos.x + cos(angle) * 60;
+	double ray_y = cube->player.pos.y + sin(angle) * 60;
+	int x = (int)ray_x / 64;
+	int y = (int)ray_y / 64;
 	if (cube->door.is_door == 2)
-		cube->map.map[(int)cube->door.pos.y][(int)cube->door.pos.x] = 'D';
+		cube->map.map[y][x] = 'D';
+	if (cube->door.is_door == 1)
+		cube->map.map[y][x] = 'd';
+	print_map(cube->map.map);		
 }
 
 int	on_keypress(int keysym, t_cube *cube)
@@ -577,9 +588,9 @@ int check_collision(double x, double y, char **map)
 	
 	player_size = 0.5;
     // Controlla i quattro angoli del rettangolo che rappresenta il giocatore
-    if (wallLoak(x - player_size, y - player_size, map) ||
-        wallLoak(x + player_size, y - player_size, map) ||
-        wallLoak(x - player_size, y + player_size, map) ||
+    if (wallLoak(x - player_size, y - player_size, map) &&
+        wallLoak(x + player_size, y - player_size, map) &&
+        wallLoak(x - player_size, y + player_size, map) &&
         wallLoak(x + player_size, y + player_size, map))
     {
         return 1; // Collisione rilevata
@@ -602,17 +613,10 @@ int check_distance(t_cube cube, char direction)
 	double ray_x = cube.player.pos.x + cos(angle) * 10;
 	double ray_y = cube.player.pos.y + sin(angle) * 10;
 	        // Check for wall collision
-    if (!check_collision(ray_x, ray_y, cube.map.map)){
-    	return (1);}
-	
-	double diagonal_offset = 0.5;
-    if (!check_collision(ray_x + diagonal_offset, ray_y + diagonal_offset, cube.map.map) ||
-        !check_collision(ray_x - diagonal_offset, ray_y + diagonal_offset, cube.map.map) ||
-        !check_collision(ray_x + diagonal_offset, ray_y - diagonal_offset, cube.map.map) ||
-        !check_collision(ray_x - diagonal_offset, ray_y - diagonal_offset, cube.map.map))
-    {
-        return 1;
-    }
+    if (!check_collision(ray_x, ray_y, cube.map.map))
+	{
+    	return (1);
+	}
 	else
 		return (0);
 }

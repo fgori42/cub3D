@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/24 12:32:56 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/25 13:36:23 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct	s_wall
 	int				idx;
 	double			angle;
 	double			ray_lenght;
+	bool			door;
 	double			x;
 	double			y;
 	int				wall_top;

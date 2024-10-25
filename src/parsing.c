@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/24 14:28:32 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/25 13:40:48 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,14 +308,6 @@ bool map_check(t_cube *cube, char **map)
 	if (cube->player.existence == false)
 		return (put_error("character not found", NULL, false));
 	return (true);
-}
-
-
-void print_map(char **map) {
-    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
-    for (int i = 0; map[i] != NULL; i++) {
-        printf("%s\n", map[i]); // Stampa ogni riga della mappa
-    }
 }
 
 int parsing(t_cube *cube, char *str)

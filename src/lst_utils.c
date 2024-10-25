@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/18 16:21:42 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/25 12:45:22 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static void	take_wall(t_wall *new, t_cube *cube)
 {
 	// double epsilon = 0.0000001;
-
     // if (fabs(new->x - (int)new->x) < epsilon)
 	if (cube->side == 0)
     {
