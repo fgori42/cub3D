@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/25 13:36:23 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/28 12:39:16 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ typedef struct s_minimap
 	int	mini_start_y;
 }	t_minimap;
 
-
 typedef struct	s_wall
 {
 	int				idx;
@@ -115,6 +114,7 @@ typedef struct	s_wall
 	double			ray_lenght;
 	bool			door;
 	double			x;
+	bool			is_door;
 	double			y;
 	int				wall_top;
 	int				wall_bottom;
@@ -126,11 +126,6 @@ typedef struct	s_wall
 	struct s_wall	*prev;
 } t_wall;
 
-typedef struct	s_door
-{
-	short		is_door;
-	t_pos		pos;
-}	t_door;
 
 typedef struct	s_cube
 {
@@ -138,7 +133,6 @@ typedef struct	s_cube
 	int			side;
 	int			prev_mouse_x;
 	t_win		win;
-	t_door		door;
 	t_map		map;
 	t_input		input;
 	t_player	player;

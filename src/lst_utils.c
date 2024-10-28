@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/25 12:45:22 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/28 13:58:12 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,48 +14,43 @@
 
 static void	take_wall(t_wall *new, t_cube *cube)
 {
-	// double epsilon = 0.0000001;
-    // if (fabs(new->x - (int)new->x) < epsilon)
 	if (cube->side == 0)
     {
-        // Hit close to a vertical wall
         if (cos(new->angle) < 0)
         {
-            // Hit on the west side
             new->text = cube->text.WE;
             new->direction = 3;
         }
         else
         {
-            // Hit on the east side
             new->text = cube->text.EA;
             new->direction = 1;
         }
     }
-    // else if (fabs(new->y - (int)new->y) < epsilon)
 	else
     {
-        // Hit close to a horizontal wall
         if (sin(new->angle) < 0)
         {
-            // Hit on the north side
             new->text = cube->text.NO;
             new->direction = 0;
         }
         else
         {
-            // Hit on the south side
             new->text = cube->text.SO;
             new->direction = 2;
         }
     }
+	if (cube->map.map[(int)new->y / 64][(int)new->x / 64] == 'D')
+	{
+		new->text = cube->text.door;
+		new->is_door = true;
+	}
 }
 
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 {
 	t_wall	*new;
 	double	new_angle;
-	//int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map);
 	
 	new = (void *)malloc(sizeof(*new));
 	if (!new)
@@ -63,14 +58,15 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 	new->angle = angle;
 	new->x = pos->x;
 	new->y = pos->y;
+	new->is_door = false;
 	new_angle = angle - cube->player.angle;
 	if (new_angle < 0)
 		new_angle += 2 * M_PI;
 	if (new_angle > 2 * M_PI)
 		new_angle -= 2 * M_PI;
 	new->ray_lenght = lenght * cos(new_angle);
-    new->wall_height = (int)((cube->win.win_height * 64) / new->ray_lenght); // Altezza del muro corretta
 	take_wall(new, cube);
+    new->wall_height = (int)((cube->win.win_height * 64) / new->ray_lenght); // Altezza del muro corretta
 	new->wall_top = (cube->win.win_height / 2) - (new->wall_height / 2);
 	new->wall_bottom = (cube->win.win_height / 2) + (new->wall_height / 2);
 	new->wall_width = 0;

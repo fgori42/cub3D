@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/25 14:14:37 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/28 14:16:46 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@ extern int side1;
 
 #define MAX_DISTANCE sqrt((1600 * 900) + (1600* 900))
 
-bool	wallLoak(int x, int y, char **map)
+short	wallLoak(int x, int y, char **map)
 {
 	x /= 64;
 	y /= 64;
-	
-    if (map[y][x] != '1' && map[y][x] != 'D')
-		return (true);
-    return (false);
+	if (map[y][x] == 'D')
+		return (2);
+    if (map[y][x] == '1')
+		return (1);
+    return (0);
 }
 
 int	size_mtx(char size, char **map)
@@ -168,11 +169,6 @@ void print_ray(t_cube *cube)
         ray_angle += 2 * M_PI;
     if (ray_angle > 2 * M_PI)
         ray_angle -= 2 * M_PI;
-
-    // Start from the player's position
-    //x = cube->player.pos.x;
-    //y = cube->player.pos.y;
-	//int map_size = size_mtx('x', cube->map.map) * size_mtx('y', cube->map.map); // Get height of the map
     while (ray < num_rays)
     {
 		// Player's position
@@ -239,7 +235,7 @@ void print_ray(t_cube *cube)
             }
 
             // Check if the ray has hit a wall
-            if (!wallLoak(mapX, mapY, cube->map.map))
+            if (wallLoak(mapX, mapY, cube->map.map))
                 hit = 1;
         }
 		double hitX, hitY;
@@ -266,6 +262,7 @@ void print_ray(t_cube *cube)
 			// Hit a horizontal wall (EW)
 			ray_length = (mapY - posY + (1 - stepY) / 2) / rayDirY;
 		}
+		
 		pos.x = hitX;
 		pos.y = hitY;
 		tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
@@ -304,7 +301,6 @@ void print_ray(t_cube *cube)
 				break;
 			}
 			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
-			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.C);
 			y1++;
 		}
 		y1 = tmp->wall_bottom - 1;
@@ -334,12 +330,6 @@ void print_ray(t_cube *cube)
 			if (tmp->idx == 900)
 			{
 				cube->input.dis.main_dis = tmp->ray_lenght;
-				//if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'D') 
-				//	cube->door.is_door = 1;
-				//else if (cube->map.map[(int)tmp->y / 64][(int)tmp->x / 64] == 'd')
-				//	cube->door.is_door = 2;
-				//else
-				//	cube->door.is_door = 0;
 			}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
@@ -421,56 +411,8 @@ int draw(t_cube *cube)
     return (1);
 }
 
-//int put_game (t_cube *cube)
-//{
-//	int x = 0;
-//	int y = 0;
-//	int j = 0;
-//	t_pos pos = {0};
-
-//	while (pos.x < size_mtx('x', cube->map.map) * 64)
-//	{
-//		pos.x++;
-//		y = 0;
-//		j = 0;
-//		while(cube->map.map[y])
-//		{
-//			if (cube->map.map[y][x] == '1')
-//			{
-//				while(pos.y++ <= 64)
-//				{
-//					j++;
-//					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j,  0x000000);	
-//				}
-//				pos.y = 1;
-//			}
-//			else 
-//			{
-//				while(pos.y++ <= 64)
-//				{
-//					j++;
-//					mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr,pos.x, j, 0xd8d8d8);
-//				}
-//				pos.y = 1;
-//			}
-//			y++;
-//		}
-//		if ((int)pos.x % 64 == 0)
-//			x++;
-//		draw_player(cube->player.pos.x, cube->player.pos.y, cube);
-//	}
-//	return(0);
-//}
-//pos->x / 64 == cube->player.pos->x && ((float)y + (pos.y / 100)) == cube->player.pos->y
-
 int     on_destroy(t_cube *cube)
 {
-	//if (cube->img)
-	//{
-	//	if (cube->img->image)
-	//		//mlx_destroy_image(cube->win.mlx_ptr, cube->img->image);
-	//	//free(cube->img);
-	//}
 	if (cube->win.win_ptr)
 			mlx_destroy_window(cube->win. mlx_ptr, cube->win.win_ptr);
 	if (cube->win.mlx_ptr)
@@ -592,9 +534,9 @@ int check_collision(double x, double y, char **map)
         wallLoak(x - player_size, y + player_size, map) &&
         wallLoak(x + player_size, y + player_size, map))
     {
-        return 1; // Collisione rilevata
+        return 0; // Collisione rilevata
     }
-    return 0; // Nessuna collisione
+    return 1; // Nessuna collisione
 }
 
 int check_distance(t_cube cube, char direction)
@@ -730,7 +672,6 @@ void	cube_init(t_cube *cube)
     cube->input.s = false;
     cube->input.d = false;
 	cube->input.c = false;
-	cube->door.is_door = 0;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;
@@ -745,6 +686,7 @@ void	cube_init(t_cube *cube)
 	cube->text.WE = NULL;
 	cube->text.C = -1;
 	cube->text.F = -1;
+	cube->text.door = NULL;
 	cube->win.win_width = 1600;
 	cube->win.win_height = 900;
 	cube->minimap.mini_height = 64 * 5;
@@ -774,7 +716,6 @@ int main(int ac, char *ag[])
 		perror("bad parsing\n");
 		exit (1);
 	}
-    cube.text.door = mlx_xpm_file_to_image(cube.win.mlx_ptr, "./texture/floor.xpm", &cube.texture.width, &cube.texture.height);
     cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, cube.win.win_width, cube.win.win_height, "PROVA");
     //// Initialize second window (cube[1])
     //// Set up hooks for input and rendering for both windows
