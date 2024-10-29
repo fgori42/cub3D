@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 17:09:00 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:53:09 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,10 +323,6 @@ void print_ray(t_cube *cube)
 			tmp->wall_bottom = cube->win.win_height;
 		while ( wall_y < tmp->wall_bottom)
 		{
-			if (tmp->idx == 880)
-				cube->input.dis.left_dis = tmp->ray_lenght;
-			if (tmp->idx == 910)
-				cube->input.dis.right_dis = tmp->ray_lenght;
 			if (tmp->idx == 900)
 			{
 				cube->input.dis.main_dis = tmp->ray_lenght;
@@ -345,8 +341,8 @@ void print_ray(t_cube *cube)
 		cube->inst = tmp;
 		free(tmp_two);
 	}
+	fire_ball(cube);
 	display_map(cube);
-	draw_gun_on_background(new_img, cube);
 	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
 	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
 	free(new_img);
@@ -488,6 +484,8 @@ int	on_keypress(int keysym, t_cube *cube)
 		cube->input.d = true;
 	if (keysym == XK_c)
 		cube->input.c = true;
+	if (keysym == XK_f)
+		cube->input.f = true;
 	if (keysym == XK_e)
 		door_open(cube);
 	if (keysym == XK_m)
@@ -571,7 +569,7 @@ int handle_movement(t_cube *cube)
 
 	offset = 0.1;
     // Handle forward movement
-    if (cube->input.w && !check_distance(*cube, 'w') && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30))
+    if (cube->input.w && !check_distance(*cube, 'w')/* && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30)*/)
 	{
         double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
@@ -672,6 +670,7 @@ void	cube_init(t_cube *cube)
     cube->input.a = false;
     cube->input.s = false;
     cube->input.d = false;
+	cube->input.f = false;
 	cube->input.c = false;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
