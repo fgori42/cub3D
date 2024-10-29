@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/28 12:26:45 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/29 15:02:32 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int	put_textur(char *str, t_text *home, t_cube *cube)
 			return (put_error("color not found: ", str, 1));
 	}
 	if (!home->door)
-		home->door = mlx_xpm_file_to_image(cube->win.mlx_ptr, "./textures/floor.xpm", &cube->texture.width, &cube->texture.height);
+		home->door = mlx_xpm_file_to_image(cube->win.mlx_ptr, "./textures/door.xpm", &cube->texture.width, &cube->texture.height);
 	//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, home->door, 0, 0);
 	//sleep(2);
 	return (0);

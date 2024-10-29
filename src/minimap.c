@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/21 13:27:44 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/29 17:05:25 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 			pixel_dest = (cube->img)->data + ((startY * (cube->img)->size_line) + (startX * (cube->img)->bpp / 8));
 			if (color != 0x00000000)
 			{
-				*(int *)pixel_dest = color; 
+				*(int *)pixel_dest = color;
 			}
 			startY++;
 		}
