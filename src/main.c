@@ -96,39 +96,74 @@ int draw_wall_3d(void *param)
 
 int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y)
 {
-    char    *pixel_data;
-    int     color;
-    int     bpp;
-    int     size_line;
-    int     endian;
+    char *pixel_data;
+    int bpp;
+    int size_line;
+    int endian;
 
-    // Get the address of the image data (pixel array)
+    // Ottieni i dati dei pixel dell'immagine
     pixel_data = mlx_get_data_addr(img, &bpp, &size_line, &endian);
 
-    // Ensure tex_x and tex_y are within the bounds of the texture dimensions
+    // Verifica che tex_x e tex_y siano nei limiti della texture
     if (tex_x >= tex_width) tex_x = tex_width - 1;
-	if (tex_x < 0) tex_x = 0;
+    if (tex_x < 0) tex_x = 0;
     if (tex_y >= tex_height) tex_y = tex_height - 1;
-	if (tex_y < 0) tex_y = 0;
+    if (tex_y < 0) tex_y = 0;
 
-    // Calculate the pixel's offset in the image's data array
+    // Calcola l'offset del pixel
     int pixel_offset = tex_y * size_line + tex_x * (bpp / 8);
 
-	if (endian == 0) {
-        // Little-endian: the color is stored as BGR(A)
+    // Lettura del colore in base all'endianness
+    int color;
+    if (endian == 0) {
+        // Little-endian: BGR(A)
         color = *(int *)(pixel_data + pixel_offset);
     } else {
-        // Big-endian: the color is stored as RGB(A)
+        // Big-endian: RGB(A)
         unsigned char r = pixel_data[pixel_offset];
         unsigned char g = pixel_data[pixel_offset + 1];
         unsigned char b = pixel_data[pixel_offset + 2];
-        color = (r << 16) | (g << 8) | b; // Assemble RGB into an int
+        color = (r << 16) | (g << 8) | b;
     }
-    // Get the color of the pixel (dereference the pointer at the offset)
-    color = *(int *)(pixel_data + pixel_offset);
 
     return color;
 }
+
+//int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y)
+//{
+//    char    *pixel_data;
+//    int     color;
+//    int     bpp;
+//    int     size_line;
+//    int     endian;
+
+//    // Get the address of the image data (pixel array)
+//    pixel_data = mlx_get_data_addr(img, &bpp, &size_line, &endian);
+
+//    // Ensure tex_x and tex_y are within the bounds of the texture dimensions
+//    if (tex_x >= tex_width) tex_x = tex_width - 1;
+//	if (tex_x < 0) tex_x = 0;
+//    if (tex_y >= tex_height) tex_y = tex_height - 1;
+//	if (tex_y < 0) tex_y = 0;
+
+//    // Calculate the pixel's offset in the image's data array
+//    int pixel_offset = tex_y * size_line + tex_x * (bpp / 8);
+
+//	if (endian == 0) {
+//        // Little-endian: the color is stored as BGR(A)
+//        color = *(int *)(pixel_data + pixel_offset);
+//    } else {
+//        // Big-endian: the color is stored as RGB(A)
+//        unsigned char r = pixel_data[pixel_offset];
+//        unsigned char g = pixel_data[pixel_offset + 1];
+//        unsigned char b = pixel_data[pixel_offset + 2];
+//        color = (r << 16) | (g << 8) | b; // Assemble RGB into an int
+//    }
+//    // Get the color of the pixel (dereference the pointer at the offset)
+//    color = *(int *)(pixel_data + pixel_offset);
+
+//    return color;
+//}
 
 bool	hit_vertical(t_wall *node)
 {	
@@ -341,9 +376,13 @@ void print_ray(t_cube *cube)
 		cube->inst = tmp;
 		free(tmp_two);
 	}
+	//mlx_do_sync(cube->win.mlx_ptr);
 	fire_ball(cube);
 	display_map(cube);
 	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
+	//mlx_do_sync(cube->win.mlx_ptr);
+	//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.fire, 100, 100);
+	//mlx_do_sync(cube->win.mlx_ptr);
 	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
 	free(new_img);
 }
@@ -565,9 +604,7 @@ int handle_movement(t_cube *cube)
 {
     double move_step = 8; // Movement speed
     double rot_step = 0.08; // Rotation speed (radians)
-	double offset;
 
-	offset = 0.1;
     // Handle forward movement
     if (cube->input.w && !check_distance(*cube, 'w')/* && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30)*/)
 	{
@@ -687,6 +724,7 @@ void	cube_init(t_cube *cube)
 	cube->text.C = -1;
 	cube->text.F = -1;
 	cube->text.door = NULL;
+	cube->text.fire = NULL;
 	cube->win.win_width = 1600;
 	cube->win.win_height = 900;
 	cube->minimap.mini_height = 64 * 5;
