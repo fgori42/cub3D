@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/28 13:58:12 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/29 15:08:00 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,17 @@ static void	take_wall(t_wall *new, t_cube *cube)
             new->direction = 2;
         }
     }
-	if (cube->map.map[(int)new->y / 64][(int)new->x / 64] == 'D')
+	int x;
+	int y;
+	y = (int)new->y / 64;
+	x = (int)new->x / 64;
+	if (x < size_mtx('x', cube->map.map) && (y < size_mtx('y', cube->map.map)))
 	{
-		new->text = cube->text.door;
-		new->is_door = true;
+		if (cube->map.map[(int)new->y / 64][(int)new->x / 64] == 'D')
+		{
+			new->text = cube->text.door;
+			new->is_door = true;
+		}
 	}
 }
 

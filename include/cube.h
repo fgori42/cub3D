@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/28 12:39:16 by fgori            ###   ########.fr       */
+/*   Updated: 2024/10/29 16:19:47 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
+void draw_gun_on_background(t_img *bg, t_cube *cube);
 
 
 #endif
