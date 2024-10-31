@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 17:05:25 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:45:58 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ void	display_map(t_cube *cube)
 		minimap->image = mlx_new_image(cube->win.mlx_ptr, cube->minimap.mini_wid, cube->minimap.mini_height);
 		minimap->data = mlx_get_data_addr(minimap->image, &minimap->bpp, &minimap->size_line, &minimap->format);
 		put_mini(cube, minimap);
+		//draw_direction(minimap, cube);
 		//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, minimap->image, 500, 300);
 		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);
 		//mlx_do_sync(cube->win.mlx_ptr);

@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 16:19:47 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:39:24 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_input {
     bool 	a;
     bool 	s;
     bool 	d;
+	bool	f;
     bool 	left;
     bool 	right;
 	t_dis	dis;
@@ -142,9 +143,7 @@ typedef struct	s_cube
 	t_minimap	minimap;
 }t_cube;
 
-int	draw(t_cube *cube);
 int	on_destroy(t_cube *cube);
-void draw_square(int x, int y, int color, t_cube *cube);
 int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
 void	img_pixel_put(int color, int x, int y, t_img **img);
@@ -155,7 +154,8 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
-void draw_gun_on_background(t_img *bg, t_cube *cube);
+void	draw_animation(t_cube *cube);
+void draw_direction(t_img *img, t_cube *cube);
 
 
 #endif

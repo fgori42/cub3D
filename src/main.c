@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 17:09:00 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:46:18 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,29 +71,6 @@ float CentInSis(const float bn)
 //	img = mlx_new_image(cube->win.mlx_ptr, )	
 //}
 
-int draw_wall_3d(void *param)
-{
-	t_cube *cube = (t_cube *)param;
-	int x = 0;
-	int y = 0;
-	int map_width = size_mtx('x', cube->map.map); // Get width of the map
-    int map_height = size_mtx('y', cube->map.map); // Get height of the map
-	while (y < map_height) // Iterate over rows
-    {
-        x = 0; // Reset x for each row
-        while (x < map_width) // Iterate over columns
-        {
-            if (cube->map.map[y][x] == '1')
-				mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
-            else 
-                draw_square(x * 64, y * 64, 0xd8d8d8, cube);
-            x++; // Move to the next column
-        }
-		y++;
-	}
-	return (1);
-}
-
 int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y)
 {
     char    *pixel_data;
@@ -133,13 +110,9 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
 bool	hit_vertical(t_wall *node)
 {	
 	if (node->direction == 1 || node->direction == 3)
-	{
 		return true; // Raggio ha colpito una parete verticale
-	}
 	else
-	{
 		return false; // Raggio ha colpito una parete orizzontale
-	}
 }
 
 void	img_pixel_put(int color, int x, int y, t_img **img)
@@ -180,8 +153,8 @@ void print_ray(t_cube *cube)
         double rayDirY = sin(ray_angle);
 
         // Which box of the map we're in
-        int mapX = (int)posX;
-        int mapY = (int)posY;
+        int mapX = (int)(posX);
+        int mapY = (int)(posY);
 
         // Length of the ray from current position to the next x or y-side
         double side_dist_x;
@@ -204,7 +177,7 @@ void print_ray(t_cube *cube)
         else
         {
             stepX = 1;
-            side_dist_x = (mapX + 1.0 - posX) * delta_dist_x;
+            side_dist_x = ((mapX + 1.0) - posX) * delta_dist_x;
         }
         if (rayDirY < 0)
         {
@@ -214,10 +187,19 @@ void print_ray(t_cube *cube)
         else
         {
             stepY = 1;
-            side_dist_y = (mapY + 1.0 - posY) * delta_dist_y;
+            side_dist_y = ((mapY + 1.0) - posY) * delta_dist_y;
         }
         while (!hit)
         {
+			// printf("Player Position (Pixels): posX = %.2f, posY = %.2f\n", posX, posY);
+			// printf("Player Position (Grid): mapX = %d, mapY = %d\n", mapX, mapY);
+			// printf("Ray Direction: rayDirX = %.2f, rayDirY = %.2f\n", rayDirX, rayDirY);
+			// printf("Delta Distances: delta_dist_x = %.2f, delta_dist_y = %.2f\n", delta_dist_x, delta_dist_y);
+			// printf("Side Distances: side_dist_x = %.2f, side_dist_y = %.2f\n", side_dist_x, side_dist_y);
+			// printf("Steps: stepX = %d, stepY = %d\n", stepX, stepY);
+			// printf("Current Side: side = %d\n", side);
+			// printf("Current Cell (Map): mapX = %d, mapY = %d\n\n", mapX / 64, mapY / 64);
+			// sleep(1);
             // Jump to next map square, either in x-direction or y-direction
             if (side_dist_x < side_dist_y)
             {
@@ -253,16 +235,9 @@ void print_ray(t_cube *cube)
         }
 		double ray_length;
 		if (side == 0)
-		{
-			// Hit a vertical wall (NS)
 			ray_length = (mapX - posX + (1 - stepX) / 2) / rayDirX;
-		}
-		else
-		{
-			// Hit a horizontal wall (EW)
+   		else
 			ray_length = (mapY - posY + (1 - stepY) / 2) / rayDirY;
-		}
-		
 		pos.x = hitX;
 		pos.y = hitY;
 		tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
@@ -295,25 +270,13 @@ void print_ray(t_cube *cube)
 			texture_x = ((int)tmp->x % 64);
 		while (y1 < tmp->wall_top && tmp->wall_top <= cube->win.win_height)
 		{
-			if (y1 == cube->win.win_height)
-			{
-				printf("y1 inside loop: %d\n", y1);
-				break;
-			}
 			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
 			y1++;
 		}
 		y1 = tmp->wall_bottom - 1;
 		while (y1 < cube->win.win_height && tmp->wall_bottom > 0)
 		{
-
-			if (y1 >= cube->win.win_height)
-			{
-				printf("y1 inside loop: %d\n", y1);
-				break;
-			}
 			img_pixel_put(cube->text.F, tmp->idx, y1, &new_img);
-			//mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, tmp->idx, y1, cube->text.F);
 			y1++;
 		}
 		int wall_y = tmp->wall_top;
@@ -345,71 +308,33 @@ void print_ray(t_cube *cube)
 		cube->inst = tmp;
 		free(tmp_two);
 	}
+	draw_animation(cube);
 	display_map(cube);
-	draw_gun_on_background(new_img, cube);
 	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
 	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
 	free(new_img);
 }
 
-void draw_player(int x, int y, t_cube *cube)
+void draw_direction(t_img *img, t_cube *cube)
 {
-	//int i;
 	int tmpx;
 	double ray_x, ray_y;
 	double ray_length;
 
 	ray_length = 0;
-	//i = 0;
-	tmpx = x;
+	tmpx = cube->player.pos.x;
 	while (ray_length < 32)
 	{
-		ray_x = x + cos(cube->player.angle) * ray_length;
-    	ray_y = y + sin(cube->player.angle) * ray_length;
-		while ((x / 64) < 30)
+		ray_x = cube->player.pos.x + cos(cube->player.angle) * ray_length;
+    	ray_y = cube->player.pos.y + sin(cube->player.angle) * ray_length;
+		while ((tmpx / 64) < 32)
 		{
-			mlx_pixel_put(cube->win.mlx_ptr,cube->win.win_ptr, ray_x, ray_y,  0x000000);
-			x++;
+			img_pixel_put(0x00FF00, (int)ray_x, (int)ray_y, &img);
+			tmpx++;
 		}
-		x = tmpx;
+		tmpx = cube->player.pos.x;
 		ray_length++;
 	}
-}
-// Function to draw a square (cube in 2D)
-void draw_square(int x, int y, int color, t_cube *cube) {
-    int i, j;
-    for (i = 0; i < 64; i++) {
-        for (j = 0; j < 64; j++) {
-            mlx_pixel_put(cube->win.mlx_ptr, cube->win.win_ptr, x + j, y + i, color);
-        }
-    }
-}
-
-int draw(t_cube *cube)
-{
-	//int x;
-	//int y;
-
-	//x = 0;
-	//y = 0;
-	//int map_width = size_mtx('x', cube->map.map); // Get width of the map
-    //int map_height = size_mtx('y', cube->map.map); // Get height of the map
-	//while (y < map_height) // Iterate over rows
-    //{
-    //    x = 0; // Reset x for each row
-    //    while (x < map_width) // Iterate over columns
-    //    {
-    //        if (cube->map.map[y][x] == '1')
-	//			mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, cube->text.NO, x * 64, y * 64);
-    //        else 
-    //            draw_square(x * 64, y * 64, 0xd8d8d8, cube);
-    //        x++; // Move to the next column
-    //    }
-		//draw_player(cube->player.pos->x, cube->player.pos->y, cube);
-		print_ray(cube);
-    //    y++; // Move to the next row
-    //}
-    return (1);
 }
 
 int     on_destroy(t_cube *cube)
@@ -486,6 +411,8 @@ int	on_keypress(int keysym, t_cube *cube)
 		cube->input.s = true;
 	if (keysym == XK_D || keysym == XK_d)
 		cube->input.d = true;
+	if (keysym == XK_F || keysym == XK_f)
+		cube->input.f = true;
 	if (keysym == XK_c)
 		cube->input.c = true;
 	if (keysym == XK_e)
@@ -556,9 +483,7 @@ int check_distance(t_cube cube, char direction)
 	double ray_y = cube.player.pos.y + sin(angle) * 10;
 	        // Check for wall collision
     if (!check_collision(ray_x, ray_y, cube.map.map))
-	{
     	return (1);
-	}
 	else
 		return (0);
 }
@@ -567,9 +492,7 @@ int handle_movement(t_cube *cube)
 {
     double move_step = 8; // Movement speed
     double rot_step = 0.08; // Rotation speed (radians)
-	double offset;
 
-	offset = 0.1;
     // Handle forward movement
     if (cube->input.w && !check_distance(*cube, 'w') && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30))
 	{
@@ -630,7 +553,7 @@ int game_loop(t_cube *cube)
 {
     // Handle player movement and drawing for the first window (cube)
     handle_movement(cube);
-    draw(cube);
+    print_ray(cube);
     // Handle drawing logic for the second window (cube)
     return 0;
 }
@@ -672,6 +595,7 @@ void	cube_init(t_cube *cube)
     cube->input.a = false;
     cube->input.s = false;
     cube->input.d = false;
+	cube->input.f = false;
 	cube->input.c = false;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
@@ -692,8 +616,8 @@ void	cube_init(t_cube *cube)
 	cube->win.win_height = 900;
 	cube->minimap.mini_height = 64 * 5;
 	cube->minimap.mini_wid = 64 * 9;
-	cube->minimap.mini_start_x = 1600 - (64 * 9);
-	cube->minimap.mini_start_y = 900 - (64 * 5); 
+	cube->minimap.mini_start_x = 0;
+	cube->minimap.mini_start_y = 0; 
 	cube->map.level = 0;
 	cube->inst = NULL;
 }

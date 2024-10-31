@@ -11,6 +11,9 @@
 		"streambuf": "c",
 		"*.tcc": "c",
 		"sstream": "c",
-		"cube.h": "c"
+		"cube.h": "c",
+		"array": "c",
+		"string": "c",
+		"string_view": "c"
 	}
 }
