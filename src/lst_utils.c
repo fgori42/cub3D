@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 15:08:00 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 17:38:00 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	take_wall(t_wall *new, t_cube *cube)
 	int y;
 	y = (int)new->y / 64;
 	x = (int)new->x / 64;
-	if (x < size_mtx('x', cube->map.map) && (y < size_mtx('y', cube->map.map)))
+	if (x < size_mtx('x', cube->map.map)  && x >= 0 && (y < size_mtx('y', cube->map.map)) && y >= 0)
 	{
 		if (cube->map.map[(int)new->y / 64][(int)new->x / 64] == 'D')
 		{

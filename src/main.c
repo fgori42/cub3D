@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/31 15:46:18 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 17:34:25 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,6 @@ void print_ray(t_cube *cube)
                 side = 1;
 				cube->side = 1;
             }
-
             // Check if the ray has hit a wall
             if (wallLoak(mapX, mapY, cube->map.map))
                 hit = 1;
@@ -317,22 +316,20 @@ void print_ray(t_cube *cube)
 
 void draw_direction(t_img *img, t_cube *cube)
 {
-	int tmpx;
-	double ray_x, ray_y;
+	int tmpx; 
+	int tmpy;
+	double ray_x;
+	double ray_y;
 	double ray_length;
 
 	ray_length = 0;
-	tmpx = cube->player.pos.x;
+	tmpx = (int)((cube->player.pos.x / 2) / 64) + 4.5 * 32;
+	tmpy = (int)((cube->player.pos.y / 2) / 64) + 2.5 * 32;
 	while (ray_length < 32)
 	{
-		ray_x = cube->player.pos.x + cos(cube->player.angle) * ray_length;
-    	ray_y = cube->player.pos.y + sin(cube->player.angle) * ray_length;
-		while ((tmpx / 64) < 32)
-		{
-			img_pixel_put(0x00FF00, (int)ray_x, (int)ray_y, &img);
-			tmpx++;
-		}
-		tmpx = cube->player.pos.x;
+		ray_x = (tmpx + cos(cube->player.angle) * ray_length);
+    	ray_y = (tmpy + sin(cube->player.angle) * ray_length);
+		img_pixel_put(0x00FF00, (int)ray_x, (int)ray_y, &img);
 		ray_length++;
 	}
 }
@@ -614,8 +611,8 @@ void	cube_init(t_cube *cube)
 	cube->text.door = NULL;
 	cube->win.win_width = 1600;
 	cube->win.win_height = 900;
-	cube->minimap.mini_height = 64 * 5;
-	cube->minimap.mini_wid = 64 * 9;
+	cube->minimap.mini_height = 0;
+	cube->minimap.mini_wid = 0;
 	cube->minimap.mini_start_x = 0;
 	cube->minimap.mini_start_y = 0; 
 	cube->map.level = 0;

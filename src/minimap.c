@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/31 15:45:58 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/10/31 17:27:01 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ void	put_mini(t_cube *cube, t_img *mini)
 	x = 0;
 	y = 0;
 	i = 0;
-	s_x = (cube->player.pos.x /64) - 4;
+	s_x = (cube->player.pos.x / 64) - 4;
 		while (x < cube->minimap.mini_wid)
 		{
 			y = 0;
-			s_y = (cube->player.pos.y /64) - 2;
-			while (y <  cube->minimap.mini_height)
+			s_y = (cube->player.pos.y / 64) - 2;
+			while (y < cube->minimap.mini_height)
 			{
 				if (s_x == (int)(cube->player.pos.x /64) && s_y == (int)(cube->player.pos.y /64) && ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2))
 					img_pixel_put(16776960 , x, y, &mini);
@@ -94,12 +94,12 @@ void	put_mini(t_cube *cube, t_img *mini)
 					img_pixel_put(what_i_see(s_x, s_y, cube->map.map) , x, y, &mini);
 				y++;
 				i++;
-				if (y % 64 == 0)
+				if (y % 32 == 0)
 					s_y++;
 			}
 			i++;
 			x++;
-			if (x % 64 == 0)
+			if (x % 32 == 0)
 					s_x++;
 		}
 }
@@ -112,11 +112,13 @@ void	display_map(t_cube *cube)
 		return;
 	else
 	{
+		cube->minimap.mini_height = size_mtx('y', cube->map.map) * 32;
+		cube->minimap.mini_wid = size_mtx('x', cube->map.map) * 32;
 		minimap = ft_calloc(1, sizeof(t_img));
 		minimap->image = mlx_new_image(cube->win.mlx_ptr, cube->minimap.mini_wid, cube->minimap.mini_height);
 		minimap->data = mlx_get_data_addr(minimap->image, &minimap->bpp, &minimap->size_line, &minimap->format);
 		put_mini(cube, minimap);
-		//draw_direction(minimap, cube);
+		draw_direction(minimap, cube);
 		//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, minimap->image, 500, 300);
 		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);
 		//mlx_do_sync(cube->win.mlx_ptr);
