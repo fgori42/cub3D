@@ -49,27 +49,14 @@ int what_i_see(int x, int y, char **map)
 		return (4210752);
 	if (map[y][x] == '0')
 		return (12632256);
+	if (map[y][x] == 'D' || map[y][x] == 'd')
+		return (13037520);
 	if (map[y][x] == '\0')
 		return (0);
 	else
 		return (16711680);
 }
 
-//void	put_cube(int color, t_img **mini, int startx, int starty)
-//{
-//	int	x;
-//	int	y;
-
-//	x = 0;
-//	while ( x < 64)
-//	{
-//		y = 0;
-//		while (y < 64)
-//		{	
-//		}
-//	}
-//}
-//what_i_see(s_x, s_y, cube->map.map)
 void	put_mini(t_cube *cube, t_img *mini)
 {
 	int	x;
@@ -119,9 +106,7 @@ void	display_map(t_cube *cube)
 		minimap->data = mlx_get_data_addr(minimap->image, &minimap->bpp, &minimap->size_line, &minimap->format);
 		put_mini(cube, minimap);
 		draw_direction(minimap, cube);
-		//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, minimap->image, 500, 300);
-		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);
-		//mlx_do_sync(cube->win.mlx_ptr);
+		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);;
 		mlx_destroy_image(cube->win.mlx_ptr, minimap->image);
 		free(minimap);
 	}

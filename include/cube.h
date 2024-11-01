@@ -33,12 +33,11 @@
 //    #define M_PI 3.14159265358979323846
 //#endif
 
-typedef	struct s_dis
+typedef struct s_pos 
 {
-	double	main_dis;
-	double	left_dis;
-	double	right_dis;
-}	t_dis;
+	float	x;
+	float	y;
+} t_pos;
 
 typedef struct s_input {
     bool 	w;
@@ -48,15 +47,11 @@ typedef struct s_input {
 	bool	f;
     bool 	left;
     bool 	right;
-	t_dis	dis;
+	t_pos	dor;
+	bool	is_door;
 	bool	c;
 } t_input;
 
-typedef struct s_pos 
-{
-	float	x;
-	float	y;
-} t_pos;
 
 typedef struct s_win
 {
@@ -114,9 +109,8 @@ typedef struct	s_wall
 	double			angle;
 	double			ray_lenght;
 	bool			door;
-	double			x;
+	t_pos			cor;
 	bool			is_door;
-	double			y;
 	int				wall_top;
 	int				wall_bottom;
 	int 			wall_height;

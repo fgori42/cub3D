@@ -42,11 +42,11 @@ static void	take_wall(t_wall *new, t_cube *cube)
     }
 	int x;
 	int y;
-	y = (int)new->y / 64;
-	x = (int)new->x / 64;
+	y = (int)new->cor.y / 64;
+	x = (int)new->cor.x / 64;
 	if (x < size_mtx('x', cube->map.map)  && x >= 0 && (y < size_mtx('y', cube->map.map)) && y >= 0)
 	{
-		if (cube->map.map[(int)new->y / 64][(int)new->x / 64] == 'D')
+		if (cube->map.map[(int)new->cor.y / 64][(int)new->cor.x / 64] == 'D')
 		{
 			new->text = cube->text.door;
 			new->is_door = true;
@@ -63,8 +63,8 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 	if (!new)
 		return (NULL);
 	new->angle = angle;
-	new->x = pos->x;
-	new->y = pos->y;
+	new->cor.x = pos->x;
+	new->cor.y = pos->y;
 	new->is_door = false;
 	new_angle = angle - cube->player.angle;
 	if (new_angle < 0)
@@ -119,7 +119,7 @@ void	correct_lst(t_wall *node)
 	tmp_two = node;
 	while (tmp->next)
 	{
-		while (tmp_two->next && (int)tmp->x == (int)tmp_two->x)
+		while (tmp_two->next && (int)tmp->cor.x == (int)tmp_two->cor.x)
 		{
 			tmp_two->idx = i;
 			tmp_two = tmp_two->next;

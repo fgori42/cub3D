@@ -66,6 +66,8 @@ void draw_animation(t_cube *cube)
 			take_frame(cube, frames[0], cube->img);
 			time = 0;
 			cube->input.f = false;
+			if (cube->input.is_door)
+				cube->map.map[(int)cube->input.dor.y][(int)cube->input.dor.x] = 'd';
 			return ;
 		}
 		time++;

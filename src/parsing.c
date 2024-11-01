@@ -76,7 +76,7 @@ int create_rgb(char *str)
 	char	**sup;
 
 	sup = ft_split(str, ',');
-	if (!sup)
+	if (!sup || size_mtx('y', sup) != 3)
 		return (-1);
 	r = ft_atoi(sup[0]);
 	g = ft_atoi(sup[1]);
@@ -85,7 +85,7 @@ int create_rgb(char *str)
 		r < 0 || r > 255 || g < 0 || g > 255 || b < 0 ||  b > 255 )
 		return (-1);
 	free(str);
-	free(sup);
+	freeall(sup);
     return (r << 16 | g << 8 | b);
 }
 
@@ -314,6 +314,14 @@ bool map_check(t_cube *cube, char **map)
 	return (true);
 }
 
+bool	is_missing(t_cube *cube)
+{
+	if (!cube->text.door || !cube->text.EA || !cube->text.NO || !cube->text.SO || !cube->text.WE
+		|| cube->text.F == -1 || cube->text.C == -1)
+		return (false);
+	return (true);
+}
+
 int parsing(t_cube *cube, char *str)
 {
 	char	*mapFile;
@@ -329,6 +337,8 @@ int parsing(t_cube *cube, char *str)
 	if (!take_textur(cube, openMap))
 		return (1);
 	if (!map_check(cube, cube->map.map_check))
+		return(1);
+	if (!is_missing(cube))
 		return(1);
 	return (map_fil(cube->map.map_check));
 }

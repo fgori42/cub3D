@@ -264,9 +264,9 @@ void print_ray(t_cube *cube)
 		y1 = 0;
 		int texture_x;
 		if (hit_vertical(tmp))
-    		texture_x = ((int)tmp->y % 64);
+    		texture_x = ((int)tmp->cor.y % 64);
 		else
-			texture_x = ((int)tmp->x % 64);
+			texture_x = ((int)tmp->cor.x % 64);
 		while (y1 < tmp->wall_top && tmp->wall_top <= cube->win.win_height)
 		{
 			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
@@ -285,13 +285,18 @@ void print_ray(t_cube *cube)
 			tmp->wall_bottom = cube->win.win_height;
 		while ( wall_y < tmp->wall_bottom)
 		{
-			if (tmp->idx == 880)
-				cube->input.dis.left_dis = tmp->ray_lenght;
-			if (tmp->idx == 910)
-				cube->input.dis.right_dis = tmp->ray_lenght;
 			if (tmp->idx == 900)
 			{
-				cube->input.dis.main_dis = tmp->ray_lenght;
+				if (cube->map.map[(int)tmp->cor.y / 64][(int)tmp->cor.x / 64] == 'D')
+				{
+					cube->input.dor.x = (int)tmp->cor.x / 64;
+					cube->input.dor.y = (int)tmp->cor.y / 64;
+					cube->input.is_door = true;
+				}
+				else
+				{
+					cube->input.is_door = false;
+				}
 			}
 			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 			if (texture_y >= cube->texture.height)
@@ -491,7 +496,7 @@ int handle_movement(t_cube *cube)
     double rot_step = 0.08; // Rotation speed (radians)
 
     // Handle forward movement
-    if (cube->input.w && !check_distance(*cube, 'w') && (cube->input.dis.left_dis > 30 || cube->input.dis.right_dis > 30))
+    if (cube->input.w && !check_distance(*cube, 'w'))
 	{
         double new_x = cube->player.pos.x + cos(cube->player.angle) * move_step;
         double new_y = cube->player.pos.y + sin(cube->player.angle) * move_step;
@@ -594,6 +599,7 @@ void	cube_init(t_cube *cube)
     cube->input.d = false;
 	cube->input.f = false;
 	cube->input.c = false;
+	cube->input.is_door = false;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;
