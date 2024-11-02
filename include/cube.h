@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/31 15:39:24 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/01 22:07:00 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,8 @@ void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
 void	draw_animation(t_cube *cube);
 void draw_direction(t_img *img, t_cube *cube);
+void	print_world(t_wall *tmp, t_cube *cube);
+bool	hit_vertical(t_wall *node);
 
 
 #endif

@@ -16,7 +16,7 @@ INCLUDE = ./include
 LIB = ./include/libft/lib
 LIBM = ./include/minilibx-linux
 
-file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c)
+file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c print_world.c)
 
 NAME = cub3D
 

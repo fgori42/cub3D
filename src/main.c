@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/31 17:34:25 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/01 22:06:29 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,16 +191,6 @@ void print_ray(t_cube *cube)
         }
         while (!hit)
         {
-			// printf("Player Position (Pixels): posX = %.2f, posY = %.2f\n", posX, posY);
-			// printf("Player Position (Grid): mapX = %d, mapY = %d\n", mapX, mapY);
-			// printf("Ray Direction: rayDirX = %.2f, rayDirY = %.2f\n", rayDirX, rayDirY);
-			// printf("Delta Distances: delta_dist_x = %.2f, delta_dist_y = %.2f\n", delta_dist_x, delta_dist_y);
-			// printf("Side Distances: side_dist_x = %.2f, side_dist_y = %.2f\n", side_dist_x, side_dist_y);
-			// printf("Steps: stepX = %d, stepY = %d\n", stepX, stepY);
-			// printf("Current Side: side = %d\n", side);
-			// printf("Current Cell (Map): mapX = %d, mapY = %d\n\n", mapX / 64, mapY / 64);
-			// sleep(1);
-            // Jump to next map square, either in x-direction or y-direction
             if (side_dist_x < side_dist_y)
             {
                 side_dist_x += delta_dist_x;
@@ -249,74 +239,7 @@ void print_ray(t_cube *cube)
         ray++;
     }
 	correct_lst(cube->inst);
-	int	y1;
-	t_img *new_img;
-	
-	new_img = ft_calloc(1, sizeof(t_img));
-	new_img->image = mlx_new_image(cube->win.mlx_ptr, cube->win.win_width, cube->win.win_height);
-	new_img->data = mlx_get_data_addr(new_img->image, &new_img->bpp, &new_img->size_line, &new_img->format);
-	cube->img = new_img;
-	t_wall	*tmp_two;
-	tmp = cube->inst;
-	while (tmp->next)
-	{
-		tmp_two = cube->inst;
-		y1 = 0;
-		int texture_x;
-		if (hit_vertical(tmp))
-    		texture_x = ((int)tmp->cor.y % 64);
-		else
-			texture_x = ((int)tmp->cor.x % 64);
-		while (y1 < tmp->wall_top && tmp->wall_top <= cube->win.win_height)
-		{
-			img_pixel_put(cube->text.C, tmp->idx, y1, &new_img);
-			y1++;
-		}
-		y1 = tmp->wall_bottom - 1;
-		while (y1 < cube->win.win_height && tmp->wall_bottom > 0)
-		{
-			img_pixel_put(cube->text.F, tmp->idx, y1, &new_img);
-			y1++;
-		}
-		int wall_y = tmp->wall_top;
-		if (wall_y < 0)
-			wall_y = 0;
-		if (tmp->wall_bottom >= cube->win.win_height)
-			tmp->wall_bottom = cube->win.win_height;
-		while ( wall_y < tmp->wall_bottom)
-		{
-			if (tmp->idx == 900)
-			{
-				if (cube->map.map[(int)tmp->cor.y / 64][(int)tmp->cor.x / 64] == 'D')
-				{
-					cube->input.dor.x = (int)tmp->cor.x / 64;
-					cube->input.dor.y = (int)tmp->cor.y / 64;
-					cube->input.is_door = true;
-				}
-				else
-				{
-					cube->input.is_door = false;
-				}
-			}
-			int texture_y = (wall_y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
-			if (texture_y >= cube->texture.height)
-				texture_y = cube->texture.height - 1;
-			// Get the color from the texture
-			int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, texture_x, texture_y);
-			
-				img_pixel_put(color, tmp->idx, wall_y, &new_img);
-			
-			wall_y++;
-		}
-		tmp = tmp->next;
-		cube->inst = tmp;
-		free(tmp_two);
-	}
-	draw_animation(cube);
-	display_map(cube);
-	mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, new_img->image, 0, 0);
-	mlx_destroy_image(cube->win.mlx_ptr, new_img->image);
-	free(new_img);
+	print_world(cube->inst, cube);
 }
 
 void draw_direction(t_img *img, t_cube *cube)
