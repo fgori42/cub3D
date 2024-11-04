@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 11:48:45 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 14:47:35 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,30 @@ typedef struct	s_wall
 	struct s_wall	*prev;
 } t_wall;
 
+typedef struct	s_ray
+{
+
+	double	posX;
+	double	posY;
+	double	rayDirx;
+	double	rayDiry;
+	int		mapx;
+	int		mapy;
+	double	side_dist_x;
+	double	side_dist_y;
+	int		stepX;
+	int		stepY;
+	int		hit;
+	int		side;
+	double	hitx;
+	double	hity;
+	double	ray_length;
+	int		id_ray;
+	int		num_rays;
+	double	FOV;
+	double	angle_step;
+	double	ray_angle;
+} t_ray;
 
 typedef struct	s_cube
 {
@@ -150,9 +174,10 @@ t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
 void	draw_animation(t_cube *cube);
-void draw_direction(t_img *img, t_cube *cube);
+void	draw_direction(t_img *img, t_cube *cube);
 void	print_world(t_wall *tmp, t_cube *cube);
 bool	hit_vertical(t_wall *node);
 void	ft_lstclear_cube(t_wall **lst);
+void	calculate_ray(t_cube *cube);
 
 #endif

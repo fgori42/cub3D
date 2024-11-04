@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 11:51:15 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 15:02:30 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,31 +119,39 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
 	*(int *)pixel = color; 
 }
-
-void print_ray(t_cube *cube)
+void adjust_angle(double *angle)
 {
-    //int x, y;
-    int ray = 0;
-	int ray_width = 1;
-	int num_rays =  cube->win.win_width / ray_width;
-    double FOV = 60 * (M_PI / 180); // 60-degree FOV
-    double angle_step = FOV / num_rays; // Angle step for each ray
-    double ray_angle = cube->player.angle - (FOV / 2); // Start at the left edge of the FOV
+	if (*angle < 0)
+        *angle += 2 * M_PI;
+    if (*angle > 2 * M_PI)
+        *angle -= 2 * M_PI;
+}
+
+void ray_init(t_ray *ray, t_cube *cube)
+{
+	ray->id_ray = 0;
+	ray->num_rays =  cube->win.win_width;
+    ray->FOV = 60 * (M_PI / 180); // 60-degree FOV
+    ray->angle_step = ray->FOV / ray->num_rays; // Angle step for each ray
+    ray->ray_angle = cube->player.angle - (ray->FOV / 2); // Start at the left edge of the FOV
+	adjust_angle(&ray->ray_angle);
+}
+
+void calculate_ray(t_cube *cube)
+{
+    t_ray ray;
     t_wall	*tmp;
 	t_pos	pos;
-	if (ray_angle < 0)
-        ray_angle += 2 * M_PI;
-    if (ray_angle > 2 * M_PI)
-        ray_angle -= 2 * M_PI;
-    while (ray < num_rays)
+	ray_init(&ray, cube);
+    while (ray.id_ray < ray.num_rays)
     {
 		// Player's position
         double posX = cube->player.pos.x;
         double posY = cube->player.pos.y;
 
         // Ray direction based on current ray angle
-        double rayDirX = cos(ray_angle);
-        double rayDirY = sin(ray_angle);
+        double rayDirX = cos(ray.ray_angle);
+        double rayDirY = sin(ray.ray_angle);
 
         // Which box of the map we're in
         int mapX = (int)(posX);
@@ -222,14 +230,14 @@ void print_ray(t_cube *cube)
 			ray_length = (mapY - posY + (1 - stepY) / 2) / rayDirY;
 		pos.x = hitX;
 		pos.y = hitY;
-		tmp = ft_lstnew_cube(ray_length, &pos, ray_angle, cube);
+		tmp = ft_lstnew_cube(ray_length, &pos, ray.ray_angle, cube);
 		ft_lstadd_back_cube(&cube->inst, tmp);
-        ray_angle += angle_step;
-        if (ray_angle < 0)
-            ray_angle += 2 * M_PI;
-        if (ray_angle > 2 * M_PI)
-            ray_angle -= 2 * M_PI;
-        ray++;
+        ray.ray_angle += ray.angle_step;
+        if (ray.ray_angle < 0)
+            ray.ray_angle += 2 * M_PI;
+        if (ray.ray_angle > 2 * M_PI)
+            ray.ray_angle -= 2 * M_PI;
+        ray.id_ray++;
     }
 	correct_lst(cube->inst);
 	print_world(cube->inst, cube);
@@ -481,40 +489,33 @@ int handle_movement(t_cube *cube)
         cube->player.angle += rot_step;
 
     // Ensure angle stays within [0, 2*PI]
-    if (cube->player.angle < 0)
-        cube->player.angle += 2 * M_PI;
-    if (cube->player.angle > 2 * M_PI)
-        cube->player.angle -= 2 * M_PI;
+    adjust_angle((double *)&cube->player.angle);
     return (0);
 }
 
 int game_loop(t_cube *cube)
 {
-    // Handle player movement and drawing for the first window (cube)
     handle_movement(cube);
-    print_ray(cube);
-    // Handle drawing logic for the second window (cube)
+    calculate_ray(cube);
     return 0;
 }
 
 int	handle_mouse_move(int x, int y, t_cube *cube)
 {
 	(void)y;
-	double rot_step;
+	double	rot_step;
 	int		center_x;
 	int		center_y;
 	
 	rot_step = 0.05;
 	center_x = cube->win.win_width / 2;
 	center_y = cube->win.win_height / 2;
-	
 	if (x != center_x && !cube->input.c)
 	{
 		if (x > cube->prev_mouse_x)
 			cube->player.angle += rot_step;
 		else if (x < cube->prev_mouse_x)
 			cube->player.angle -= rot_step;
-
 		if (cube->player.angle < 0)
 			cube->player.angle += 2 * M_PI;
 		if (cube->player.angle > 2 * M_PI)
@@ -546,6 +547,10 @@ void	cube_init(t_cube *cube)
 	cube->map.map = NULL;
 	cube->map.map_check = NULL;
 	cube->map.size = NULL;
+}
+
+void cube_init2(t_cube *cube)
+{
 	cube->text.NO = NULL;
 	cube->text.SO = NULL;
 	cube->text.EA = NULL;
@@ -558,7 +563,7 @@ void	cube_init(t_cube *cube)
 	cube->minimap.mini_height = 0;
 	cube->minimap.mini_wid = 0;
 	cube->minimap.mini_start_x = 0;
-	cube->minimap.mini_start_y = 0; 
+	cube->minimap.mini_start_y = 0;
 	cube->map.level = 0;
 	cube->inst = NULL;
 }
@@ -568,6 +573,7 @@ int main(int ac, char *ag[])
 	t_cube	cube;
 
 	cube_init(&cube);
+	cube_init2(&cube);
 	if (ac != 2)
 	{
 		perror("ERROR\ninvalid argument");
