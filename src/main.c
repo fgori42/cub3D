@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 15:02:30 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 15:04:13 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,13 +324,6 @@ char	*ft_strjoins(char *s1, char const *s2)
 	i = (ft_strlen((char *)s2) + step);
 	join[i] = '\0';
 	return (join);
-}
-
-void print_map(char **map) {
-    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
-    for (int i = 0; map[i] != NULL; i++) {
-        printf("%s\n", map[i]); // Stampa ogni riga della mappa
-    }
 }
 
 void	door_open(t_cube *cube)
