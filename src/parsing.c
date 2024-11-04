@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 11:37:27 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 13:17:32 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,13 @@ bool	take_textur(t_cube *cube, char **text)
 		return (perror("Error\nimpossible to trim mtx"), false);
 	return (true);
 }
+void print_map(char **map) {
+    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
+    for (int i = 0; map[i] != NULL; i++) {
+        printf("%s\n", map[i]); // Stampa ogni riga della mappa
+    }
+	printf("\n");
+}
  
 int	full_fil(int x, int y, char **map)
 {
@@ -233,9 +240,11 @@ int	full_fil(int x, int y, char **map)
 	i = 0;
 	if (map[y][x] == '1' || map[y][x] == '\0')
 		return (0);
-	if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
+	else if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
 		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1]) || x > (int)ft_strlen(map[y - 1]))
 		return (1);
+	else if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D' && map[y][x] != '1')
+			return (-1);
 	else
 	{
 		map[y][x] = '1';
@@ -246,7 +255,7 @@ int	full_fil(int x, int y, char **map)
 	}
 	return (i);
 }
- 
+
 int	map_fil(char **map)
 {
 	int	x;
@@ -260,8 +269,6 @@ int	map_fil(char **map)
 		x = 0;
 		while(map[y][x])
 		{
-			if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D' && map[y][x] != '1')
-				return (put_error("strange char", "\n", 1));
 			if (map[y][x] != '1' && map[y][x] != ' ')
 				ret +=full_fil(x, y, map);
 			x++;
@@ -270,6 +277,8 @@ int	map_fil(char **map)
 	}
 	if (ret > 0)
 		return (put_error("map not protected by wall\n", NULL,1));
+	if (ret < 0)
+		return (put_error("strange char\n", NULL,1));
 	return (0);
 }
 
@@ -298,10 +307,11 @@ bool map_check(t_cube *cube, char **map)
 		x = 0;
 		while(map[y][x])
 		{
-			if (!cube->player.existence && (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E'))
+			if (!cube->player.existence && (map[y][x] == 'N'
+				|| map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E'))
 			{
-				cube->player.pos.x = x * 64;
-				cube->player.pos.y = y * 64;
+				cube->player.pos.x = x * 64 + 5;
+				cube->player.pos.y = y * 64 + 5;
 				make_angle(map, cube, x, y);
 				cube->player.existence = true;
 			}
@@ -330,7 +340,7 @@ int parsing(t_cube *cube, char *str)
 	if (!is_cub(str))
 		return (1);
 	mapFile = gnl(str);
-	if (!mapFile)
+	if (!*(mapFile))
 		return (1);
 	openMap = ft_split(mapFile, '\n');	
 	free(mapFile);
