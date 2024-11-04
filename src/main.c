@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 17:08:58 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 19:21:33 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,13 +118,6 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
 	*(int *)pixel = color; 
 }
-void adjust_angle(double *angle)
-{
-	if (*angle < 0)
-        *angle += 2 * M_PI;
-    if (*angle > 2 * M_PI)
-        *angle -= 2 * M_PI;
-}
 
 void ray_init(t_ray *ray, t_cube *cube)
 {
@@ -133,7 +126,10 @@ void ray_init(t_ray *ray, t_cube *cube)
     ray->FOV = 60 * (M_PI / 180); // 60-degree FOV
     ray->angle_step = ray->FOV / ray->num_rays; // Angle step for each ray
     ray->ray_angle = cube->player.angle - (ray->FOV / 2); // Start at the left edge of the FOV
-	adjust_angle(&ray->ray_angle);
+	if (ray->ray_angle < 0)
+    	ray->ray_angle += 2 * M_PI;
+    if (ray->ray_angle > 2 * M_PI)
+    	ray->ray_angle -= 2 * M_PI;
 }
 
 void ray_calc_init(t_ray *ray, t_cube *cube)
@@ -236,13 +232,15 @@ void calculate_ray(t_cube *cube)
 		ray_calc_step_sidedist(&ray);
 		find_wall(&ray, cube);
 		determine_hit(&ray);
-		printf("%f\n", ray.ray_angle);
 		pos.x = ray.hitx;
 		pos.y = ray.hity;
 		tmp = ft_lstnew_cube(ray.ray_length, &pos, ray.ray_angle, cube);
 		ft_lstadd_back_cube(&cube->inst, tmp);
         ray.ray_angle += ray.angle_step;
-        adjust_angle(&ray.ray_angle);
+        if (ray.ray_angle < 0)
+    		ray.ray_angle += 2 * M_PI;
+    	if (ray.ray_angle > 2 * M_PI)
+    		ray.ray_angle -= 2 * M_PI;
         ray.id_ray++;
     }
 	correct_lst(cube->inst);
@@ -351,11 +349,11 @@ int	on_keypress(int keysym, t_cube *cube)
 {
 	if (keysym == XK_W || keysym == XK_w)
 		cube->input.w = true;
-	if (keysym == XK_A || keysym == XK_a)
+	else if (keysym == XK_A || keysym == XK_a)
 		cube->input.a = true;
-	if (keysym == XK_S || keysym == XK_s)
+	else if (keysym == XK_S || keysym == XK_s)
 		cube->input.s = true;
-	if (keysym == XK_D || keysym == XK_d)
+	else if (keysym == XK_D || keysym == XK_d)
 		cube->input.d = true;
 	if (keysym == XK_F || keysym == XK_f)
 		cube->input.f = true;
@@ -425,9 +423,15 @@ int check_distance(t_cube cube, char direction)
 		angle = cube.player.angle + (180 * M_PI / 180);
 	else
 		angle = cube.player.angle;
+	if (angle < 0)
+    	angle += 2 * M_PI;
+    if (angle > 2 * M_PI)
+	{
+    	angle -= 2 * M_PI;
+	}
 	double ray_x = cube.player.pos.x + cos(angle) * 10;
 	double ray_y = cube.player.pos.y + sin(angle) * 10;
-	        // Check for wall collision
+	// Check for wall collision
     if (!check_collision(ray_x, ray_y, cube.map.map))
     	return (1);
 	else
@@ -488,7 +492,10 @@ int handle_movement(t_cube *cube)
         cube->player.angle += rot_step;
 
     // Ensure angle stays within [0, 2*PI]
-    adjust_angle((double *)&cube->player.angle);
+    if (cube->player.angle < 0)
+    	cube->player.angle += 2 * M_PI;
+    if (cube->player.angle > 2 * M_PI)
+    	cube->player.angle -= 2 * M_PI;
     return (0);
 }
 
