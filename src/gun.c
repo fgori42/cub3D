@@ -35,6 +35,7 @@ void take_frame(t_cube *cube, char *path_image, t_img *bg)
 	int start_y = cube->win.win_height - img->height;
 	
 	draw_image(bg, img, start_x, start_y);
+	mlx_destroy_image(cube->win.mlx_ptr, img->image);
 	free(img);
 }
 

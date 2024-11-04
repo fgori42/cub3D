@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 21:58:45 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/01 22:08:19 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 11:06:04 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	print_wall_in_img(t_wall *tmp, t_cube *cube, t_pos *utils, t_img *new_img)
 		int texture_y = (utils->y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 		if (texture_y >= cube->texture.height)
 			texture_y = cube->texture.height - 1;
-		// Get the color from the texture
 		int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, utils->x, texture_y);
 		
 			img_pixel_put(color, tmp->idx, utils->y, &new_img);

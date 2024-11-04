@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/01 22:06:29 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 11:51:15 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,6 @@ float CentInSis(const float bn)
 	newNb = (ful + ((float)six / 100));
 	return (newNb);
 }
-
-//void	make_img(t_cube *cube)
-//{
-//	t_img *img;
-	
-//	img = mlx_new_image(cube->win.mlx_ptr, )	
-//}
 
 int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y)
 {
@@ -262,8 +255,29 @@ void draw_direction(t_img *img, t_cube *cube)
 	}
 }
 
+void	free_textur(t_cube *cube)
+{
+	if (cube->text.NO)
+		mlx_destroy_image(cube->win.mlx_ptr, cube->text.NO);
+	if (cube->text.EA != NULL)
+		mlx_destroy_image(cube->win.mlx_ptr, cube->text.EA);
+	if (cube->text.SO)
+		mlx_destroy_image(cube->win.mlx_ptr, cube->text.SO);
+	if (cube->text.WE)
+		mlx_destroy_image(cube->win.mlx_ptr, cube->text.WE);
+	if (cube->text.door)
+		mlx_destroy_image(cube->win.mlx_ptr, cube->text.door);	
+}
+
 int     on_destroy(t_cube *cube)
 {
+	if (cube->map.map)
+		freeall(cube->map.map);
+	if (cube->map.map_check)
+		freeall(cube->map.map_check);
+	free_textur(cube);
+	if (cube->inst)
+		ft_lstclear_cube(&cube->inst);
 	if (cube->win.win_ptr)
 			mlx_destroy_window(cube->win. mlx_ptr, cube->win.win_ptr);
 	if (cube->win.mlx_ptr)
@@ -506,7 +520,7 @@ int	handle_mouse_move(int x, int y, t_cube *cube)
 		if (cube->player.angle > 2 * M_PI)
 			cube->player.angle -= 2 * M_PI;
 		mlx_mouse_move(cube->win.mlx_ptr, cube->win.win_ptr, center_x, center_y);
-		mlx_mouse_hide(cube->win.mlx_ptr, cube->win.win_ptr);
+		//mlx_mouse_hide(cube->win.mlx_ptr, cube->win.win_ptr);
 		cube->prev_mouse_x = center_x;
 	}
 	if (cube->input.c)
@@ -523,6 +537,7 @@ void	cube_init(t_cube *cube)
 	cube->input.f = false;
 	cube->input.c = false;
 	cube->input.is_door = false;
+	cube->player.existence = 0;
 	cube->prev_mouse_x = 400;
     cube->input.left = false;
     cube->input.right = false;
@@ -548,39 +563,28 @@ void	cube_init(t_cube *cube)
 	cube->inst = NULL;
 }
 
-
 int main(int ac, char *ag[])
 {
-    t_cube cube;  // Create an array of two t_cube structs
-    //char *str;
+	t_cube	cube;
 
-    // Initialize first window (cube[0])
 	cube_init(&cube);
 	if (ac != 2)
 	{
 		perror("ERROR\ninvalid argument");
 		exit(1);
 	}
-    cube.win.mlx_ptr = mlx_init();
+	cube.win.mlx_ptr = mlx_init();
 	if (parsing(&cube, ag[1]) == 1)
 	{
 		perror("bad parsing\n");
-		exit (1);
+		on_destroy(&cube);
 	}
-    cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, cube.win.win_width, cube.win.win_height, "PROVA");
-    //// Initialize second window (cube[1])
-    //// Set up hooks for input and rendering for both windows
-    mlx_hook(cube.win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube);
-    mlx_hook(cube.win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube);
+	cube.win.win_ptr = mlx_new_window(cube.win.mlx_ptr, cube.win.win_width, cube.win.win_height, "PROVA");
+	mlx_hook(cube.win.win_ptr, KeyPress, KeyPressMask, &on_keypress, &cube);
+	mlx_hook(cube.win.win_ptr, KeyRelease, KeyReleaseMask, &on_keyrelease, &cube);
 	mlx_hook(cube.win.win_ptr, 6, 1L << 6, handle_mouse_move, &cube);
-	//mlx_mouse_hook(cube.win.win_ptr, MotionNotify, &cube);
-    mlx_hook(cube.win.win_ptr, 33, 1L << 5, &on_destroy, &cube);
-    
-    //// Use a shared game loop to update both windows
-    mlx_loop_hook(cube.win.mlx_ptr, &game_loop, &cube);  // Pass both cubes to the game loop as an array
-    
-    //// Enter the MiniLibX main loop
-    mlx_loop(cube.win.mlx_ptr);
-
-    return 0;
-}	
+	mlx_hook(cube.win.win_ptr, 33, 1L << 5, &on_destroy, &cube);
+	mlx_loop_hook(cube.win.mlx_ptr, &game_loop, &cube);
+	mlx_loop(cube.win.mlx_ptr);
+	return 0;
+}

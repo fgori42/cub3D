@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/01 22:07:00 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/04 11:48:45 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ typedef struct	s_wall
 typedef struct	s_cube
 {
 	t_img		*img;
+	int			*f;
 	int			side;
 	int			prev_mouse_x;
 	t_win		win;
@@ -152,6 +153,6 @@ void	draw_animation(t_cube *cube);
 void draw_direction(t_img *img, t_cube *cube);
 void	print_world(t_wall *tmp, t_cube *cube);
 bool	hit_vertical(t_wall *node);
-
+void	ft_lstclear_cube(t_wall **lst);
 
 #endif

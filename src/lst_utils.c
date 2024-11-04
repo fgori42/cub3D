@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/31 17:38:00 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 11:49:02 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,5 +132,22 @@ void	correct_lst(t_wall *node)
 			tmp->wall_width = width;
 			tmp = tmp->next;
 		}
+	}
+}
+
+void	ft_lstclear_cube(t_wall **lst)
+{
+	t_wall	*temp;
+
+	if (!lst)
+	{
+		lst = NULL;
+		return ;
+	}
+	while (*lst)
+	{
+		temp = (*lst)->next;
+		free(*lst);
+		*lst = temp;
 	}
 }

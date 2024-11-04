@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/10/29 15:02:32 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 11:37:27 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ int	mtx_trim(t_map	*map, char **mtx, int start)
 		map->map_check[i] = ft_strdup(map->map[i]);
 		i++;
 	}
-	free(mtx);
+	freeall(mtx);
 	return (0);
 }
 
@@ -335,7 +335,10 @@ int parsing(t_cube *cube, char *str)
 	openMap = ft_split(mapFile, '\n');	
 	free(mapFile);
 	if (!take_textur(cube, openMap))
+	{
+		freeall(openMap);
 		return (1);
+	}
 	if (!map_check(cube, cube->map.map_check))
 		return(1);
 	if (!is_missing(cube))
