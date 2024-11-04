@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 15:04:13 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 17:08:58 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,20 +74,20 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
 
     // Get the address of the image data (pixel array)
     pixel_data = mlx_get_data_addr(img, &bpp, &size_line, &endian);
-
     // Ensure tex_x and tex_y are within the bounds of the texture dimensions
     if (tex_x >= tex_width) tex_x = tex_width - 1;
 	if (tex_x < 0) tex_x = 0;
     if (tex_y >= tex_height) tex_y = tex_height - 1;
 	if (tex_y < 0) tex_y = 0;
-
     // Calculate the pixel's offset in the image's data array
     int pixel_offset = tex_y * size_line + tex_x * (bpp / 8);
-
-	if (endian == 0) {
+	if (endian == 0) 
+	{
         // Little-endian: the color is stored as BGR(A)
         color = *(int *)(pixel_data + pixel_offset);
-    } else {
+    } 
+	else 
+	{
         // Big-endian: the color is stored as RGB(A)
         unsigned char r = pixel_data[pixel_offset];
         unsigned char g = pixel_data[pixel_offset + 1];
@@ -96,7 +96,6 @@ int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int t
     }
     // Get the color of the pixel (dereference the pointer at the offset)
     color = *(int *)(pixel_data + pixel_offset);
-
     return color;
 }
 
@@ -137,6 +136,94 @@ void ray_init(t_ray *ray, t_cube *cube)
 	adjust_angle(&ray->ray_angle);
 }
 
+void ray_calc_init(t_ray *ray, t_cube *cube)
+{
+	ray->hit = 0;
+	// Player's position
+	ray->posX = cube->player.pos.x;
+	ray->posY = cube->player.pos.y;
+
+	// Ray direction based on current ray angle
+	ray->rayDirx = cos(ray->ray_angle);
+	ray->rayDiry = sin(ray->ray_angle);
+
+	// Which box of the map we're in
+	ray->mapx = (int)(ray->posX);
+	ray->mapy = (int)(ray->posY);
+
+	// Length of the ray from one x or y-side to the next x or y-side
+	ray->delta_dist_x = fabs(1 / ray->rayDirx);
+	ray->delta_dist_y = fabs(1 / ray->rayDiry);
+}
+
+void ray_calc_step_sidedist(t_ray *ray)
+{
+	if (ray->rayDirx < 0)
+	{
+		ray->stepX = -1;
+		ray->side_dist_x = (ray->posX - ray->mapx) * ray->delta_dist_x;
+	}
+	else
+	{
+		ray->stepX = 1;
+		ray->side_dist_x = ((ray->mapx + 1.0) - ray->posX) * ray->delta_dist_x;
+	}
+	if (ray->rayDiry < 0)
+	{
+		ray->stepY = -1;
+		ray->side_dist_y = (ray->posY - ray->mapy) * ray->delta_dist_y;
+	}
+	else
+	{
+		ray->stepY = 1;
+		ray->side_dist_y = ((ray->mapy + 1.0) - ray->posY) * ray->delta_dist_y;
+	}
+}
+
+void find_wall(t_ray *ray, t_cube *cube)
+{
+	while (!ray->hit)
+	{
+		if (ray->side_dist_x < ray->side_dist_y)
+		{
+			ray->side_dist_x += ray->delta_dist_x;
+			ray->mapx += ray->stepX;
+			ray->side = 0;
+			cube->side = 0;
+		}
+		else
+		{
+			ray->side_dist_y += ray->delta_dist_y;
+			ray->mapy += ray->stepY;
+			ray->side = 1;
+			cube->side = 1;
+		}
+		// Check if the ray has hit a wall
+		if (wallLoak(ray->mapx, ray->mapy, cube->map.map))
+			ray->hit = 1;
+	}
+}
+
+void determine_hit(t_ray *ray)
+{
+	if (ray->side == 0)
+	{
+		// Vertical wall hit
+		ray->hitx = ray->posX + ray->side_dist_x * ray->rayDirx;
+		ray->hity = ray->posY + ray->side_dist_x * ray->rayDiry;
+	}
+	else
+	{
+		// Horizontal wall hit
+		ray->hitx = ray->posX + ray->side_dist_y * ray->rayDirx;
+		ray->hity = ray->posY + ray->side_dist_y * ray->rayDiry;
+	}
+	if (ray->side == 0)
+		ray->ray_length = (ray->mapx - ray->posX + (1 - ray->stepX) / 2) / ray->rayDirx;
+	else
+		ray->ray_length = (ray->mapy - ray->posY + (1 - ray->stepY) / 2) / ray->rayDiry;
+}
+
 void calculate_ray(t_cube *cube)
 {
     t_ray ray;
@@ -145,98 +232,17 @@ void calculate_ray(t_cube *cube)
 	ray_init(&ray, cube);
     while (ray.id_ray < ray.num_rays)
     {
-		// Player's position
-        double posX = cube->player.pos.x;
-        double posY = cube->player.pos.y;
-
-        // Ray direction based on current ray angle
-        double rayDirX = cos(ray.ray_angle);
-        double rayDirY = sin(ray.ray_angle);
-
-        // Which box of the map we're in
-        int mapX = (int)(posX);
-        int mapY = (int)(posY);
-
-        // Length of the ray from current position to the next x or y-side
-        double side_dist_x;
-        double side_dist_y;
-
-        // Length of the ray from one x or y-side to the next x or y-side
-        double delta_dist_x = fabs(1 / rayDirX);
-        double delta_dist_y = fabs(1 / rayDirY);
-
-		int stepX;
-        int stepY;
-        int hit = 0; // Has the ray hit a wall?
-        int side;    // Was a NS or EW wall hit?
-
-		if (rayDirX < 0)
-        {
-            stepX = -1;
-            side_dist_x = (posX - mapX) * delta_dist_x;
-        }
-        else
-        {
-            stepX = 1;
-            side_dist_x = ((mapX + 1.0) - posX) * delta_dist_x;
-        }
-        if (rayDirY < 0)
-        {
-            stepY = -1;
-            side_dist_y = (posY - mapY) * delta_dist_y;
-        }
-        else
-        {
-            stepY = 1;
-            side_dist_y = ((mapY + 1.0) - posY) * delta_dist_y;
-        }
-        while (!hit)
-        {
-            if (side_dist_x < side_dist_y)
-            {
-                side_dist_x += delta_dist_x;
-                mapX += stepX;
-                side = 0;
-				cube->side = 0;
-            }
-            else
-            {
-                side_dist_y += delta_dist_y;
-                mapY += stepY;
-                side = 1;
-				cube->side = 1;
-            }
-            // Check if the ray has hit a wall
-            if (wallLoak(mapX, mapY, cube->map.map))
-                hit = 1;
-        }
-		double hitX, hitY;
-        if (side == 0)
-        {
-            // Vertical wall hit
-            hitX = posX + side_dist_x * rayDirX;
-            hitY = posY + side_dist_x * rayDirY;
-        }
-        else
-        {
-            // Horizontal wall hit
-            hitX = posX + side_dist_y * rayDirX;
-            hitY = posY + side_dist_y * rayDirY;
-        }
-		double ray_length;
-		if (side == 0)
-			ray_length = (mapX - posX + (1 - stepX) / 2) / rayDirX;
-   		else
-			ray_length = (mapY - posY + (1 - stepY) / 2) / rayDirY;
-		pos.x = hitX;
-		pos.y = hitY;
-		tmp = ft_lstnew_cube(ray_length, &pos, ray.ray_angle, cube);
+		ray_calc_init(&ray, cube);
+		ray_calc_step_sidedist(&ray);
+		find_wall(&ray, cube);
+		determine_hit(&ray);
+		printf("%f\n", ray.ray_angle);
+		pos.x = ray.hitx;
+		pos.y = ray.hity;
+		tmp = ft_lstnew_cube(ray.ray_length, &pos, ray.ray_angle, cube);
 		ft_lstadd_back_cube(&cube->inst, tmp);
         ray.ray_angle += ray.angle_step;
-        if (ray.ray_angle < 0)
-            ray.ray_angle += 2 * M_PI;
-        if (ray.ray_angle > 2 * M_PI)
-            ray.ray_angle -= 2 * M_PI;
+        adjust_angle(&ray.ray_angle);
         ray.id_ray++;
     }
 	correct_lst(cube->inst);
@@ -395,7 +401,7 @@ int check_collision(double x, double y, char **map)
 {
 	double player_size;
 	
-	player_size = 0.5;
+	player_size = 1;
     // Controlla i quattro angoli del rettangolo che rappresenta il giocatore
     if (wallLoak(x - player_size, y - player_size, map) &&
         wallLoak(x + player_size, y - player_size, map) &&
@@ -430,7 +436,7 @@ int check_distance(t_cube cube, char direction)
 
 int handle_movement(t_cube *cube)
 {
-    double move_step = 8; // Movement speed
+    double move_step = 10; // Movement speed
     double rot_step = 0.08; // Rotation speed (radians)
 
     // Handle forward movement

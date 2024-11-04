@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 14:47:35 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/04 15:27:32 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,8 @@ typedef struct	s_wall
 
 typedef struct	s_ray
 {
-
+	double	delta_dist_y;
+	double	delta_dist_x;
 	double	posX;
 	double	posY;
 	double	rayDirx;
