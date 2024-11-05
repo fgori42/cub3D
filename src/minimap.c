@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 13:15:24 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/05 11:57:00 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,37 +57,41 @@ int what_i_see(int x, int y, char **map)
 		return (16711680);
 }
 
+void	mini_pixel_put(t_cube *cube, int s_[2], int x[3], t_img *mini)
+{
+	if (s_[0] == (int)(cube->player.pos.x /64) && s_[1] == (int)(cube->player.pos.y /64)
+		&& ((cube->map.level == 1 && x[2] % 2 == 0) || cube->map.level == 2))
+		img_pixel_put(16776960 , x[0], x[1], &mini);
+	else if ((cube->map.level == 1 && x[2] % 2 == 0) || cube->map.level == 2)
+		img_pixel_put(what_i_see(s_[0], s_[1], cube->map.map) , x[0], x[1], &mini);
+	
+}
+
 void	put_mini(t_cube *cube, t_img *mini)
 {
-	int	x;
-	int	y;
-	int	i;
-	int s_x;
-	int s_y;
+	int	s_[2];
+	int	x[3];
 	
-	x = 0;
-	y = 0;
-	i = 0;
-	s_x = (cube->player.pos.x / 64) - 5;
-	while (x < cube->minimap.mini_wid)
+	x[0] = 0;
+	x[1] = 0;
+	x[2] = 0;
+	s_[0] = (cube->player.pos.x / 64) - 5;
+	while (x[0] < cube->minimap.mini_wid)
 	{
-		y = 0;
-		s_y = (cube->player.pos.y / 64) - 3;
-		while (y < cube->minimap.mini_height)
+		x[1] = 0;
+		s_[1] = (cube->player.pos.y / 64) - 3;
+		while (x[1] < cube->minimap.mini_height)
 		{
-			if (s_x == (int)(cube->player.pos.x /64) && s_y == (int)(cube->player.pos.y /64) && ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2))
-				img_pixel_put(16776960 , x, y, &mini);
-			else if ((cube->map.level == 1 && i % 2 == 0) || cube->map.level == 2)
-				img_pixel_put(what_i_see(s_x, s_y, cube->map.map) , x, y, &mini);
-			y++;
-			i++;
-			if (y % 32 == 0)
-				s_y++;
+			mini_pixel_put(cube, s_, x, mini);
+			x[1]++;
+			x[2]++;
+			if (x[1] % 32 == 0)
+				s_[1]++;
 		}
-		i++;
-		x++;
-		if (x % 32 == 0)
-				s_x++;
+		x[2]++;
+		x[0]++;
+		if (x[0] % 32 == 0)
+			s_[0]++;
 	}
 }
 
@@ -105,7 +109,6 @@ void	display_map(t_cube *cube)
 		minimap->image = mlx_new_image(cube->win.mlx_ptr, cube->minimap.mini_wid, cube->minimap.mini_height);
 		minimap->data = mlx_get_data_addr(minimap->image, &minimap->bpp, &minimap->size_line, &minimap->format);
 		put_mini(cube, minimap);
-		//draw_direction(minimap, cube);
 		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);;
 		mlx_destroy_image(cube->win.mlx_ptr, minimap->image);
 		free(minimap);

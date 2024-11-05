@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 19:21:33 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/05 12:50:36 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,25 +395,39 @@ int on_keyrelease(int keysym, t_cube *cube)
 	return (0);
 }
 
+
 int check_collision(double x, double y, char **map)
 {
 	double player_size;
 	
-	player_size = 1;
-    // Controlla i quattro angoli del rettangolo che rappresenta il giocatore
-    if (wallLoak(x - player_size, y - player_size, map) &&
-        wallLoak(x + player_size, y - player_size, map) &&
-        wallLoak(x - player_size, y + player_size, map) &&
-        wallLoak(x + player_size, y + player_size, map))
-    {
-        return 0; // Collisione rilevata
-    }
-    return 1; // Nessuna collisione
+	player_size = 5;
+	if (wallLoak(x - player_size, y - player_size, map) ||
+		wallLoak(x + player_size, y - player_size, map) ||
+		wallLoak(x - player_size, y + player_size, map) ||
+		wallLoak(x + player_size, y + player_size, map))
+	{
+		return 0;
+	}
+	return 1;
 }
+
+int	check_mov(double angle, t_cube cube)
+{
+	double	ray_y;
+	double	ray_x;
+
+	ray_x = cube.player.pos.x + cos(angle) * 20;
+	ray_y = cube.player.pos.y + sin(angle) * 20;
+    if (!check_collision(ray_x, ray_y, cube.map.map))
+    	return (1);
+	else
+		return (0);
+}
+
 
 int check_distance(t_cube cube, char direction)
 {
-	float angle;
+	float	angle;
 	
 	if (direction == 'a')
 		angle = cube.player.angle - (90 * M_PI / 180);
@@ -429,13 +443,7 @@ int check_distance(t_cube cube, char direction)
 	{
     	angle -= 2 * M_PI;
 	}
-	double ray_x = cube.player.pos.x + cos(angle) * 10;
-	double ray_y = cube.player.pos.y + sin(angle) * 10;
-	// Check for wall collision
-    if (!check_collision(ray_x, ray_y, cube.map.map))
-    	return (1);
-	else
-		return (0);
+	return(check_mov(angle, cube));
 }
 
 int handle_movement(t_cube *cube)
