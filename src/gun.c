@@ -15,7 +15,7 @@ void draw_image(t_img *bg, t_img *img, int start_x, int start_y)
 		{
             int bg_x = start_x + x;
             int bg_y = start_y + y;
-            int gun_pixel = get_texture_color(img->image, img->width, img->height, x, y);
+            int gun_pixel = get_texture_color(img->image, x, y);
             if (gun_pixel != 0x00FFFFFF)
             	img_pixel_put(gun_pixel, bg_x, bg_y, &bg);
             x++;

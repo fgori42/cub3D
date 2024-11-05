@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 21:58:45 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 16:40:42 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/05 14:45:37 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,23 @@ void	print_wall_in_img(t_wall *tmp, t_cube *cube, t_pos *utils, t_img *new_img)
 				cube->input.is_door = true;
 			}
 			else
-			{
 				cube->input.is_door = false;
-			}
 		}
 		int texture_y = (utils->y - tmp->wall_top) * cube->texture.height / tmp->wall_height;
 		if (texture_y >= cube->texture.height)
 			texture_y = cube->texture.height - 1;
-		int color = get_texture_color(tmp->text, cube->texture.width, cube->texture.height, utils->x, texture_y);
-		
-			img_pixel_put(color, tmp->idx, utils->y, &new_img);
-		
+		int color = get_texture_color(tmp->text, utils->x, texture_y);
+		img_pixel_put(color, tmp->idx, utils->y, &new_img);
 		utils->y++;
 	}
+}
+
+bool	hit_vertical(t_wall *node)
+{
+	if (node->direction == 1 || node->direction == 3)
+		return (true);
+	else
+		return (false);
 }
 
 void	print_world(t_wall *tmp, t_cube *cube)

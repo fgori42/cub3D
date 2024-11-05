@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 15:27:32 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/05 15:14:55 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,14 +168,13 @@ int	parsing(t_cube *cube, char *str);
 int	size_mtx(char size, char **map);
 void	img_pixel_put(int color, int x, int y, t_img **img);
 void	display_map(t_cube *cube);
-int get_texture_color(void *img, int tex_width, int tex_height, int tex_x, int tex_y);
+int get_texture_color(void *img, int tex_x, int tex_y);
 
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
 void	correct_lst(t_wall *node);
 void	draw_animation(t_cube *cube);
-void	draw_direction(t_img *img, t_cube *cube);
 void	print_world(t_wall *tmp, t_cube *cube);
 bool	hit_vertical(t_wall *node);
 void	ft_lstclear_cube(t_wall **lst);

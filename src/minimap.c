@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 11:57:00 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/05 15:15:05 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 		y = 0;
 		while (y++ <  cube->minimap.mini_height)
 		{
-			color = get_texture_color(src->image, cube->minimap.mini_wid, cube->minimap.mini_height, x, y);
+			color = get_texture_color(src->image, x, y);
 			pixel_dest = (cube->img)->data + ((startY * (cube->img)->size_line) + (startX * (cube->img)->bpp / 8));
 			if (color != 0x00000000)
 			{
@@ -109,7 +109,7 @@ void	display_map(t_cube *cube)
 		minimap->image = mlx_new_image(cube->win.mlx_ptr, cube->minimap.mini_wid, cube->minimap.mini_height);
 		minimap->data = mlx_get_data_addr(minimap->image, &minimap->bpp, &minimap->size_line, &minimap->format);
 		put_mini(cube, minimap);
-		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);;
+		plus_img(minimap, cube->minimap.mini_start_x, cube->minimap.mini_start_y, cube);
 		mlx_destroy_image(cube->win.mlx_ptr, minimap->image);
 		free(minimap);
 	}
