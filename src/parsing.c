@@ -112,6 +112,25 @@ int	convert_rgb(char *str, t_text *home)
 	return (0);
 }
 
+int	place_textur(char *str, char *sup, t_text *home, t_cube *cube)
+{
+	if (!home->NO && ft_strncmp(str, "NO", 2) == 0)
+		home->NO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+				&cube->texture.width, &cube->texture.height);
+	else if (!home->SO && ft_strncmp(str, "SO", 2) == 0)
+		home->SO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+				&cube->texture.width, &cube->texture.height);
+	else if (!home->EA && ft_strncmp(str, "EA", 2) == 0)
+		home->EA = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+				&cube->texture.width, &cube->texture.height);
+	else if (!home->WE && ft_strncmp(str, "WE", 2) == 0)
+		home->WE = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+				&cube->texture.width, &cube->texture.height);
+	else
+		return (put_error("textur not found: ", str, 1));
+	return (0);
+}
+
 int	put_textur(char *str, t_text *home, t_cube *cube)
 {
 	char	*sup;
@@ -119,20 +138,8 @@ int	put_textur(char *str, t_text *home, t_cube *cube)
 	sup = ft_strchr(str, '.');
 	if (sup)
 	{
-		if (!home->NO && ft_strncmp(str, "NO", 2) == 0)
-			home->NO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-					&cube->texture.width, &cube->texture.height);
-		else if (!home->SO && ft_strncmp(str, "SO", 2) == 0)
-			home->SO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-					&cube->texture.width, &cube->texture.height);
-		else if (!home->EA && ft_strncmp(str, "EA", 2) == 0)
-			home->EA = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-					&cube->texture.width, &cube->texture.height);
-		else if (!home->WE && ft_strncmp(str, "WE", 2) == 0)
-			home->WE = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-					&cube->texture.width, &cube->texture.height);
-		else
-			return (put_error("textur not found: ", str, 1));
+		if (place_textur(str, sup, home, cube) == 1)
+			return (1);
 	}
 	else
 	{
@@ -174,6 +181,19 @@ char	*ft_strdup_and_place(char *str, int len)
 	return (str2);
 }
 
+void	mtx_clone(t_map *map)
+{
+	int	i;
+
+	i = 0;
+	map->map_check = ft_calloc(size_mtx('y', map->map) + 1, sizeof(char *));
+	while (map->map[i])
+	{
+		map->map_check[i] = ft_strdup(map->map[i]);
+		i++;
+	}
+}
+
 int	mtx_trim(t_map *map, char **mtx, int start)
 {
 	int		len;
@@ -194,13 +214,7 @@ int	mtx_trim(t_map *map, char **mtx, int start)
 		i++;
 	}
 	map->map = newmtx;
-	i = 0;
-	map->map_check = ft_calloc(size_mtx('y', newmtx) + 1, sizeof(char *));
-	while (map->map[i])
-	{
-		map->map_check[i] = ft_strdup(map->map[i]);
-		i++;
-	}
+	mtx_clone(map);
 	freeall(mtx);
 	return (0);
 }
