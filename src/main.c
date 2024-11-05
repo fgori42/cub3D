@@ -6,11 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:23:09 by fgori             #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/11/05 15:14:47 by aosmenaj         ###   ########.fr       */
-=======
-/*   Updated: 2024/11/05 12:51:07 by fgori            ###   ########.fr       */
->>>>>>> d1f98403e0897d2385103250fb9b80bf65912909
+/*   Updated: 2024/11/05 16:48:10 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,127 +89,6 @@ void	img_pixel_put(int color, int x, int y, t_img **img)
 		return ;
 	pixel = (*img)->data + ((y * (*img)->size_line) + (x * (*img)->bpp / 8));
 	*(int *)pixel = color;
-}
-
-void	ray_init(t_ray *ray, t_cube *cube)
-{
-	ray->id_ray = 0;
-	ray->num_rays = cube->win.win_width;
-	ray->FOV = 60 * (M_PI / 180);
-	ray->angle_step = ray->FOV / ray->num_rays;
-	ray->ray_angle = cube->player.angle - (ray->FOV / 2);
-	if (ray->ray_angle < 0)
-		ray->ray_angle += 2 * M_PI;
-	if (ray->ray_angle > 2 * M_PI)
-		ray->ray_angle -= 2 * M_PI;
-}
-
-void	ray_calc_init(t_ray *ray, t_cube *cube)
-{
-	ray->hit = 0;
-	ray->posX = cube->player.pos.x;
-	ray->posY = cube->player.pos.y;
-	ray->rayDirx = cos(ray->ray_angle);
-	ray->rayDiry = sin(ray->ray_angle);
-	ray->mapx = (int)(ray->posX);
-	ray->mapy = (int)(ray->posY);
-	ray->delta_dist_x = fabs(1 / ray->rayDirx);
-	ray->delta_dist_y = fabs(1 / ray->rayDiry);
-}
-
-void	ray_calc_step_sidedist(t_ray *ray)
-{
-	if (ray->rayDirx < 0)
-	{
-		ray->stepX = -1;
-		ray->side_dist_x = (ray->posX - ray->mapx) * ray->delta_dist_x;
-	}
-	else
-	{
-		ray->stepX = 1;
-		ray->side_dist_x = ((ray->mapx + 1.0) - ray->posX) * ray->delta_dist_x;
-	}
-	if (ray->rayDiry < 0)
-	{
-		ray->stepY = -1;
-		ray->side_dist_y = (ray->posY - ray->mapy) * ray->delta_dist_y;
-	}
-	else
-	{
-		ray->stepY = 1;
-		ray->side_dist_y = ((ray->mapy + 1.0) - ray->posY) * ray->delta_dist_y;
-	}
-}
-
-void	find_wall(t_ray *ray, t_cube *cube)
-{
-	while (!ray->hit)
-	{
-		if (ray->side_dist_x < ray->side_dist_y)
-		{
-			ray->side_dist_x += ray->delta_dist_x;
-			ray->mapx += ray->stepX;
-			ray->side = 0;
-			cube->side = 0;
-		}
-		else
-		{
-			ray->side_dist_y += ray->delta_dist_y;
-			ray->mapy += ray->stepY;
-			ray->side = 1;
-			cube->side = 1;
-		}
-		if (wallloak(ray->mapx, ray->mapy, cube->map.map))
-			ray->hit = 1;
-	}
-}
-
-void	determine_hit(t_ray *ray)
-{
-	if (ray->side == 0)
-	{
-		ray->hitx = ray->posX + ray->side_dist_x * ray->rayDirx;
-		ray->hity = ray->posY + ray->side_dist_x * ray->rayDiry;
-	}
-	else
-	{
-		ray->hitx = ray->posX + ray->side_dist_y * ray->rayDirx;
-		ray->hity = ray->posY + ray->side_dist_y * ray->rayDiry;
-	}
-	if (ray->side == 0)
-		ray->ray_length = (ray->mapx - ray->posX + (1 - ray->stepX) / 2)
-			/ ray->rayDirx;
-	else
-		ray->ray_length = (ray->mapy - ray->posY + (1 - ray->stepY) / 2)
-			/ ray->rayDiry;
-}
-
-void	calculate_ray(t_cube *cube)
-{
-	t_ray	ray;
-	t_wall	*tmp;
-	t_pos	pos;
-
-	ray_init(&ray, cube);
-	while (ray.id_ray < ray.num_rays)
-	{
-		ray_calc_init(&ray, cube);
-		ray_calc_step_sidedist(&ray);
-		find_wall(&ray, cube);
-		determine_hit(&ray);
-		pos.x = ray.hitx;
-		pos.y = ray.hity;
-		tmp = ft_lstnew_cube(ray.ray_length, &pos, ray.ray_angle, cube);
-		ft_lstadd_back_cube(&cube->inst, tmp);
-		ray.ray_angle += ray.angle_step;
-		if (ray.ray_angle < 0)
-			ray.ray_angle += 2 * M_PI;
-		if (ray.ray_angle > 2 * M_PI)
-			ray.ray_angle -= 2 * M_PI;
-		ray.id_ray++;
-	}
-	correct_lst(cube->inst);
-	print_world(cube->inst, cube);
 }
 
 void	free_textur(t_cube *cube)

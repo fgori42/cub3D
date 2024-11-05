@@ -3,48 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 11:49:02 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/05 17:10:10 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube.h"
 
+void	decide_tex_direc(t_wall *new, t_cube *cube)
+{
+	if (cube->side == 0 && cos(new->angle) < 0)
+	{
+		new->text = cube->text.WE;
+		new->direction = 3;
+	}
+	else if (cube->side == 0)
+	{
+		new->text = cube->text.EA;
+		new->direction = 1;
+	}
+	else if (cube->side == 1 && sin(new->angle) < 0)
+	{
+		new->text = cube->text.NO;
+		new->direction = 0;
+	}
+	else if (cube->side == 1)
+	{
+		new->text = cube->text.SO;
+		new->direction = 2;
+	}
+}
+
 static void	take_wall(t_wall *new, t_cube *cube)
 {
-	if (cube->side == 0)
-    {
-        if (cos(new->angle) < 0)
-        {
-            new->text = cube->text.WE;
-            new->direction = 3;
-        }
-        else
-        {
-            new->text = cube->text.EA;
-            new->direction = 1;
-        }
-    }
-	else
-    {
-        if (sin(new->angle) < 0)
-        {
-            new->text = cube->text.NO;
-            new->direction = 0;
-        }
-        else
-        {
-            new->text = cube->text.SO;
-            new->direction = 2;
-        }
-    }
-	int x;
-	int y;
+	int	x;
+	int	y;
+
+	decide_tex_direc(new, cube);
 	y = (int)new->cor.y / 64;
 	x = (int)new->cor.x / 64;
-	if (x < size_mtx('x', cube->map.map)  && x >= 0 && (y < size_mtx('y', cube->map.map)) && y >= 0)
+	if (x < size_mtx('x', cube->map.map) && x >= 0 && (y < size_mtx('y',
+				cube->map.map)) && y >= 0)
 	{
 		if (cube->map.map[(int)new->cor.y / 64][(int)new->cor.x / 64] == 'D')
 		{
@@ -54,11 +55,11 @@ static void	take_wall(t_wall *new, t_cube *cube)
 	}
 }
 
-t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
+t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube)
 {
 	t_wall	*new;
 	double	new_angle;
-	
+
 	new = (void *)malloc(sizeof(*new));
 	if (!new)
 		return (NULL);
@@ -73,36 +74,12 @@ t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube )
 		new_angle -= 2 * M_PI;
 	new->ray_lenght = lenght * cos(new_angle);
 	take_wall(new, cube);
-    new->wall_height = (int)((cube->win.win_height * 64) / new->ray_lenght); // Altezza del muro corretta
+	new->wall_height = (int)((cube->win.win_height * 64) / new->ray_lenght);
 	new->wall_top = (cube->win.win_height / 2) - (new->wall_height / 2);
 	new->wall_bottom = (cube->win.win_height / 2) + (new->wall_height / 2);
 	new->wall_width = 0;
 	new->next = NULL;
 	return (new);
-}
-
-t_wall	*ft_lstlast_cube(t_wall *lst)
-{
-	while (lst && lst-> next != NULL)
-	{
-		lst = lst->next;
-	}
-	return (lst);
-}
-
-void	ft_lstadd_back_cube(t_wall **lst, t_wall *new)
-{
-	t_wall	*temp;
-
-	if (!*lst)
-	{
-		*lst = new;
-		return ;
-	}
-	if (!new)
-		return ;
-	temp = ft_lstlast_cube(*lst);
-	temp->next = new;
 }
 
 void	correct_lst(t_wall *node)
@@ -112,8 +89,6 @@ void	correct_lst(t_wall *node)
 	int		i;
 	int		width;
 
-	if (!node->next)
-		return ;
 	i = 0;
 	tmp = node;
 	tmp_two = node;
@@ -133,6 +108,7 @@ void	correct_lst(t_wall *node)
 			tmp = tmp->next;
 		}
 	}
+	return ;
 }
 
 void	ft_lstclear_cube(t_wall **lst)

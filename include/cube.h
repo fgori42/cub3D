@@ -6,7 +6,7 @@
 /*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 15:14:55 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/05 17:13:24 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@
 # include <math.h>
 # include <stdbool.h>
 
-//#ifndef M_PI
-//    #define M_PI 3.14159265358979323846
-//#endif
+#ifndef M_PI
+   #define M_PI 3.14159265358979323846
+#endif
 
 typedef struct s_pos 
 {
@@ -163,13 +163,12 @@ typedef struct	s_cube
 	t_minimap	minimap;
 }t_cube;
 
-int	on_destroy(t_cube *cube);
-int	parsing(t_cube *cube, char *str);
-int	size_mtx(char size, char **map);
+int		on_destroy(t_cube *cube);
+int		parsing(t_cube *cube, char *str);
+int		size_mtx(char size, char **map);
 void	img_pixel_put(int color, int x, int y, t_img **img);
 void	display_map(t_cube *cube);
-int get_texture_color(void *img, int tex_x, int tex_y);
-
+int		get_texture_color(void *img, int tex_x, int tex_y);
 t_wall	*ft_lstnew_cube(double lenght, t_pos *pos, double angle, t_cube *cube );
 t_wall	*ft_lstlast_cube(t_wall *lst);
 void	ft_lstadd_back_cube(t_wall **lst, t_wall *new);
@@ -179,5 +178,11 @@ void	print_world(t_wall *tmp, t_cube *cube);
 bool	hit_vertical(t_wall *node);
 void	ft_lstclear_cube(t_wall **lst);
 void	calculate_ray(t_cube *cube);
+short	wallloak(int x, int y, char **map);
+void	ray_init(t_ray *ray, t_cube *cube);
+void	ray_calc_init(t_ray *ray, t_cube *cube);
+void	ray_calc_step_sidedist(t_ray *ray);
+void	determine_hit(t_ray *ray);
+void	find_wall(t_ray *ray, t_cube *cube);
 
 #endif

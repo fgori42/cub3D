@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/04 13:17:32 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/05 17:20:46 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,37 +38,36 @@ bool	is_cub(char *str)
 	}
 }
 
-
-char *gnl(char *str)
+char	*gnl(char *str)
 {
-	int 	fd;
+	int		fd;
 	int		control;
 	char	*buff;
-	char 	*txt;
+	char	*txt;
 	char	*sup;
-	
+
 	control = 1;
-	buff = ft_calloc(2,1);
-	txt = ft_calloc(1,1);
+	buff = ft_calloc(2, 1);
+	txt = ft_calloc(1, 1);
 	if (!txt || !buff)
 		return (NULL);
-	fd = open(str,  O_RDWR );
+	fd = open(str, O_RDWR);
 	if (fd < 0)
 		return (NULL);
 	while (control > 0)
 	{
 		control = read(fd, buff, 1);
 		if (control < 1)
-			break;
+			break ;
 		sup = txt;
 		txt = ft_strjoin(txt, buff);
 		free(sup);
 	}
 	free(buff);
-	return(txt);
+	return (txt);
 }
 
-int create_rgb(char *str)
+int	create_rgb(char *str)
 {
 	int		r;
 	int		g;
@@ -81,18 +80,18 @@ int create_rgb(char *str)
 	r = ft_atoi(sup[0]);
 	g = ft_atoi(sup[1]);
 	b = ft_atoi(sup[2]);
-	if (ft_strlen(sup[0]) > 3 || ft_strlen(sup[1]) > 3 || ft_strlen(sup[2]) > 3 ||
-		r < 0 || r > 255 || g < 0 || g > 255 || b < 0 ||  b > 255 )
+	if (ft_strlen(sup[0]) > 3 || ft_strlen(sup[1]) > 3 || ft_strlen(sup[2]) > 3
+		|| r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
 		return (-1);
 	free(str);
 	freeall(sup);
-    return (r << 16 | g << 8 | b);
+	return (r << 16 | g << 8 | b);
 }
 
 int	convert_rgb(char *str, t_text *home)
 {
 	int	j;
-	
+
 	j = 0;
 	if (home->C == -1 && !ft_strncmp(str, "C", 1))
 	{
@@ -111,24 +110,27 @@ int	convert_rgb(char *str, t_text *home)
 	else
 		return (-1);
 	return (0);
-	
 }
 
 int	put_textur(char *str, t_text *home, t_cube *cube)
 {
-	char *sup;
+	char	*sup;
 
 	sup = ft_strchr(str, '.');
 	if (sup)
 	{
-		if (!home->NO && ft_strncmp(str, "NO", 2) == 0 )
-			home->NO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup, &cube->texture.width, &cube->texture.height);
-		else if (!home->SO && ft_strncmp(str, "SO", 2) == 0 )
-			home->SO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup, &cube->texture.width, &cube->texture.height);
-		else if (!home->EA && ft_strncmp(str, "EA", 2) == 0 )
-			home->EA = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup, &cube->texture.width, &cube->texture.height);
-		else if (!home->WE && ft_strncmp(str, "WE", 2) == 0 )
-			home->WE = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup, &cube->texture.width, &cube->texture.height);
+		if (!home->NO && ft_strncmp(str, "NO", 2) == 0)
+			home->NO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+					&cube->texture.width, &cube->texture.height);
+		else if (!home->SO && ft_strncmp(str, "SO", 2) == 0)
+			home->SO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+					&cube->texture.width, &cube->texture.height);
+		else if (!home->EA && ft_strncmp(str, "EA", 2) == 0)
+			home->EA = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+					&cube->texture.width, &cube->texture.height);
+		else if (!home->WE && ft_strncmp(str, "WE", 2) == 0)
+			home->WE = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
+					&cube->texture.width, &cube->texture.height);
 		else
 			return (put_error("textur not found: ", str, 1));
 	}
@@ -138,9 +140,9 @@ int	put_textur(char *str, t_text *home, t_cube *cube)
 			return (put_error("color not found: ", str, 1));
 	}
 	if (!home->door)
-		home->door = mlx_xpm_file_to_image(cube->win.mlx_ptr, "./textures/door.xpm", &cube->texture.width, &cube->texture.height);
-	//mlx_put_image_to_window(cube->win.mlx_ptr, cube->win.win_ptr, home->door, 0, 0);
-	//sleep(2);
+		home->door = mlx_xpm_file_to_image(cube->win.mlx_ptr,
+				"./textures/door.xpm", &cube->texture.width,
+				&cube->texture.height);
 	return (0);
 }
 
@@ -169,32 +171,32 @@ char	*ft_strdup_and_place(char *str, int len)
 
 	str2 = ft_calloc(len + 1, sizeof(char));
 	ft_strlcpy(str2, str, ft_strlen(str) + 1);
-	return(str2);
+	return (str2);
 }
 
-int	mtx_trim(t_map	*map, char **mtx, int start)
+int	mtx_trim(t_map *map, char **mtx, int start)
 {
 	int		len;
 	int		i;
 	int		lenstr;
-	char	**newMtx;
+	char	**newmtx;
 
 	i = 0;
 	len = size_mtx('y', mtx) - start;
-	newMtx = ft_calloc(len + 1, sizeof(char *));
-	if (!newMtx)
+	newmtx = ft_calloc(len + 1, sizeof(char *));
+	if (!newmtx)
 		return (1);
 	lenstr = find_max_len(mtx);
 	while (i < len)
 	{
-		newMtx[i] = ft_strdup_and_place(mtx[start], lenstr);
+		newmtx[i] = ft_strdup_and_place(mtx[start], lenstr);
 		start++;
 		i++;
 	}
-	map->map = newMtx;
+	map->map = newmtx;
 	i = 0;
-	map->map_check = ft_calloc(size_mtx('y', newMtx) + 1, sizeof(char *));
-	while(map->map[i])
+	map->map_check = ft_calloc(size_mtx('y', newmtx) + 1, sizeof(char *));
+	while (map->map[i])
 	{
 		map->map_check[i] = ft_strdup(map->map[i]);
 		i++;
@@ -205,46 +207,42 @@ int	mtx_trim(t_map	*map, char **mtx, int start)
 
 bool	take_textur(t_cube *cube, char **text)
 {
-	int 	i;
+	int	i;
 
 	i = 0;
 	while (i < 6)
 	{
-		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO", 2) == 0
-			|| ft_strncmp(text[i], "WE", 2) == 0 || ft_strncmp(text[i], "EA", 2) == 0
-			|| ft_strncmp(text[i], "C", 1) == 0 || ft_strncmp(text[i], "F", 1) == 0) 
-			{
+		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO",
+				2) == 0 || ft_strncmp(text[i], "WE", 2) == 0
+			|| ft_strncmp(text[i], "EA", 2) == 0 || ft_strncmp(text[i], "C",
+				1) == 0 || ft_strncmp(text[i], "F", 1) == 0)
+		{
 			if (put_textur(text[i], &cube->text, cube) == 1)
 				return (false);
-			}
+		}
 		else
 			return (false);
 		i++;
 	}
-	if (mtx_trim(&cube->map, text,i) == 1)
+	if (mtx_trim(&cube->map, text, i) == 1)
 		return (perror("Error\nimpossible to trim mtx"), false);
 	return (true);
 }
-void print_map(char **map) {
-    // Itera finché non trovi un puntatore nullo (che indica la fine della mappa)
-    for (int i = 0; map[i] != NULL; i++) {
-        printf("%s\n", map[i]); // Stampa ogni riga della mappa
-    }
-	printf("\n");
-}
- 
+
 int	full_fil(int x, int y, char **map)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (map[y][x] == '1' || map[y][x] == '\0')
 		return (0);
 	else if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
-		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1]) || x > (int)ft_strlen(map[y - 1]))
+		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1])
+		|| x > (int)ft_strlen(map[y - 1]))
 		return (1);
-	else if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D' && map[y][x] != '1')
-			return (-1);
+	else if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D'
+		&& map[y][x] != '1')
+		return (-1);
 	else
 	{
 		map[y][x] = '1';
@@ -260,25 +258,25 @@ int	map_fil(char **map)
 {
 	int	x;
 	int	y;
-	int ret;
+	int	ret;
 
 	y = 0;
 	ret = 0;
 	while (map[y])
 	{
 		x = 0;
-		while(map[y][x])
+		while (map[y][x])
 		{
 			if (map[y][x] != '1' && map[y][x] != ' ')
-				ret +=full_fil(x, y, map);
+				ret += full_fil(x, y, map);
 			x++;
 		}
 		y++;
 	}
 	if (ret > 0)
-		return (put_error("map not protected by wall\n", NULL,1));
+		return (put_error("map not protected by wall\n", NULL, 1));
 	if (ret < 0)
-		return (put_error("strange char\n", NULL,1));
+		return (put_error("strange char\n", NULL, 1));
 	return (0);
 }
 
@@ -296,19 +294,19 @@ void	make_angle(char **map, t_cube *cube, int x, int y)
 	cube->map.map[y][x] = '0';
 }
 
-bool map_check(t_cube *cube, char **map)
+bool	map_check(t_cube *cube, char **map)
 {
 	int	x;
-	int y;
+	int	y;
 
 	y = 0;
-	while(map[y])
+	while (map[y])
 	{
 		x = 0;
-		while(map[y][x])
+		while (map[y][x])
 		{
-			if (!cube->player.existence && (map[y][x] == 'N'
-				|| map[y][x] == 'S' || map[y][x] == 'W' || map[y][x] == 'E'))
+			if (!cube->player.existence && (map[y][x] == 'N' || map[y][x] == 'S'
+					|| map[y][x] == 'W' || map[y][x] == 'E'))
 			{
 				cube->player.pos.x = x * 64 + 5;
 				cube->player.pos.y = y * 64 + 5;
@@ -326,32 +324,32 @@ bool map_check(t_cube *cube, char **map)
 
 bool	is_missing(t_cube *cube)
 {
-	if (!cube->text.door || !cube->text.EA || !cube->text.NO || !cube->text.SO || !cube->text.WE
-		|| cube->text.F == -1 || cube->text.C == -1)
+	if (!cube->text.door || !cube->text.EA || !cube->text.NO || !cube->text.SO
+		|| !cube->text.WE || cube->text.F == -1 || cube->text.C == -1)
 		return (false);
 	return (true);
 }
 
-int parsing(t_cube *cube, char *str)
+int	parsing(t_cube *cube, char *str)
 {
-	char	*mapFile;
-	char	**openMap;
+	char	*mapfile;
+	char	**openmap;
 
 	if (!is_cub(str))
 		return (1);
-	mapFile = gnl(str);
-	if (!*(mapFile))
+	mapfile = gnl(str);
+	if (!*(mapfile))
 		return (1);
-	openMap = ft_split(mapFile, '\n');	
-	free(mapFile);
-	if (!take_textur(cube, openMap))
+	openmap = ft_split(mapfile, '\n');
+	free(mapfile);
+	if (!take_textur(cube, openmap))
 	{
-		freeall(openMap);
+		freeall(openmap);
 		return (1);
 	}
 	if (!map_check(cube, cube->map.map_check))
-		return(1);
+		return (1);
 	if (!is_missing(cube))
-		return(1);
+		return (1);
 	return (map_fil(cube->map.map_check));
 }
