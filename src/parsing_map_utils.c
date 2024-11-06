@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 11:25:13 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 12:28:46 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/06 17:02:48 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,13 @@ static int	full_fil(int x, int y, char **map)
 	int	i;
 
 	i = 0;
-	if (map[y][x] == '1' || map[y][x] == '\0')
+	if (x < 0 || x >= (int)ft_strlen(map[y])
+		|| y < 0 || y >= size_mtx('y', map))
+		return (1);
+	if (map[y][x] == '1')
 		return (0);
-	else if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
-		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1])
-		|| x > (int)ft_strlen(map[y - 1]))
+	else if (x == 0 || y == 0 || x == (int)ft_strlen(map[y])
+		|| y == size_mtx('y', map) - 1 || map[y][x] == '\0' || map[y][x] == ' ')
 		return (1);
 	else if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D'
 		&& map[y][x] != '1')
@@ -99,9 +101,9 @@ int	map_fil(char **map)
 		y++;
 	}
 	if (ret > 0)
-		return (put_error("map not protected by wall\n", NULL, 1));
+		return (put_error("map not protected by wall", NULL, 1));
 	if (ret < 0)
-		return (put_error("strange char\n", NULL, 1));
+		return (put_error("strange char", NULL, 1));
 	return (0);
 }
 

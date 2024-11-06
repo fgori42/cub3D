@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 11:35:19 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/06 16:01:46 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,8 @@ bool	is_cub(char *str)
 	}
 }
 
-char	*gnl(char *str)
+static char	*gnl(char *str, int fd)
 {
-	int		fd;
 	int		control;
 	char	*buff;
 	char	*txt;
@@ -55,6 +54,7 @@ char	*gnl(char *str)
 		free(sup);
 	}
 	free(buff);
+	close(fd);
 	return (txt);
 }
 
@@ -99,9 +99,12 @@ int	parsing(t_cube *cube, char *str)
 
 	if (!is_cub(str))
 		return (1);
-	mapfile = gnl(str);
+	mapfile = gnl(str, 0);
 	if (!*(mapfile))
+	{
+		free(mapfile);
 		return (1);
+	}
 	openmap = ft_split(mapfile, '\n');
 	free(mapfile);
 	if (!take_textur(cube, openmap))
