@@ -6,15 +6,15 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/11/06 12:14:48 by fgori            ###   ########.fr        #
+#    Updated: 2024/11/06 15:57:01 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = ./src/
+SRC = src/
 INCLUDE = ./include
 
-LIB = ./include/libft/lib
-LIBM = ./include/minilibx-linux
+LIB = $(INCLUDE)/libft/lib
+LIBM = $(INCLUDE)/minilibx-linux
 
 file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c \
 		print_world.c raycast2.c raycast.c lst_utils2.c parsing_textur.c\
@@ -23,20 +23,24 @@ file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c \
 
 NAME = cub3D
 
+fileO = $(file:.c=.o)
+
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -I$(INCLUDE) -I$(LIB) -I$(LIBM)
 MLX_FLAGS = -lmlx -lX11 -lXext -lm
 
 all: $(NAME)
 
-$(NAME): $(file)
+$(NAME): $(fileO)
 		@make all -C $(INCLUDE)/libft
 		@make all -C $(INCLUDE)/minilibx-linux
-		cc $(CFLAGS) -I./include -I./include/libft/lib -I./include/minilibx-linux -L./include/libft -L./include/minilibx-linux $(file) $(MLX_FLAGS) -lft -o cub3D
+		$(CC) $(CFLAGS) $(fileO) -L$(INCLUDE)/libft -L$(INCLUDE)/minilibx-linux $(MLX_FLAGS) -lft -o $(NAME)
 
+%.o: %.c
+	$(CC)  $(CFLAGS) -c $< -o $@
 
 clean:
-		@echo "nothing to clean"
+		rm -f $(fileO)
 
 fclean: clean
 		rm -f $(NAME)
