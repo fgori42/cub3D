@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_world.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 21:58:45 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 16:33:00 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:28:17 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ void	paint_gr_sky(t_wall *tmp, t_cube *cube, t_img *new_img, t_pos *utils)
 	utils->y = tmp->wall_top;
 	while (y < tmp->wall_top && tmp->wall_top <= cube->win.win_height)
 	{
-		img_pixel_put(cube->text.C, tmp->idx, y, &new_img);
+		img_pixel_put(cube->text.c, tmp->idx, y, &new_img);
 		y++;
 	}
 	y = tmp->wall_bottom - 1;
 	while (y < cube->win.win_height && tmp->wall_bottom > 0)
 	{
-		img_pixel_put(cube->text.F, tmp->idx, y, &new_img);
+		img_pixel_put(cube->text.f, tmp->idx, y, &new_img);
 		y++;
 	}
 }

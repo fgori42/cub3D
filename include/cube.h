@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 17:13:24 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:23:47 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,25 @@
 # include <math.h>
 # include <stdbool.h>
 
-#ifndef M_PI
-   #define M_PI 3.14159265358979323846
-#endif
-
-typedef struct s_pos 
+typedef struct s_pos
 {
 	float	x;
 	float	y;
-} t_pos;
+}	t_pos;
 
-typedef struct s_input {
-    bool 	w;
-    bool 	a;
-    bool 	s;
-    bool 	d;
+typedef struct s_input
+{
+	bool	w;
+	bool	a;
+	bool	s;
+	bool	d;
 	bool	f;
-    bool 	left;
-    bool 	right;
+	bool	left;
+	bool	right;
 	t_pos	dor;
 	bool	is_door;
 	bool	c;
-} t_input;
-
+}	t_input;
 
 typedef struct s_win
 {
@@ -59,19 +55,18 @@ typedef struct s_win
 	void	*win_ptr;
 	int		win_height;
 	int		win_width;
-} t_win;
-
+}	t_win;
 
 typedef struct s_text
 {
 	void	*door;
-	void	*EA;
-	void	*WE;
-	void	*NO;
-	void	*SO;
-	int		F;
-	int		C;
-} t_text;
+	void	*ea;
+	void	*we;
+	void	*no;
+	void	*so;
+	int		f;
+	int		c;
+}	t_text;
 
 typedef struct s_player
 {
@@ -79,7 +74,7 @@ typedef struct s_player
 	float	angle;
 	t_pos	pos;
 	bool	existence;
-} t_player;
+}	t_player;
 
 typedef struct s_map
 {
@@ -87,23 +82,23 @@ typedef struct s_map
 	char	**map;
 	char	**map_check;
 	int		level;
-} t_map;
+}	t_map;
 
 typedef struct s_texture
 {
-    int width;
-    int height;
-} t_texture;
+	int	width;
+	int	height;
+}	t_texture;
 
 typedef struct s_minimap
 {
 	int	mini_height;
 	int	mini_wid;
-	int mini_start_x;
+	int	mini_start_x;
 	int	mini_start_y;
 }	t_minimap;
 
-typedef struct	s_wall
+typedef struct s_wall
 {
 	int				idx;
 	double			angle;
@@ -113,28 +108,28 @@ typedef struct	s_wall
 	bool			is_door;
 	int				wall_top;
 	int				wall_bottom;
-	int 			wall_height;
+	int				wall_height;
 	double			wall_width;
 	int				direction;
 	void			*text;
 	struct s_wall	*next;
 	struct s_wall	*prev;
-} t_wall;
+}	t_wall;
 
-typedef struct	s_ray
+typedef struct s_ray
 {
 	double	delta_dist_y;
 	double	delta_dist_x;
-	double	posX;
-	double	posY;
-	double	rayDirx;
-	double	rayDiry;
+	double	pos_x;
+	double	pos_y;
+	double	ray_dirx;
+	double	ray_diry;
 	int		mapx;
 	int		mapy;
 	double	side_dist_x;
 	double	side_dist_y;
-	int		stepX;
-	int		stepY;
+	int		step_x;
+	int		step_y;
 	int		hit;
 	int		side;
 	double	hitx;
@@ -142,12 +137,12 @@ typedef struct	s_ray
 	double	ray_length;
 	int		id_ray;
 	int		num_rays;
-	double	FOV;
+	double	fov;
 	double	angle_step;
 	double	ray_angle;
-} t_ray;
+}	t_ray;
 
-typedef struct	s_cube
+typedef struct s_cube
 {
 	t_img		*img;
 	int			*f;
@@ -161,7 +156,7 @@ typedef struct	s_cube
 	t_texture	texture;
 	t_wall		*inst;
 	t_minimap	minimap;
-}t_cube;
+}	t_cube;
 
 int		on_destroy(t_cube *cube);
 int		parsing(t_cube *cube, char *str);
@@ -183,6 +178,18 @@ void	ray_init(t_ray *ray, t_cube *cube);
 void	ray_calc_init(t_ray *ray, t_cube *cube);
 void	ray_calc_step_sidedist(t_ray *ray);
 void	determine_hit(t_ray *ray);
+int		handle_movement(t_cube *cube);
 void	find_wall(t_ray *ray, t_cube *cube);
-
+int		put_textur(char *str, t_text *home, t_cube *cube);
+int		put_error(char *str, char *str_two, int i);
+bool	map_check(t_cube *cube, char **map);
+int		mtx_trim(t_map *map, char **mtx, int start);
+int		map_fil(char **map);
+bool	is_missing(t_cube *cube);
+void	cube_init(t_cube *cube);
+int		check_collision(double x, double y, char **map);
+int		check_collision(double x, double y, char **map);
+int		on_keyrelease(int keysym, t_cube *cube);
+int		on_keypress(int keysym, t_cube *cube);
+int		get_texture_color(void *img, int tex_x, int tex_y);
 #endif

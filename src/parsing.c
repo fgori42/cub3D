@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 17:20:46 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/06 11:35:19 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube.h"
-
-int	put_error(char *str, char *str_two, int i)
-{
-	write(2, "ERROR\n", 6);
-	write(2, str, ft_strlen(str));
-	if (str_two)
-		write(2, str_two, ft_strlen(str_two));
-	return (i);
-}
 
 bool	is_cub(char *str)
 {
@@ -67,158 +58,6 @@ char	*gnl(char *str)
 	return (txt);
 }
 
-int	create_rgb(char *str)
-{
-	int		r;
-	int		g;
-	int		b;
-	char	**sup;
-
-	sup = ft_split(str, ',');
-	if (!sup || size_mtx('y', sup) != 3)
-		return (-1);
-	r = ft_atoi(sup[0]);
-	g = ft_atoi(sup[1]);
-	b = ft_atoi(sup[2]);
-	if (ft_strlen(sup[0]) > 3 || ft_strlen(sup[1]) > 3 || ft_strlen(sup[2]) > 3
-		|| r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
-		return (-1);
-	free(str);
-	freeall(sup);
-	return (r << 16 | g << 8 | b);
-}
-
-int	convert_rgb(char *str, t_text *home)
-{
-	int	j;
-
-	j = 0;
-	if (home->C == -1 && !ft_strncmp(str, "C", 1))
-	{
-		j = create_rgb(ft_strtrim(str, "C "));
-		if (j == -1)
-			return (-1);
-		home->C = j;
-	}
-	else if (home->F == -1 && !ft_strncmp(str, "F", 1))
-	{
-		j = create_rgb(ft_strtrim(str, "F "));
-		if (j == -1)
-			return (-1);
-		home->F = j;
-	}
-	else
-		return (-1);
-	return (0);
-}
-
-int	place_textur(char *str, char *sup, t_text *home, t_cube *cube)
-{
-	if (!home->NO && ft_strncmp(str, "NO", 2) == 0)
-		home->NO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-				&cube->texture.width, &cube->texture.height);
-	else if (!home->SO && ft_strncmp(str, "SO", 2) == 0)
-		home->SO = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-				&cube->texture.width, &cube->texture.height);
-	else if (!home->EA && ft_strncmp(str, "EA", 2) == 0)
-		home->EA = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-				&cube->texture.width, &cube->texture.height);
-	else if (!home->WE && ft_strncmp(str, "WE", 2) == 0)
-		home->WE = mlx_xpm_file_to_image(cube->win.mlx_ptr, sup,
-				&cube->texture.width, &cube->texture.height);
-	else
-		return (put_error("textur not found: ", str, 1));
-	return (0);
-}
-
-int	put_textur(char *str, t_text *home, t_cube *cube)
-{
-	char	*sup;
-
-	sup = ft_strchr(str, '.');
-	if (sup)
-	{
-		if (place_textur(str, sup, home, cube) == 1)
-			return (1);
-	}
-	else
-	{
-		if (convert_rgb(str, home) == -1)
-			return (put_error("color not found: ", str, 1));
-	}
-	if (!home->door)
-		home->door = mlx_xpm_file_to_image(cube->win.mlx_ptr,
-				"./textures/door.xpm", &cube->texture.width,
-				&cube->texture.height);
-	return (0);
-}
-
-int	find_max_len(char **mtx)
-{
-	int	y;
-	int	len;
-	int	len_max;
-
-	y = 6;
-	len_max = -1;
-	len = 0;
-	while (mtx[y])
-	{
-		len = ft_strlen(mtx[y]);
-		if (len > len_max)
-			len_max = len;
-		y++;
-	}
-	return (len_max);
-}
-
-char	*ft_strdup_and_place(char *str, int len)
-{
-	char	*str2;
-
-	str2 = ft_calloc(len + 1, sizeof(char));
-	ft_strlcpy(str2, str, ft_strlen(str) + 1);
-	return (str2);
-}
-
-void	mtx_clone(t_map *map)
-{
-	int	i;
-
-	i = 0;
-	map->map_check = ft_calloc(size_mtx('y', map->map) + 1, sizeof(char *));
-	while (map->map[i])
-	{
-		map->map_check[i] = ft_strdup(map->map[i]);
-		i++;
-	}
-}
-
-int	mtx_trim(t_map *map, char **mtx, int start)
-{
-	int		len;
-	int		i;
-	int		lenstr;
-	char	**newmtx;
-
-	i = 0;
-	len = size_mtx('y', mtx) - start;
-	newmtx = ft_calloc(len + 1, sizeof(char *));
-	if (!newmtx)
-		return (1);
-	lenstr = find_max_len(mtx);
-	while (i < len)
-	{
-		newmtx[i] = ft_strdup_and_place(mtx[start], lenstr);
-		start++;
-		i++;
-	}
-	map->map = newmtx;
-	mtx_clone(map);
-	freeall(mtx);
-	return (0);
-}
-
 bool	take_textur(t_cube *cube, char **text)
 {
 	int	i;
@@ -243,105 +82,14 @@ bool	take_textur(t_cube *cube, char **text)
 	return (true);
 }
 
-int	full_fil(int x, int y, char **map)
+int	put_error(char *str, char *str_two, int i)
 {
-	int	i;
-
-	i = 0;
-	if (map[y][x] == '1' || map[y][x] == '\0')
-		return (0);
-	else if (map[y][x] == ' ' || x == 0 || y == 0 || x == (int)ft_strlen(map[y])
-		|| y == size_mtx('y', map) || x > (int)ft_strlen(map[y + 1])
-		|| x > (int)ft_strlen(map[y - 1]))
-		return (1);
-	else if (map[y][x] != '0' && map[y][x] != ' ' && map[y][x] != 'D'
-		&& map[y][x] != '1')
-		return (-1);
-	else
-	{
-		map[y][x] = '1';
-		i += full_fil(x + 1, y, map);
-		i += full_fil(x - 1, y, map);
-		i += full_fil(x, y + 1, map);
-		i += full_fil(x, y - 1, map);
-	}
+	write(2, "ERROR\n", 6);
+	write(2, str, ft_strlen(str));
+	if (str_two)
+		write(2, str_two, ft_strlen(str_two));
+	write(2, "\n", 1);
 	return (i);
-}
-
-int	map_fil(char **map)
-{
-	int	x;
-	int	y;
-	int	ret;
-
-	y = 0;
-	ret = 0;
-	while (map[y])
-	{
-		x = 0;
-		while (map[y][x])
-		{
-			if (map[y][x] != '1' && map[y][x] != ' ')
-				ret += full_fil(x, y, map);
-			x++;
-		}
-		y++;
-	}
-	if (ret > 0)
-		return (put_error("map not protected by wall\n", NULL, 1));
-	if (ret < 0)
-		return (put_error("strange char\n", NULL, 1));
-	return (0);
-}
-
-void	make_angle(char **map, t_cube *cube, int x, int y)
-{
-	if (map[y][x] == 'E')
-		cube->player.angle = 0;
-	if (map[y][x] == 'S')
-		cube->player.angle = 90 * (M_PI / 180);
-	if (map[y][x] == 'W')
-		cube->player.angle = 180 * (M_PI / 180);
-	if (map[y][x] == 'N')
-		cube->player.angle = 270 * (M_PI / 180);
-	map[y][x] = '0';
-	cube->map.map[y][x] = '0';
-}
-
-bool	map_check(t_cube *cube, char **map)
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (map[y])
-	{
-		x = 0;
-		while (map[y][x])
-		{
-			if (!cube->player.existence && (map[y][x] == 'N' || map[y][x] == 'S'
-					|| map[y][x] == 'W' || map[y][x] == 'E'))
-			{
-				cube->player.pos.x = x * 64 + 5;
-				cube->player.pos.y = y * 64 + 5;
-				make_angle(map, cube, x, y);
-				cube->player.existence = true;
-			}
-			x++;
-		}
-		y++;
-	}
-	if (cube->player.existence == false)
-		return (put_error("character not found", NULL, false));
-	return (true);
-}
-
-bool	is_missing(t_cube *cube)
-{
-	if (!cube->text.door || !cube->text.EA || !cube->text.NO || !cube->text.SO
-		|| !cube->text.WE || cube->text.F == -1 || cube->text.C == -1)
-		return (false);
-	return (true);
 }
 
 int	parsing(t_cube *cube, char *str)
@@ -364,6 +112,6 @@ int	parsing(t_cube *cube, char *str)
 	if (!map_check(cube, cube->map.map_check))
 		return (1);
 	if (!is_missing(cube))
-		return (1);
+		return (perror("ERROR\nmissing textur\n"), 1);
 	return (map_fil(cube->map.map_check));
 }

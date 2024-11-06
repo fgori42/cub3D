@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 17:10:10 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/06 12:28:03 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@ void	decide_tex_direc(t_wall *new, t_cube *cube)
 {
 	if (cube->side == 0 && cos(new->angle) < 0)
 	{
-		new->text = cube->text.WE;
+		new->text = cube->text.we;
 		new->direction = 3;
 	}
 	else if (cube->side == 0)
 	{
-		new->text = cube->text.EA;
+		new->text = cube->text.ea;
 		new->direction = 1;
 	}
 	else if (cube->side == 1 && sin(new->angle) < 0)
 	{
-		new->text = cube->text.NO;
+		new->text = cube->text.no;
 		new->direction = 0;
 	}
 	else if (cube->side == 1)
 	{
-		new->text = cube->text.SO;
+		new->text = cube->text.so;
 		new->direction = 2;
 	}
 }

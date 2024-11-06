@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+         #
+#    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/11/05 17:11:16 by aosmenaj         ###   ########.fr        #
+#    Updated: 2024/11/06 12:14:48 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,9 @@ LIB = ./include/libft/lib
 LIBM = ./include/minilibx-linux
 
 file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c \
-		print_world.c raycast2.c raycast.c lst_utils2.c)
+		print_world.c raycast2.c raycast.c lst_utils2.c parsing_textur.c\
+		parsing_map.c parsing_map_utils.c init.c movement.c input.c get_color.c\
+		game_managemet.c)
 
 NAME = cub3D
 
