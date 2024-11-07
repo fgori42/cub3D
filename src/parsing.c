@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 16:01:46 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 15:03:29 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ static char	*gnl(char *str, int fd)
 	char	*sup;
 
 	control = 1;
+	fd = open(str, O_RDWR);
+	if (fd < 0)
+		return (NULL);
 	buff = ft_calloc(2, 1);
 	txt = ft_calloc(1, 1);
 	if (!txt || !buff)
-		return (NULL);
-	fd = open(str, O_RDWR);
-	if (fd < 0)
 		return (NULL);
 	while (control > 0)
 	{
@@ -74,7 +74,7 @@ bool	take_textur(t_cube *cube, char **text)
 				return (false);
 		}
 		else
-			return (false);
+			return (perror("ERROR\nmissing textur or color"), false);
 		i++;
 	}
 	if (mtx_trim(&cube->map, text, i) == 1)
@@ -92,19 +92,79 @@ int	put_error(char *str, char *str_two, int i)
 	return (i);
 }
 
+int	parse_n(char *str)
+{
+	int	i;
+	int	x;
+
+	i = 0;
+	while (str[i] && str[i] == '\n')
+		i++;
+	x = i;
+	while(str[i])
+	{
+		while (str[i] && str[i] != '\n')
+			i++;
+		if (i != x)
+		{
+			i++;
+			x = i;
+		}
+		else if (i == x)
+		{
+			if (str[i + 1] != '\0')
+				return(perror("ERROR\nnew line in map"), 1);
+			return (0);
+		}
+	}
+	return(0);
+}
+
+int	find_extra_n(char *str)
+{
+	int	i;
+	int	n;
+	int	j;
+
+	i = 0;
+	n = 0;
+	j = 0;
+	while (j < 6)
+	{
+		while (str[i] && str[i] != '\n')
+			i++;
+		if (i != n)
+		{
+			i++;
+			n = i;
+			j++;
+		}
+		else if (i == n)
+		{
+			i++;
+			n++;
+		}
+	}
+	return(parse_n(&str[n]));
+} 
+
 int	parsing(t_cube *cube, char *str)
 {
 	char	*mapfile;
 	char	**openmap;
 
 	if (!is_cub(str))
-		return (1);
+		return (perror("ERROR\n.cub required"), 1);
 	mapfile = gnl(str, 0);
+	if (!mapfile)
+		return(perror("ERROR\nno such file"), 1);
 	if (!*(mapfile))
 	{
 		free(mapfile);
-		return (1);
+		return (perror("ERROR\nempty file"), 1);
 	}
+	if (find_extra_n(mapfile) == 1)
+		return(1);
 	openmap = ft_split(mapfile, '\n');
 	free(mapfile);
 	if (!take_textur(cube, openmap))

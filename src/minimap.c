@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 12:16:17 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/05 16:43:27 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/07 15:21:21 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 
 int	what_i_see(int x, int y, char **map)
 {
-	if (x < 0 || y < 0 || y >= size_mtx('y', map))
+	if (x < 0 || y < 0 || y >= size_mtx('y', map)
+		|| x >= size_mtx('x', map))
 		return (0);
 	if (map[y][x] == '1')
 		return (4210752);

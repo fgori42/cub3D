@@ -6,7 +6,7 @@
 /*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 16:57:38 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 15:19:10 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ static void	take_wall(t_wall *new, t_cube *cube)
 	decide_tex_direc(new, cube);
 	y = (int)new->cor.y / 64;
 	x = (int)new->cor.x / 64;
+	if (x < 0 || y < 0 || x >= size_mtx('x', cube->map.map) || y >= size_mtx('y', cube->map.map))
+        return;
 	if (y < 0)
 		y = 0;
 	if (y >= size_mtx('y', cube->map.map))
@@ -52,7 +54,7 @@ static void	take_wall(t_wall *new, t_cube *cube)
 		x = 0;
 	if (x >= size_mtx('x', cube->map.map))
 		x = size_mtx('x', cube->map.map) - 1;
-	if (cube->map.map[(int)new->cor.y / 64][(int)new->cor.x / 64] == 'D')
+	if (cube->map.map[y][x] == 'D')
 	{
 		new->text = cube->text.door;
 		new->is_door = true;

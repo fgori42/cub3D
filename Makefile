@@ -6,7 +6,7 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/11/06 15:57:01 by fgori            ###   ########.fr        #
+#    Updated: 2024/11/07 11:33:12 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,8 @@ clean:
 		rm -f $(fileO)
 
 fclean: clean
+		make fclean -C $(INCLUDE)/libft
+		make clean -C $(INCLUDE)/minilibx-linux
 		rm -f $(NAME)
 
 re: fclean all
