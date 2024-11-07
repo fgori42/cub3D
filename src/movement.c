@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 11:44:23 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/07 15:13:15 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 19:12:50 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	handle_angle(t_cube *cube)
 {
 	double	rot_step;
 
-	rot_step = 0.08;
+	rot_step = 0.07;
 	if (cube->input.left)
 		cube->player.angle -= rot_step;
 	if (cube->input.right)
@@ -74,7 +74,7 @@ int	handle_movement(t_cube *cube)
 {
 	double	move_step;
 
-	move_step = 30;
+	move_step = 20;
 	if (cube->input.w && !check_distance(*cube, 'w'))
 		exec_movement(cube, cube->player.pos.x + cos(cube->player.angle)
 			* move_step, cube->player.pos.y + sin(cube->player.angle)

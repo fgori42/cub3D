@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_managemet.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 12:14:49 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 12:29:59 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 19:48:54 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,7 @@ int	size_mtx(char size, char **map)
 	x = 0;
 	y = 0;
 	if (size == 'x')
-	{
-		while (map[y][x])
-			x++;
-		return (x);
-	}
+		return (find_max_len(map));
 	if (size == 'y')
 	{
 		while (map[y])

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lst_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 12:00:32 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/07 15:19:10 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 19:22:57 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,8 @@ static void	take_wall(t_wall *new, t_cube *cube)
 	int	y;
 
 	decide_tex_direc(new, cube);
-	y = (int)new->cor.y / 64;
-	x = (int)new->cor.x / 64;
-	if (x < 0 || y < 0 || x >= size_mtx('x', cube->map.map) || y >= size_mtx('y', cube->map.map))
-        return;
+	y = ((int)new->cor.y) / 64;
+	x = ((int)new->cor.x) / 64;
 	if (y < 0)
 		y = 0;
 	if (y >= size_mtx('y', cube->map.map))

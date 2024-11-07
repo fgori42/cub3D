@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 11:07:52 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 16:29:34 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 19:52:05 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cube.h"
 
-static int	find_max_len(char **mtx)
+int	find_max_len(char **mtx)
 {
 	int	y;
 	int	len;
@@ -76,4 +76,32 @@ int	mtx_trim(t_map *map, char **mtx, int start)
 	mtx_clone(map);
 	freeall(mtx);
 	return (0);
+}
+
+int	find_extra_n(char *str)
+{
+	int	i;
+	int	n;
+	int	j;
+
+	i = 0;
+	n = 0;
+	j = 0;
+	while (j < 6)
+	{
+		while (str[i] && str[i] != '\n')
+			i++;
+		if (i != n)
+		{
+			i++;
+			n = i;
+			j++;
+		}
+		else if (i == n)
+		{
+			i++;
+			n++;
+		}
+	}
+	return (parse_n(&str[n]));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 12:47:00 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/07 15:03:29 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 19:51:56 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	parse_n(char *str)
 	while (str[i] && str[i] == '\n')
 		i++;
 	x = i;
-	while(str[i])
+	while (str[i])
 	{
 		while (str[i] && str[i] != '\n')
 			i++;
@@ -113,40 +113,12 @@ int	parse_n(char *str)
 		else if (i == x)
 		{
 			if (str[i + 1] != '\0')
-				return(perror("ERROR\nnew line in map"), 1);
+				return (perror("ERROR\nnew line in map"), 1);
 			return (0);
 		}
 	}
-	return(0);
+	return (0);
 }
-
-int	find_extra_n(char *str)
-{
-	int	i;
-	int	n;
-	int	j;
-
-	i = 0;
-	n = 0;
-	j = 0;
-	while (j < 6)
-	{
-		while (str[i] && str[i] != '\n')
-			i++;
-		if (i != n)
-		{
-			i++;
-			n = i;
-			j++;
-		}
-		else if (i == n)
-		{
-			i++;
-			n++;
-		}
-	}
-	return(parse_n(&str[n]));
-} 
 
 int	parsing(t_cube *cube, char *str)
 {
@@ -157,14 +129,14 @@ int	parsing(t_cube *cube, char *str)
 		return (perror("ERROR\n.cub required"), 1);
 	mapfile = gnl(str, 0);
 	if (!mapfile)
-		return(perror("ERROR\nno such file"), 1);
+		return (perror("ERROR\nno such file"), 1);
 	if (!*(mapfile))
 	{
 		free(mapfile);
 		return (perror("ERROR\nempty file"), 1);
 	}
 	if (find_extra_n(mapfile) == 1)
-		return(1);
+		return (1);
 	openmap = ft_split(mapfile, '\n');
 	free(mapfile);
 	if (!take_textur(cube, openmap))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
+/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/06 12:23:47 by fgori            ###   ########.fr       */
+/*   Updated: 2024/11/07 20:00:02 by aosmenaj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,4 +192,7 @@ int		check_collision(double x, double y, char **map);
 int		on_keyrelease(int keysym, t_cube *cube);
 int		on_keypress(int keysym, t_cube *cube);
 int		get_texture_color(void *img, int tex_x, int tex_y);
+int		find_max_len(char **mtx);
+int		find_extra_n(char *str);
+int		parse_n(char *str);
 #endif
