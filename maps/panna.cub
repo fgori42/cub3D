@@ -1,10 +1,20 @@
-NO ./imgs/pcn.xpm
-SO ./imgs/pcs.xpm
-EA ./imgs/pce.xpm
-WE ./imgs/pcw.xpm
+                           NO./textures/wall.xpm
+SO            ./textures/wall2.xpm
+WE./textures/wall3.xpm
+EA./textures/wall4.xpm
 
-F 150,150,150
+
+
+
+
+F 150,150,          150
 C 230,230,230
+
+
+
+
+
+
 
                                            1111111111111111
                                       111111000000S0000000111111

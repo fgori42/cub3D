@@ -1,7 +1,7 @@
-NO ./imgs/n_mil.xpm
-SO ./imgs/s_nap.xpm
-WE ./imgs/w_fio.xpm
-EA ./imgs/e_juv.xpm
+NO ./textures/wall.xpm
+SO ./textures/wall2.xpm
+WE ./textures/wall3.xpm
+EA ./textures/wall4.xpm
 F 100,100,100
 C 200,200,200
 

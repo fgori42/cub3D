@@ -41,14 +41,9 @@ void	plus_img(t_img *src, int startX, int startY, t_cube *cube)
 
 int	what_i_see(int x, int y, char **map)
 {
-	if (y < 0)
-		y = 0;
-	if (y >= size_mtx('y', map))
-		y = size_mtx('y', map) - 1;
-	if (x < 0)
-		x = 0;
-	if (x >= size_mtx('x', map))
-		x = size_mtx('x', map) - 1;
+	if (x < 0 || y < 0 || y >= size_mtx('y', map)
+		|| x >= (int)ft_strlen(map[y]))
+		return (0);
 	if (map[y][x] == '1')
 		return (4210752);
 	if (map[y][x] == '0')
@@ -80,11 +75,11 @@ void	put_mini(t_cube *cube, t_img *mini)
 	x[0] = 0;
 	x[1] = 0;
 	x[2] = 0;
-	s_[0] = (cube->player.pos.x / 64) - 3;
+	s_[0] = (cube->player.pos.x / 64) - 5;
 	while (x[0] < cube->minimap.mini_wid)
 	{
 		x[1] = 0;
-		s_[1] = (cube->player.pos.y / 64) - 1;
+		s_[1] = (cube->player.pos.y / 64) - 3;
 		while (x[1] < cube->minimap.mini_height)
 		{
 			mini_pixel_put(cube, s_, x, mini);
@@ -108,8 +103,8 @@ void	display_map(t_cube *cube)
 		return ;
 	else
 	{
-		cube->minimap.mini_height = size_mtx('y', cube->map.map) * 16;
-		cube->minimap.mini_wid = size_mtx('x', cube->map.map) * 16 / 2;
+		cube->minimap.mini_height = 7 * 32;
+		cube->minimap.mini_wid = 11 * 32;
 		minimap = ft_calloc(1, sizeof(t_img));
 		minimap->image = mlx_new_image(cube->win.mlx_ptr,
 				cube->minimap.mini_wid, cube->minimap.mini_height);

@@ -6,7 +6,7 @@
 #    By: fgori <fgori@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/23 14:34:18 by fgori             #+#    #+#              #
-#    Updated: 2024/11/07 11:33:12 by fgori            ###   ########.fr        #
+#    Updated: 2024/11/10 11:29:42 by fgori            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ LIBM = $(INCLUDE)/minilibx-linux
 file = $(addprefix $(SRC), main.c parsing.c minimap.c lst_utils.c gun.c \
 		print_world.c raycast2.c raycast.c lst_utils2.c parsing_textur.c\
 		parsing_map.c parsing_map_utils.c init.c movement.c input.c get_color.c\
-		game_managemet.c)
+		game_managemet.c parsing_utils.c)
 
 NAME = cub3D
 

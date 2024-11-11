@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aosmenaj <aosmenaj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgori <fgori@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:06:44 by fgori             #+#    #+#             */
-/*   Updated: 2024/11/07 20:00:02 by aosmenaj         ###   ########.fr       */
+/*   Updated: 2024/11/10 11:28:38 by fgori            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,9 @@ bool	map_check(t_cube *cube, char **map);
 int		mtx_trim(t_map *map, char **mtx, int start);
 int		map_fil(char **map);
 bool	is_missing(t_cube *cube);
+bool	is_cub(char *str);
+char	*skip_space(char *str);
+int		put_error(char *str, char *str_two, int i);
 void	cube_init(t_cube *cube);
 int		check_collision(double x, double y, char **map);
 int		check_collision(double x, double y, char **map);

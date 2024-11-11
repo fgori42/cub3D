@@ -12,23 +12,6 @@
 
 #include "cube.h"
 
-bool	is_cub(char *str)
-{
-	char	*tmp;
-
-	tmp = ft_substr(str, ft_strlen(str) - 4, 4);
-	if (ft_strncmp(tmp, ".cub", 4) == 0)
-	{
-		free(tmp);
-		return (true);
-	}
-	else
-	{
-		free(tmp);
-		return (false);
-	}
-}
-
 static char	*gnl(char *str, int fd)
 {
 	int		control;
@@ -60,17 +43,19 @@ static char	*gnl(char *str, int fd)
 
 bool	take_textur(t_cube *cube, char **text)
 {
-	int	i;
+	int		i;
+	char	*sup;
 
 	i = 0;
 	while (i < 6)
 	{
-		if (ft_strncmp(text[i], "NO", 2) == 0 || ft_strncmp(text[i], "SO",
-				2) == 0 || ft_strncmp(text[i], "WE", 2) == 0
-			|| ft_strncmp(text[i], "EA", 2) == 0 || ft_strncmp(text[i], "C",
-				1) == 0 || ft_strncmp(text[i], "F", 1) == 0)
+		sup = skip_space(text[i]);
+		if (ft_strncmp(sup, "NO", 2) == 0 || ft_strncmp(sup, "SO",
+				2) == 0 || ft_strncmp(sup, "WE", 2) == 0
+			|| ft_strncmp(sup, "EA", 2) == 0 || ft_strncmp(sup, "C",
+				1) == 0 || ft_strncmp(sup, "F", 1) == 0)
 		{
-			if (put_textur(text[i], &cube->text, cube) == 1)
+			if (put_textur(sup, &cube->text, cube) == 1)
 				return (false);
 		}
 		else
@@ -80,16 +65,6 @@ bool	take_textur(t_cube *cube, char **text)
 	if (mtx_trim(&cube->map, text, i) == 1)
 		return (perror("Error\nimpossible to trim mtx"), false);
 	return (true);
-}
-
-int	put_error(char *str, char *str_two, int i)
-{
-	write(2, "ERROR\n", 6);
-	write(2, str, ft_strlen(str));
-	if (str_two)
-		write(2, str_two, ft_strlen(str_two));
-	write(2, "\n", 1);
-	return (i);
 }
 
 int	parse_n(char *str)
@@ -120,6 +95,20 @@ int	parse_n(char *str)
 	return (0);
 }
 
+static int	parsing_two(t_cube *cube, char **openmap)
+{
+	if (!take_textur(cube, openmap))
+	{
+		freeall(openmap);
+		return (1);
+	}
+	if (!map_check(cube, cube->map.map_check))
+		return (1);
+	if (!is_missing(cube))
+		return (perror("ERROR\nmissing textur"), 1);
+	return (map_fil(cube->map.map_check));
+}
+
 int	parsing(t_cube *cube, char *str)
 {
 	char	*mapfile;
@@ -136,17 +125,11 @@ int	parsing(t_cube *cube, char *str)
 		return (perror("ERROR\nempty file"), 1);
 	}
 	if (find_extra_n(mapfile) == 1)
-		return (1);
-	openmap = ft_split(mapfile, '\n');
-	free(mapfile);
-	if (!take_textur(cube, openmap))
 	{
-		freeall(openmap);
+		free(mapfile);
 		return (1);
 	}
-	if (!map_check(cube, cube->map.map_check))
-		return (1);
-	if (!is_missing(cube))
-		return (perror("ERROR\nmissing textur\n"), 1);
-	return (map_fil(cube->map.map_check));
+	openmap = ft_split(mapfile, '\n');
+	free(mapfile);
+	return (parsing_two(cube, openmap));
 }

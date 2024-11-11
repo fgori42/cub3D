@@ -1,7 +1,7 @@
-NO ./imgs/n_stone.xpm
-SO ./imgs/s_stone.xpm
-WE ./imgs/w_stone.xpm
-EA ./imgs/e_stone.xpm
+NO./textures/wall.xpm
+SO./textures/wall2.xpm
+WE./textures/wall3.xpm
+EA./textures/wall4.xpm
 F  0, 100, 0
 C  173, 216, 230
 

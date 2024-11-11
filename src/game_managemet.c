@@ -25,10 +25,8 @@ short	wallloak(int x, int y, char **map)
 
 int	size_mtx(char size, char **map)
 {
-	int	x;
 	int	y;
 
-	x = 0;
 	y = 0;
 	if (size == 'x')
 		return (find_max_len(map));
